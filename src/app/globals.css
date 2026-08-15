@@ -1,26 +1,48 @@
 @import "tailwindcss";
 
+/* The Night Run — locked to night mode (§8).
+   Base: near-black asphalt. Accents: cold cyan (dash UI), warm amber (headlights). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0b0d;
+  --foreground: #e8e6e3;
+  --dash-cyan: #8fe9ff;
+  --headlight-amber: #ffb65c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-dash: var(--dash-cyan);
+  --color-headlight: var(--headlight-amber);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  overflow: hidden; /* the drive owns the viewport; read-mode scrolls its own overlay */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Instant click feedback for the day/night toggle — the slow (~4s)
+   sunrise/sunset payoff plays out separately from this. */
+@keyframes cel-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.cel-pulse {
+  animation: cel-pulse 200ms ease-out;
 }
