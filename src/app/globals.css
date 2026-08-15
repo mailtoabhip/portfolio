@@ -24,10 +24,32 @@ body {
   background: var(--background);
   color: var(--foreground);
   overflow: hidden; /* the drive owns the viewport; read-mode scrolls its own overlay */
+  overscroll-behavior: none; /* no pull-to-refresh fighting the hold gesture */
+  touch-action: none; /* elements that need to scroll (the waybill card) opt back in */
 }
 
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* HUD text scaling across phone breakpoints — applied via .hud-cluster
+   with a per-element transform-origin matching its fixed-position
+   corner, so it scales toward its own anchor rather than drifting. */
+:root {
+  --hud-scale: 1;
+}
+@media (max-width: 379px) {
+  :root {
+    --hud-scale: 0.85;
+  }
+}
+@media (min-width: 430px) and (max-width: 768px) {
+  :root {
+    --hud-scale: 1.05;
+  }
+}
+.hud-cluster {
+  transform: scale(var(--hud-scale));
 }
 
 /* Instant click feedback for the day/night toggle — the slow (~4s)
@@ -45,4 +67,33 @@ body {
 }
 .cel-pulse {
   animation: cel-pulse 200ms ease-out;
+}
+
+/* Touch-point "contact acknowledged" glow for TouchDriveLayer — fades
+   out over the hold, it isn't a persistent button graphic. */
+@keyframes touch-glow-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.touch-glow {
+  animation: touch-glow-fade 400ms ease-out forwards;
+}
+
+/* Subtle rock on the DriveHint phone glyph, implying tilt. */
+@keyframes tilt-rock {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+.tilt-rock {
+  animation: tilt-rock 1.8s ease-in-out infinite;
+  transform-origin: 50% 90%;
 }

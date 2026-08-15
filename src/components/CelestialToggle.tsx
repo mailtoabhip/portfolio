@@ -161,7 +161,11 @@ export default function CelestialToggle() {
       onClick={handleClick}
       disabled={midTransition}
       aria-label={label}
-      className={`fixed top-8 right-8 z-40 w-12 h-12 rounded-full border border-neutral-700 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
+      style={{
+        top: "max(32px, calc(env(safe-area-inset-top) + 12px))",
+        right: "max(32px, calc(env(safe-area-inset-right) + 12px))",
+      }}
+      className={`fixed z-40 w-12 h-12 rounded-full border border-neutral-700 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${
         visible ? "opacity-100" : "opacity-0 pointer-events-none"
       } ${midTransition ? "opacity-60 cursor-default" : "cursor-pointer hover:border-neutral-500"}`}
     >

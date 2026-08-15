@@ -40,6 +40,24 @@ function match(e: KeyboardEvent): keyof typeof keys | null {
   }
 }
 
+/** True once, computed at module load — no phones ever gain a keyboard
+ * mid-session, so this never needs to be reactive. */
+export const isTouchDevice =
+  typeof window !== "undefined" &&
+  ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+/**
+ * Touch throttle: a binary hold, written by TouchDriveLayer's
+ * pointerdown/up. Release uses the brake curve, not the gentle coast
+ * — mobile has no separate brake gesture, and the ~14m delivery zone
+ * requires actually being able to stop in time. Don't "simplify" this
+ * back to a coast-only release; it quietly breaks mobile deliveries.
+ */
+export function setTouchThrottle(active: boolean) {
+  input.throttle = active ? 1 : 0;
+  input.brake = active ? 0 : 1;
+}
+
 /** Mount once (in the experience shell) to activate driving keys. */
 export function useDrivingControls() {
   useEffect(() => {

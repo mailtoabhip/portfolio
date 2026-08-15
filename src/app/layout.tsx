@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -16,6 +16,16 @@ export const metadata: Metadata = {
   title: "Abhijeet Purandare — The Night Run",
   description:
     "B2B Product Designer at Delhivery. I design the systems that move real things — reliably, at scale, mostly while the world's asleep.",
+};
+
+// Locks out pinch-zoom (fights both the tap-hold gesture and tilt
+// steering) and extends content edge-to-edge on notched devices.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

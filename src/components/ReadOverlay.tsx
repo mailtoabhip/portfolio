@@ -46,8 +46,11 @@ export default function ReadOverlay() {
       }`}
     >
       {/* The waybill, reading size */}
-      <div className="relative w-[min(92vw,860px)] h-[min(88vh,1100px)] bg-[#efeade] text-[#1d1a15] rounded-sm shadow-2xl overflow-y-auto">
-        <div className="p-8 md:p-14">
+      <div
+        className="relative w-[calc(100vw-32px)] sm:w-[min(92vw,860px)] h-[min(88vh,1100px)] bg-[#efeade] text-[#1d1a15] rounded-sm shadow-2xl overflow-y-auto"
+        style={{ touchAction: "pan-y" }}
+      >
+        <div className="p-8 md:p-14 pb-24 sm:pb-14">
           {destination === null ? (
             <>
               {/* ============ INDEX ============ */}
@@ -67,7 +70,7 @@ export default function ReadOverlay() {
                   <li key={s.slug}>
                     <button
                       onClick={() => selectDestination(s.slug)}
-                      className="group w-full flex items-center gap-5 py-4 text-left hover:bg-[#e6dfce] -mx-3 px-3 rounded transition-colors"
+                      className="group w-full min-h-[44px] flex items-center gap-5 py-4 text-left hover:bg-[#e6dfce] -mx-3 px-3 rounded transition-colors"
                     >
                       <span className="font-mono text-xs text-[#a89f8a] w-8 shrink-0">
                         {String(i + 1).padStart(2, "0")}
@@ -100,10 +103,13 @@ export default function ReadOverlay() {
         </div>
       </div>
 
-      {/* Step back */}
+      {/* Step back — full-width bottom bar on phones (44px+ touch
+          target, thumb-reachable), the small centered pill from
+          `sm:` up. */}
       <button
         onClick={closeSheet}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 font-mono text-[11px] tracking-[0.3em] uppercase px-5 py-2.5 rounded-full border border-neutral-600 text-neutral-300 bg-black/60 hover:bg-black/80 hover:text-white transition-colors"
+        style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
+        className="fixed inset-x-0 bottom-0 z-50 w-full min-h-[44px] rounded-none pt-4 sm:inset-x-auto sm:left-1/2 sm:bottom-6 sm:w-auto sm:-translate-x-1/2 sm:rounded-full sm:px-5 sm:py-2.5 sm:pb-2.5 font-mono text-[11px] tracking-[0.3em] uppercase border-t sm:border border-neutral-600 text-neutral-300 bg-black/80 sm:bg-black/60 hover:bg-black/90 sm:hover:bg-black/80 hover:text-white transition-colors"
       >
         {destination ? "← Back to the waybill" : "← Return to the road"}
       </button>
