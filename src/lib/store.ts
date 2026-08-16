@@ -22,6 +22,9 @@ export type Phase = "name" | "igniting" | "cruising" | "reading" | "returning";
  */
 export type TimeOfDay = "night" | "sunrise" | "day" | "sunset";
 
+/** Which screen the tablet is showing while `phase === "reading"`. */
+export type TabletApp = "home" | "case-studies" | "resume" | "music";
+
 /** Destination slugs = the paper sheets on the dash. */
 export type Destination =
   | "manifest" // resume
@@ -37,11 +40,15 @@ interface NightRunState {
   phase: Phase;
   timeOfDay: TimeOfDay;
   destination: Destination | null;
+  /** Which tablet screen is showing (only meaningful while reading). */
+  tabletApp: TabletApp;
   /** Destinations delivered via the road game (stamped on the waybill). */
   delivered: Destination[];
   /** 0–2: quality tier for instancing counts / post-fx. 0 = lowest. */
   quality: 0 | 1 | 2;
   audioOn: boolean;
+  /** The phone's contact card — independent of the tablet/phase machine. */
+  phoneOpen: boolean;
   /** Cruise speed multiplier (1 = normal; transitions may modulate). */
   speed: number;
 
@@ -54,16 +61,22 @@ interface NightRunState {
   toggleTimeOfDay: () => void;
   /** Called by SkySystem's frame loop once a transition's `t` completes. */
   setTimeOfDay: (timeOfDay: TimeOfDay) => void;
-  /** Click the paper stack → open the waybill index (destination null). */
-  openIndex: () => void;
-  /** Pick an entry on the index → show that destination's content. */
+  /** Tap the tablet → fullscreen, tablet OS home screen. */
+  openTablet: () => void;
+  /** Pick an app tile on the tablet's home screen. */
+  openTabletApp: (app: TabletApp) => void;
+  /** Pick an entry on the Case Studies index → show that content. */
   selectDestination: (destination: Destination) => void;
-  /** Step back: content → index → back to the road. */
+  /** Step back one level: entry -> list/home -> tablet home -> road. */
   closeSheet: () => void;
   /** Road game: stopped at a drop point → stamp it + open its entry. */
   deliver: (destination: Destination) => void;
   setQuality: (quality: 0 | 1 | 2) => void;
   toggleAudio: () => void;
+  /** Tap the phone -> its contact-card screen. No phase change, no
+   * link to the tablet — the world keeps driving underneath. */
+  openPhoneScreen: () => void;
+  closePhoneScreen: () => void;
   setSpeed: (speed: number) => void;
 }
 
@@ -71,9 +84,11 @@ export const useNightRun = create<NightRunState>((set, get) => ({
   phase: "name",
   timeOfDay: "night",
   destination: null,
+  tabletApp: "home",
   delivered: [],
   quality: 2,
   audioOn: false,
+  phoneOpen: false,
   speed: 1,
 
   setPhase: (phase) => set({ phase }),
@@ -88,23 +103,35 @@ export const useNightRun = create<NightRunState>((set, get) => ({
   },
   setTimeOfDay: (timeOfDay) => set({ timeOfDay }),
 
-  // Guards: the stack only opens while cruising; only close while reading.
-  openIndex: () => {
+  // Guards: the tablet only opens while cruising; only close while reading.
+  openTablet: () => {
     if (get().phase !== "cruising") return;
-    set({ phase: "reading", destination: null });
+    set({ phase: "reading", tabletApp: "home", destination: null });
+  },
+  openTabletApp: (app) => {
+    if (get().phase !== "reading") return;
+    // Resume is a single document, not a list — jump straight to its
+    // entry content via the same `destination`/EntryView path Case
+    // Studies uses, no separate rendering path needed.
+    set({ tabletApp: app, destination: app === "resume" ? "manifest" : null });
   },
   selectDestination: (destination) => {
     if (get().phase !== "reading") return;
     set({ destination });
   },
   closeSheet: () => {
-    const { phase, destination } = get();
+    const { phase, destination, tabletApp } = get();
     if (phase !== "reading") return;
     if (destination) {
-      set({ destination: null }); // content → back to the index
+      // Entry content -> whichever screen it was opened from: the
+      // Case Studies list stays put, Resume has no list so it steps
+      // straight back to the tablet home screen.
+      set({ destination: null, tabletApp: tabletApp === "resume" ? "home" : tabletApp });
+    } else if (tabletApp !== "home") {
+      set({ tabletApp: "home" }); // list/music -> tablet home
     } else {
-      set({ phase: "returning" }); // index → back to the road
-      // The transition completes to "cruising" (ReadOverlay effect).
+      set({ phase: "returning" }); // tablet home -> back to the road
+      // The transition completes to "cruising" (TabletOS effect).
     }
   },
 
@@ -112,6 +139,7 @@ export const useNightRun = create<NightRunState>((set, get) => ({
     if (get().phase !== "cruising") return;
     set((s) => ({
       phase: "reading",
+      tabletApp: "case-studies",
       destination,
       delivered: s.delivered.includes(destination)
         ? s.delivered
@@ -121,5 +149,7 @@ export const useNightRun = create<NightRunState>((set, get) => ({
 
   setQuality: (quality) => set({ quality }),
   toggleAudio: () => set((s) => ({ audioOn: !s.audioOn })),
+  openPhoneScreen: () => set({ phoneOpen: true }),
+  closePhoneScreen: () => set({ phoneOpen: false }),
   setSpeed: (speed) => set({ speed }),
 }));

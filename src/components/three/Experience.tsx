@@ -35,8 +35,8 @@ export default function Experience() {
         {/* Initial values only — night by default. SkySystem takes
             over scene.background / scene.fog every frame once it
             mounts, including day mode. */}
-        <color attach="background" args={["#050608"]} />
-        <fog attach="fog" args={["#050608", 8, 60]} />
+        <color attach="background" args={["#101c38"]} />
+        <fog attach="fog" args={["#101c38", 8, 60]} />
 
         <SkySystem />
         <Truck />

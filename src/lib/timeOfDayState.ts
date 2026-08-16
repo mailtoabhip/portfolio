@@ -38,11 +38,11 @@ export function bandT(t: number, a: number, b: number): number {
 // ---- Shared day/night values (single source of truth) ----
 // Night values match the colors already in Road.tsx/Forest.tsx/
 // Experience.tsx exactly, so day mode is additive, not a re-tune.
-export const SKY = { night: "#050608", day: "#bcdcee" };
+export const SKY = { night: "#101c38", day: "#bcdcee" };
 export const FOG_NEAR = { night: 8, day: 40 };
 export const FOG_FAR = { night: 60, day: 220 };
-export const AMBIENT = { night: 0.03, day: 0.7 };
-export const AMBIENT_COLOR = { night: "#ffffff", day: "#fff3e2" };
+export const AMBIENT = { night: 0.11, day: 0.7 };
+export const AMBIENT_COLOR = { night: "#93a8d1", day: "#fff3e2" };
 export const SUN_LIGHT_COLOR = "#fff1d6";
 export const SUN_LIGHT_INTENSITY = 1.15;
 

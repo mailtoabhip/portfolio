@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Cab from "@/components/three/Cab";
-import PaperStack from "@/components/three/PaperStack";
 import Headlights from "@/components/three/Headlights";
 import CameraRig from "@/components/three/CameraRig";
 import { input } from "@/lib/controls";
@@ -49,7 +48,6 @@ export default function Truck() {
   return (
     <group ref={group}>
       <Cab />
-      <PaperStack />
       <Headlights />
       <CameraRig />
     </group>

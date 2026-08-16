@@ -3,24 +3,28 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { useNightRun } from "@/lib/store";
 import { input } from "@/lib/controls";
+import { CLAY_ACCENT_CYAN, CLAY_ACCENT_AMBER } from "@/lib/clayMaterials";
+import CabInterior from "@/components/three/CabInterior";
+import Tablet from "@/components/three/Tablet";
+import PhoneStand from "@/components/three/PhoneStand";
 
 /**
- * Placeholder low-poly truck cab — deliberately kept in DARKNESS.
- * The cab reads as: one small warm map-light pool catching the top
- * half of the steering wheel + faint screen glow. Deep shadows hide
- * the primitive geometry (§8: mood from lighting, not geometry).
+ * Truck cab: claymorphic dash/console/vents/seats (CabInterior) inside
+ * a still-dark structural shell — the outer walls/pillars/roof stay in
+ * the original near-black palette (mood from lighting, not geometry),
+ * while the surfaces the driver actually interacts with get real
+ * color, rounding, and detail.
  *
  * TODO(asset): swap for a free CC0 low-poly truck-interior glTF.
  * Camera sits at [0, 1.4, 0] in the driver's seat, looking down -Z.
  * Right-hand drive (Indian truck).
  */
 
-const SHELL = "#08090c"; // near-black cab shell
-const DASH = "#0e1013";
+const SHELL = "#08090c"; // near-black cab shell (structure only)
 const WHEEL = "#23262c"; // dark leather-ish rim — catches the map light
-const TRIM = "#15181d";
 
 /**
  * Truck steering wheel modeled after the reference photo:
@@ -29,6 +33,10 @@ const TRIM = "#15181d";
  */
 function SteeringWheel() {
   const spinner = useRef<THREE.Group>(null);
+  // Refine rather than replace: same wheel, same dark leather color,
+  // just the center pad picked up the baked-bevel treatment so it's
+  // visually consistent with the newly decorated cab around it.
+  const padGeo = useMemo(() => new RoundedBoxGeometry(0.24, 0.15, 0.055, 3, 0.035), []);
 
   useFrame((_, rawDelta) => {
     const s = spinner.current;
@@ -49,10 +57,9 @@ function SteeringWheel() {
           <torusGeometry args={[R, 0.03, 20, 56]} />
           <meshStandardMaterial color={WHEEL} roughness={0.5} metalness={0.05} />
         </mesh>
-        {/* Center pad — wide horn pad like the reference */}
-        <mesh position={[0, -0.01, 0]}>
-          <boxGeometry args={[0.24, 0.15, 0.055]} />
-          <meshStandardMaterial color={WHEEL} roughness={0.6} />
+        {/* Center pad — wide horn pad like the reference, now rounded */}
+        <mesh position={[0, -0.01, 0]} geometry={padGeo}>
+          <meshStandardMaterial color={WHEEL} roughness={0.5} />
         </mesh>
         {/* Upper spokes to ~10 and ~2 o'clock */}
         {[1, -1].map((side) => (
@@ -79,7 +86,7 @@ function SteeringWheel() {
         {/* Tiny diamond badge on the pad */}
         <mesh position={[0, 0.01, 0.029]} rotation={[0, 0, Math.PI / 4]}>
           <planeGeometry args={[0.035, 0.035]} />
-          <meshStandardMaterial color={TRIM} roughness={0.4} metalness={0.3} />
+          <meshStandardMaterial color={CLAY_ACCENT_AMBER} roughness={0.4} metalness={0.3} />
         </mesh>
       </group>
       {/* Column behind the rim (doesn't spin) */}
@@ -102,23 +109,34 @@ export default function Cab() {
     return t;
   }, []);
 
+  const trimBezelGeo = useMemo(
+    () => new RoundedBoxGeometry(0.52, 0.16, 0.07, 3, 0.03),
+    []
+  );
+  const consoleBezelGeo = useMemo(
+    () => new RoundedBoxGeometry(0.34, 0.2, 0.07, 3, 0.03),
+    []
+  );
+  const windshieldTrimGeo = useMemo(
+    () => new RoundedBoxGeometry(2.7, 0.06, 0.34, 3, 0.025),
+    []
+  );
+
   return (
     <group>
       {/* ================= DASHBOARD ================= */}
-      <mesh position={[-0.5, 0.78, -1.3]} rotation={[-0.18, 0, 0]}>
-        <boxGeometry args={[2.7, 0.34, 0.6]} />
-        <meshStandardMaterial color={DASH} roughness={0.9} />
-      </mesh>
-      <mesh position={[-0.5, 0.95, -1.42]} rotation={[-0.35, 0, 0]}>
-        <boxGeometry args={[2.7, 0.06, 0.34]} />
-        <meshStandardMaterial color={TRIM} roughness={0.9} />
+      {/* The dash slab itself, door recesses, console, vents, gear
+          shifter and seats all live in CabInterior (merged, static,
+          clay-tan) — this file keeps only the things that light up or
+          move: screens, bezels, the wheel. */}
+      <mesh geometry={windshieldTrimGeo} position={[-0.5, 0.95, -1.42]} rotation={[-0.35, 0, 0]}>
+        <meshStandardMaterial color={CLAY_ACCENT_CYAN} roughness={0.4} />
       </mesh>
       {/* Instrument cluster: a slim binnacle box ON the dash, screen
           face flush on its front (nothing floating, nothing blocking) */}
       <group position={[0, 0.96, -1.22]} rotation={[-0.18, 0, 0]}>
-        <mesh>
-          <boxGeometry args={[0.52, 0.16, 0.07]} />
-          <meshStandardMaterial color={DASH} roughness={0.9} />
+        <mesh geometry={trimBezelGeo}>
+          <meshStandardMaterial color="#1d2126" roughness={0.5} />
         </mesh>
         <mesh position={[0, 0, 0.037]}>
           <planeGeometry args={[0.44, 0.11]} />
@@ -131,9 +149,8 @@ export default function Cab() {
       </group>
       {/* Center infotainment: console box + flush screen (RHD: left of driver) */}
       <group position={[-0.85, 0.9, -1.24]} rotation={[-0.1, 0.3, 0]}>
-        <mesh>
-          <boxGeometry args={[0.34, 0.2, 0.07]} />
-          <meshStandardMaterial color={DASH} roughness={0.9} />
+        <mesh geometry={consoleBezelGeo}>
+          <meshStandardMaterial color="#1d2126" roughness={0.5} />
         </mesh>
         <mesh position={[0, 0, 0.037]}>
           <planeGeometry args={[0.27, 0.15]} />
@@ -146,6 +163,9 @@ export default function Cab() {
       </group>
 
       <SteeringWheel />
+      <CabInterior />
+      <Tablet />
+      <PhoneStand />
 
       {/* ================= CABIN SHELL (near-black) ================= */}
       <mesh position={[-0.5, 2.45, -0.4]}>

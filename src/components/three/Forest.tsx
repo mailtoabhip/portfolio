@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useNightRun } from "@/lib/store";
 import { drive } from "@/lib/driveState";
 import { input } from "@/lib/controls";
 import { timeOfDayState, bandT, TRUNK_COLOR, CANOPY_COLORS } from "@/lib/timeOfDayState";
+import { applyFresnelRim } from "@/lib/clayMaterials";
 
 /**
  * The moving world. The truck never moves — the world slides toward
@@ -74,6 +75,46 @@ export default function Forest() {
     []
   );
 
+  const rimUniforms = useRef<ReturnType<typeof applyFresnelRim>[]>([]);
+
+  // Night rim/fresnel highlight on the canopy — one shared shader
+  // utility (also used by clay hero objects), gated to near-zero
+  // intensity outside of night/tier-2 rather than swapped materials.
+  useEffect(() => {
+    const mats = [tier0Mat.current, tier1Mat.current, tier2Mat.current];
+    rimUniforms.current = mats.map((m) =>
+      m ? applyFresnelRim(m, { color: "#93a8d1", power: 2.4, intensity: 0 }) : null
+    ).filter(Boolean) as ReturnType<typeof applyFresnelRim>[];
+  }, []);
+
+  // BUG FIX 1 — trees invisible during "name"/"igniting": the frame
+  // loop below early-returns on `dz === 0` (true before the truck ever
+  // moves), which skipped the *initial* instance-matrix seed along
+  // with the per-frame recycle update, leaving every instance at its
+  // default identity matrix (all trees stacked at the origin). Seed
+  // once on mount, independent of speed/phase.
+  useEffect(() => {
+    const tMesh = trunks.current;
+    const tierMeshes = [tier0.current, tier1.current, tier2.current];
+    if (!tMesh || tierMeshes.some((m) => !m)) return;
+    for (let i = 0; i < TREE_COUNT; i++) {
+      const tree = trees[i];
+      dummy.position.set(tree.x, tree.s * 1.1, tree.z);
+      dummy.scale.set(tree.s, tree.s, tree.s);
+      dummy.rotation.set(0, tree.rot, 0);
+      dummy.updateMatrix();
+      tMesh.setMatrixAt(i, dummy.matrix);
+      for (let j = 0; j < TIERS.length; j++) {
+        dummy.position.set(tree.x, tree.s * TIERS[j][0], tree.z);
+        dummy.updateMatrix();
+        tierMeshes[j]!.setMatrixAt(i, dummy.matrix);
+      }
+    }
+    tMesh.instanceMatrix.needsUpdate = true;
+    for (const m of tierMeshes) m!.instanceMatrix.needsUpdate = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, 0.1); // guard against tab-switch jumps
     const { phase, speed } = useNightRun.getState();
@@ -105,6 +146,14 @@ export default function Forest() {
     if (tier0Mat.current) tier0Mat.current.color.lerpColors(canopyNight[0], canopyDay[0], groundT);
     if (tier1Mat.current) tier1Mat.current.color.lerpColors(canopyNight[1], canopyDay[1], groundT);
     if (tier2Mat.current) tier2Mat.current.color.lerpColors(canopyNight[2], canopyDay[2], groundT);
+
+    // Rim intensity: only worth the fresnel term at night, and only
+    // at tier 2 (spec: "at tier 1, drop the rim-light term").
+    const nightFactor = 1 - bandT(timeOfDayState.t, 0, 0.35);
+    const rimTarget = quality >= 2 ? 0.4 * nightFactor : 0;
+    for (const u of rimUniforms.current) {
+      if (u) u.uRimIntensity.value = rimTarget;
+    }
 
     const dz = speedRef.current * delta;
     if (dz === 0) return;
@@ -158,9 +207,20 @@ export default function Forest() {
         ))}
       </group>
 
-      {/* Trunks */}
-      <instancedMesh ref={trunks} args={[undefined, undefined, TREE_COUNT]} castShadow={quality > 0}>
-        <cylinderGeometry args={[0.16, 0.26, 2.4, 6]} />
+      {/* Trunks — frustumCulled off (BUG FIX 2): the recycling logic
+          above rewrites instance matrices every frame, but Three only
+          computes an InstancedMesh's culling bounds once from its
+          initial layout, so a stale bound can incorrectly cull
+          instances near the far draw distance. Safe to disable here
+          because recycling already keeps every instance within a
+          known, bounded, road-relative volume every frame. */}
+      <instancedMesh
+        ref={trunks}
+        args={[undefined, undefined, TREE_COUNT]}
+        castShadow={quality > 0}
+        frustumCulled={false}
+      >
+        <cylinderGeometry args={[0.16, 0.26, 2.4, 8]} />
         <meshStandardMaterial ref={trunkMat} color={TRUNK_COLOR.night} roughness={1} />
       </instancedMesh>
 
@@ -175,8 +235,9 @@ export default function Forest() {
           ref={tier.ref}
           args={[undefined, undefined, TREE_COUNT]}
           castShadow={quality > 0}
+          frustumCulled={false}
         >
-          <coneGeometry args={[TIERS[j][1], TIERS[j][2], 7]} />
+          <coneGeometry args={[TIERS[j][1], TIERS[j][2], 9]} />
           <meshStandardMaterial ref={tier.matRef} color={tier.color} roughness={1} />
         </instancedMesh>
       ))}

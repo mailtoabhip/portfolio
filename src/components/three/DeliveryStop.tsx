@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { SHEETS } from "@/lib/destinations";
 import { useNightRun, type Destination } from "@/lib/store";
 import { drive } from "@/lib/driveState";
+import { applyBoxRounding } from "@/lib/shaders/roundedCorner";
+import ContactShadow from "@/components/three/ContactShadow";
 
 /**
  * The road game: one active DROP POINT ahead on the roadside —
@@ -61,6 +63,14 @@ export default function DeliveryStop() {
   const delivered = useNightRun((s) => s.delivered);
 
   const [current, setCurrent] = useState(() => nextUndelivered([]));
+
+  // Crate: shader-based rounding, not real bevel geometry — a
+  // procedural prop, not a one-off hero object worth a RoundedBox swap.
+  const crateGeo = useMemo(() => new THREE.BoxGeometry(0.6, 0.6, 0.6), []);
+  const crateMat = useRef<THREE.MeshStandardMaterial>(null);
+  useEffect(() => {
+    if (crateMat.current) applyBoxRounding(crateMat.current, crateGeo, 0.09);
+  }, [crateGeo]);
 
   const texture = useMemo(() => {
     if (!current) return null;
@@ -131,10 +141,11 @@ export default function DeliveryStop() {
         />
       </mesh>
       {/* The package waiting at the roadside */}
-      <mesh position={[-0.9, 0.3, 0.6]} rotation={[0, 0.4, 0]}>
-        <boxGeometry args={[0.6, 0.6, 0.6]} />
-        <meshStandardMaterial color="#8a6a3e" roughness={0.9} />
+      <mesh position={[-0.9, 0.3, 0.6]} rotation={[0, 0.4, 0]} geometry={crateGeo}>
+        <meshStandardMaterial ref={crateMat} color="#8a6a3e" roughness={0.85} />
       </mesh>
+      <ContactShadow position={[-0.9, 0.02, 0.6]} radius={0.42} opacity={0.5} />
+      <ContactShadow position={[0, 0.02, 0]} radius={0.14} opacity={0.55} />
       {/* Warm pool of light marking the stop zone */}
       <pointLight
         position={[-0.6, 2.2, 0.4]}
