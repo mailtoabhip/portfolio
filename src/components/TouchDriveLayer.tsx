@@ -27,6 +27,13 @@ export default function TouchDriveLayer() {
   const [glows, setGlows] = useState<Glow[]>([]);
   const activeTouches = useRef(0);
   const nextGlowId = useRef(0);
+  // Touch detection differs between server and client render: mount
+  // after hydration to avoid a hydration mismatch on phones.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     return () => setTouchThrottle(false);
@@ -39,7 +46,7 @@ export default function TouchDriveLayer() {
     }
   }, [phase]);
 
-  if (!isTouchDevice) return null;
+  if (!mounted || !isTouchDevice) return null;
 
   const engage = (x: number, y: number) => {
     activeTouches.current += 1;

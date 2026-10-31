@@ -8,6 +8,8 @@ import Forest from "@/components/three/Forest";
 import SkySystem from "@/components/three/SkySystem";
 import SkyDome from "@/components/three/SkyDome";
 import CurveWorld from "@/components/three/CurveWorld";
+import GameSim from "@/components/three/GameSim";
+import GameWorld from "@/components/three/GameWorld";
 import { useDrivingControls } from "@/lib/controls";
 import { useNightRun } from "@/lib/store";
 
@@ -40,11 +42,16 @@ export default function Experience() {
         <color attach="background" args={["#14233f"]} />
         <fog attach="fog" args={["#14233f", 8, 90]} />
 
+        {/* GameSim must stay first: it advances the truck before anything reads it */}
+        <GameSim />
         <SkySystem />
         <SkyDome />
         <Truck />
         <Suspense fallback={null}>
           <Road />
+        </Suspense>
+        <Suspense fallback={null}>
+          <GameWorld />
         </Suspense>
         <Forest />
         <CurveWorld />

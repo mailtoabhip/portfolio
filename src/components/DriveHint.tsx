@@ -92,7 +92,7 @@ export default function DriveHint() {
       ) : (
         <p className="font-mono text-[11px] tracking-[0.35em] uppercase text-neutral-400">
           <span className="text-neutral-100">W</span> drive ·{" "}
-          <span className="text-neutral-100">S</span> brake ·{" "}
+          <span className="text-neutral-100">S</span> brake / reverse ·{" "}
           <span className="text-neutral-100">A D</span> steer
         </p>
       )}

@@ -4,6 +4,7 @@ import DriveHint from "@/components/DriveHint";
 import TabletOS from "@/components/TabletOS";
 import PhoneCard from "@/components/PhoneCard";
 import CelestialToggle from "@/components/CelestialToggle";
+import GameHud from "@/components/GameHud";
 import TouchDriveLayer from "@/components/TouchDriveLayer";
 import TouchSteerFallback from "@/components/TouchSteerFallback";
 import RecalibrateTilt from "@/components/RecalibrateTilt";
@@ -20,6 +21,7 @@ export default function Home() {
       <DriveHint />
       <TabletOS />
       <PhoneCard />
+      <GameHud />
       <CelestialToggle />
       <RecalibrateTilt />
       <TouchSteerFallback />

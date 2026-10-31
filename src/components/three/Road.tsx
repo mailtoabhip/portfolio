@@ -129,8 +129,8 @@ export default function Road() {
   const mainMat = useRef<THREE.MeshStandardMaterial>(null);
   const oppMat = useRef<THREE.MeshStandardMaterial>(null);
 
-  useFrame((_, rawDelta) => {
-    const dz = drive.speed * Math.min(rawDelta, 0.1);
+  useFrame(() => {
+    const dz = drive.dz;
     if (dz) {
       const v = dz / TILE_LEN;
       for (const t of [mainMap, mainMask, oppMap, oppMask, medianMap, vergeL, vergeR]) {
