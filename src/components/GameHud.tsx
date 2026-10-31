@@ -53,6 +53,7 @@ function Ring({ value, label }: { value: number; label: string }) {
 
 export default function GameHud() {
   const phase = useNightRun((s) => s.phase);
+  const openTablet = useNightRun((s) => s.openTablet);
   const g = useGame();
   const [banner, setBanner] = useState(false);
   // Client-only: touch detection and the saved best score differ from
@@ -159,10 +160,7 @@ export default function GameHud() {
 
       {/* ---- Idle: start button ---- */}
       {g.job === "idle" && (
-        <div
-          className="fixed left-1/2 z-40 -translate-x-1/2 flex flex-col items-center gap-1.5"
-          style={{ bottom: "max(84px, calc(env(safe-area-inset-bottom) + 76px))" }}
-        >
+        <div className="fixed bottom-[168px] left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-[84px]">
           <button
             onClick={() => sendCommand("start")}
             className="rounded-full bg-[#ffb21f] px-6 py-3 text-base font-bold text-black shadow-[0_12px_30px_-8px_rgba(255,178,31,0.7)] transition-transform hover:scale-105 active:scale-95"
@@ -204,6 +202,20 @@ export default function GameHud() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ---- Portfolio: always one tap away (same as tapping the tablet) ---- */}
+      {g.job !== "late" && (
+        <button
+          onClick={openTablet}
+          className={`${pill} fixed z-40 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[rgba(10,14,20,0.8)]`}
+          style={{
+            right: "max(20px, calc(env(safe-area-inset-right) + 12px))",
+            bottom: "max(96px, calc(env(safe-area-inset-bottom) + 88px))",
+          }}
+        >
+          <span aria-hidden>🗂️</span> Portfolio
+        </button>
       )}
 
       {/* ---- Touch: hold-to-reverse ---- */}
