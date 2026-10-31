@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 import { drive } from "@/lib/driveState";
@@ -10,7 +10,6 @@ import {
   sim,
   useGame,
   activeSite,
-  VEHICLES,
   VEHICLE_TYPES,
   LANES,
   ISLAND_X,
@@ -23,20 +22,19 @@ import {
   LAYBY_LEFT,
   LAYBY_BEFORE,
   LAYBY_AFTER,
-  type VehicleType,
   type Plaza,
   type Site,
 } from "@/lib/game";
 import { MAIN_LEFT, MAIN_RIGHT } from "@/lib/highway";
+import { createVehicleGeometry } from "@/lib/vehicleModels";
 
 /**
  * Everything the delivery game puts on the road: traffic, toll
  * plazas and pickup/drop lay-bys. Positions come from `sim` (road
  * coordinate s → world z = -(s - dist)); this file only draws.
  *
- * Vehicles are "paper boxes": a box per car whose faces carry the
- * rear / side / front art with alpha cut-outs, so they read as solid
- * toy cars from behind, alongside and head-on.
+ * Traffic uses shared solid toy-vehicle meshes with fully modeled roofs,
+ * cabins, cargo bodies, windows and wheels, lit by the world lighting.
  */
 
 const BASE = typeof window === "undefined" ? "" : window.location.pathname.replace(/\/$/, "");
@@ -57,38 +55,20 @@ function stdMat(opts: THREE.MeshStandardMaterialParameters) {
 
 // ---------------------------------------------------------------- traffic
 function Traffic() {
-  const files = VEHICLE_TYPES.flatMap((t) => [G(`veh_${t}_rear.webp`), G(`veh_${t}_side.webp`), G(`veh_${t}_front.webp`)]);
-  const texes = useLoader(THREE.TextureLoader, files);
-
   const kit = useMemo(() => {
-    const hidden = new THREE.MeshBasicMaterial({ visible: false });
-    const geos = {} as Record<VehicleType, THREE.BoxGeometry>;
-    const mats = {} as Record<VehicleType, THREE.Material[]>;
-    const all: THREE.MeshStandardMaterial[] = [];
-    VEHICLE_TYPES.forEach((t, i) => {
-      const [rear, side, front] = texes.slice(i * 3, i * 3 + 3).map(srgb);
-      const sideFlip = side.clone();
-      sideFlip.wrapS = THREE.RepeatWrapping;
-      sideFlip.repeat.x = -1;
-      sideFlip.offset.x = 1;
-      const spec = VEHICLES[t];
-      geos[t] = new THREE.BoxGeometry(spec.W, spec.H, spec.L);
-      const mk = (map: THREE.Texture) => {
-        const m = stdMat({ map, alphaTest: 0.5, emissive: "#ffffff", emissiveMap: map, emissiveIntensity: 0 });
-        all.push(m);
-        return m;
-      };
-      // Box face order: +x, -x, +y, -y, +z, -z. Cars face -z.
-      mats[t] = [mk(side), mk(sideFlip), hidden, hidden, mk(rear), mk(front)];
-    });
-    return { geos, mats, all };
-  }, [texes]);
+    const geos = Object.fromEntries(VEHICLE_TYPES.map((type) => [type, createVehicleGeometry(type)]));
+    const material = stdMat({ vertexColors: true, roughness: 0.72, emissive: "#ffffff", emissiveIntensity: 0.025 });
+    return { geos, material };
+  }, []);
 
   const meshes = useRef<(THREE.Mesh | null)[]>([]);
 
+  useEffect(() => () => {
+    Object.values(kit.geos).forEach((geometry) => geometry.dispose());
+    kit.material.dispose();
+  }, [kit]);
+
   useFrame(() => {
-    const night = 1 - bandT(timeOfDayState.t, 0.1, 0.6);
-    for (const m of kit.all) m.emissiveIntensity = 0.16 * night;
     for (let i = 0; i < POOL; i++) {
       const mesh = meshes.current[i];
       if (!mesh) continue;
@@ -99,8 +79,8 @@ function Traffic() {
       }
       mesh.visible = true;
       mesh.geometry = kit.geos[c.type];
-      mesh.material = kit.mats[c.type];
-      mesh.position.set(c.x, VEHICLES[c.type].H / 2 + 0.01, -(c.s - drive.dist));
+      mesh.material = kit.material;
+      mesh.position.set(c.x, 0.01, -(c.s - drive.dist));
       mesh.rotation.y = c.dir === 1 ? c.vx * -0.04 : Math.PI;
     }
   });
@@ -110,11 +90,15 @@ function Traffic() {
       {Array.from({ length: POOL }, (_, i) => (
         <mesh
           key={i}
+          geometry={kit.geos.hatch}
+          material={kit.material}
+          dispose={null}
           ref={(m) => {
             meshes.current[i] = m;
           }}
           visible={false}
           castShadow
+          receiveShadow
           frustumCulled={false}
         />
       ))}
