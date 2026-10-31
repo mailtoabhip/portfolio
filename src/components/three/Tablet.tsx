@@ -44,6 +44,7 @@ export default function Tablet() {
   const phase = useNightRun((s) => s.phase);
   const openTablet = useNightRun((s) => s.openTablet);
   const [hovered, setHovered] = useState(false);
+  const [previewReady, setPreviewReady] = useState(false);
   const lift = useRef<THREE.Group>(null);
 
   const interactive = phase === "cruising";
@@ -59,21 +60,63 @@ export default function Tablet() {
     []
   );
 
+  // Screen shows a live-looking preview of the portfolio homepage
+  // (public/portfolio/preview.jpg) with a small "tap to open" pill.
+  // The old idle canvas stays as the first frame until the image loads.
   const texture = useMemo(() => {
     if (lowTier) return null;
     const tex = new THREE.CanvasTexture(drawIdleScreen());
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
     return tex;
   }, [lowTier]);
+
+  useEffect(() => {
+    if (!texture) return;
+    let cancelled = false;
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => {
+      if (cancelled) return;
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 600;
+      const ctx = c.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      // "Tap to open" pill, bottom-right
+      const label = "TAP TO OPEN  \u2197";
+      ctx.font = "700 22px 'Courier New', monospace";
+      const w = ctx.measureText(label).width + 36;
+      const x = c.width - w - 22;
+      const y = c.height - 58;
+      ctx.fillStyle = "#2B3AFF";
+      ctx.fillRect(x, y, w, 40);
+      ctx.fillStyle = "#ffffff";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x + 18, y + 21);
+      // New size: drop the GPU copy so three re-allocates it.
+      texture.dispose();
+      texture.image = c;
+      texture.needsUpdate = true;
+      setPreviewReady(true);
+    };
+    img.src = `${window.location.pathname.replace(/\/$/, "")}/portfolio/preview.jpg`;
+    return () => {
+      cancelled = true;
+      img.onload = null;
+    };
+  }, [texture]);
 
   const screenMat = useMemo(() => {
     if (lowTier || !texture) {
       return new THREE.MeshBasicMaterial({ color: "#12222c" });
     }
-    const mat = makeScreenMaterial(texture, "#5da8c4");
-    mat.emissiveIntensity = 0.85;
+    // Neutral glow once the page preview is in, so the cream/blue
+    // portfolio colours read true instead of being tinted cyan.
+    const mat = makeScreenMaterial(texture, previewReady ? "#ffffff" : "#5da8c4");
+    mat.emissiveIntensity = previewReady ? 0.92 : 0.85;
     return mat;
-  }, [lowTier, texture]);
+  }, [lowTier, texture, previewReady]);
 
   useFrame((_, rawDelta) => {
     const g = lift.current;
