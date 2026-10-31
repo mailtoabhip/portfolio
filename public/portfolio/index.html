@@ -490,6 +490,28 @@ body.story-open{overflow:hidden}
 }
 @media (prefers-reduced-motion:reduce){.story-ov .ab-deck{transition:none}}
 /* /STORY-OVERLAY */
+/* RESUME-STORY */
+.rs-slide{align-items:center}
+.story-ov .rs-slide{padding:clamp(76px,11cqh,96px) clamp(16px,4cqw,56px) clamp(36px,6cqh,56px)}
+.rs-wrap{display:flex;gap:clamp(20px,4cqw,56px);align-items:center;justify-content:center;width:100%;height:100%;min-height:0}
+.rs-sheet{position:relative;flex:0 0 auto;height:100%;max-height:100%;aspect-ratio:1241/1754;max-width:min(62cqw,100%);background:#fff;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),10px 10px 0 #CCFF00}
+.rs-sheet img{display:block;width:100%;height:100%;object-fit:contain}
+.rs-sheet .hot{position:absolute;display:block;z-index:3}
+.rs-sheet .hot:hover,.rs-sheet .hot:focus-visible{background:rgba(43,58,255,.16);outline:1px solid #2B3AFF}
+.rs-side{flex:1 1 0;min-width:0;max-width:440px;position:relative}
+.rs-side .ab-l{font-size:clamp(26px,5.4cqmin,60px)}
+.rs-art{width:clamp(80px,16cqmin,180px);margin-bottom:10px;animation:abfloat 5s ease-in-out infinite}
+.ab-badge{display:block;width:clamp(64px,14cqmin,150px);height:auto;margin-bottom:clamp(8px,2cqh,18px);animation:abfloat 5s ease-in-out infinite}
+@container (max-width:760px){
+  .rs-wrap{flex-direction:column;align-items:center;justify-content:flex-start;gap:16px;height:auto}
+  .rs-sheet{height:auto;width:100%;max-width:100%}
+  .rs-side{max-width:none;width:100%}
+  .rs-art{display:none}
+  .story-ov .rs-slide{overflow-y:auto;touch-action:pan-y;align-items:flex-start;top:calc(max(10px,env(safe-area-inset-top,0px)) + 62px);padding:8px 18px 32px}
+  .ab-deck[data-reel="resume"] .ab-tip{display:none}
+}
+/* /RESUME-STORY */
+
 
 
 /* GEN-CSS */
@@ -907,24 +929,33 @@ body.story-open{overflow:hidden}
   </div>
 
   <!-- ================= RESUME ================= -->
-  <main id="v-resume" class="page" hidden>
-    <a class="btn out sm back" href="#">← Home</a>
-    <div class="ph">
-      <span class="eyebrow">Resume</span>
-      <h1 class="disp">Resume</h1>
-    </div>
-    <div class="rv">
-      <div class="card sheet"><img src="img/resume.jpg" alt="Abhijeet Purandare's one-page resume"><a class="hot" href="tel:+918999633581" target="_blank" rel="noopener" aria-label="Call" style="left:27.67%;top:5.54%;width:11.39%;height:1.7%"></a><a class="hot" href="mailto:abhijeet.designmail@gmail.com" target="_blank" rel="noopener" aria-label="Email" style="left:41.35%;top:5.54%;width:20.15%;height:1.7%"></a><a class="hot" href="https://www.linkedin.com/in/abhijeetpurandare/" target="_blank" rel="noopener" aria-label="LinkedIn" style="left:63.79%;top:5.54%;width:21.63%;height:1.7%"></a><a class="hot" href="https://www.wearmudra.shop/" target="_blank" rel="noopener" aria-label="Mudra" style="left:7.31%;top:92.75%;width:5.04%;height:1.82%"></a><a class="hot" href="https://foodmedi.co/" target="_blank" rel="noopener" aria-label="FoodMedi.Co" style="left:7.31%;top:94.26%;width:9.73%;height:1.82%"></a><a class="hot" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener" aria-label="FoodMunafa" style="left:7.31%;top:95.77%;width:9.23%;height:1.82%"></a></div>
-      <aside>
-        <div class="card aloe" style="display:flex;flex-direction:column;gap:12px">
-          <span class="eyebrow">Updated Oct 2026</span>
-          <p style="font-size:20px;font-weight:500;line-height:1.3">One page, PDF</p>
-          <a class="btn" href="Abhijeet_Purandare_Resume.pdf" target="_blank" rel="noopener" style="align-self:flex-start">Open PDF ↗</a>
+  <div id="v-resume" class="story-ov" hidden>
+    <div class="ab-deck" data-reel="resume" data-dur="0" tabindex="0" aria-label="Resume">
+      <div class="ab-bars" aria-hidden="true"><i><b></b></i></div>
+      <div class="ab-top">
+        <div class="ab-who"><img src="img/abhijeet.jpg" alt=""><b>Abhijeet</b><span>Resume</span></div>
+        <button class="ab-pause" type="button" aria-label="Pause story" hidden>❙❙</button>
+        <button class="ab-close" type="button" aria-label="Close resume">✕</button>
+      </div>
+      <section class="ab-slide rs-slide" data-bg="dark" aria-label="Resume">
+        <div class="rs-wrap">
+          <div class="rs-sheet"><img src="img/resume.jpg" alt="Abhijeet Purandare's one-page resume"><a class="hot" href="tel:+918999633581" target="_blank" rel="noopener" aria-label="Call" style="left:27.67%;top:5.54%;width:11.39%;height:1.7%"></a><a class="hot" href="mailto:abhijeet.designmail@gmail.com" target="_blank" rel="noopener" aria-label="Email" style="left:41.35%;top:5.54%;width:20.15%;height:1.7%"></a><a class="hot" href="https://www.linkedin.com/in/abhijeetpurandare/" target="_blank" rel="noopener" aria-label="LinkedIn" style="left:63.79%;top:5.54%;width:21.63%;height:1.7%"></a><a class="hot" href="https://www.wearmudra.shop/" target="_blank" rel="noopener" aria-label="Mudra" style="left:7.31%;top:92.75%;width:5.04%;height:1.82%"></a><a class="hot" href="https://foodmedi.co/" target="_blank" rel="noopener" aria-label="FoodMedi.Co" style="left:7.31%;top:94.26%;width:9.73%;height:1.82%"></a><a class="hot" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener" aria-label="FoodMunafa" style="left:7.31%;top:95.77%;width:9.23%;height:1.82%"></a></div>
+          <div class="rs-side">
+            <img class="ab-art rs-art" src="img/about/resume-doc.webp" alt="" onerror="this.remove()">
+            <span class="ab-eyebrow" data-a>Resume · updated Oct 2026</span>
+            <h2 class="ab-l" data-a>One page. <span class="hl-y">Five years.</span></h2>
+            <p class="ab-lead" data-a>B2B, fintech and AI-led product design, from TVS dealerships to Delhivery's fleet apps.</p>
+            <div class="ab-ctas" data-a>
+              <a class="ab-btn y" href="Abhijeet_Purandare_Resume.pdf" target="_blank" rel="noopener">Open PDF ↗</a>
+              <a class="ab-btn" href="Abhijeet_Purandare_Resume.pdf" download>Download</a>
+              <a class="ab-btn" href="#contact">Contact me</a>
+            </div>
+          </div>
         </div>
-        <a class="btn out" href="#contact" style="justify-content:center">Contact me</a>
-      </aside>
+      </section>
+      <p class="ab-tip" aria-hidden="true">Drag down or tap ✕ to close · links on the resume are clickable</p>
     </div>
-  </main>
+  </div>
 
   <!-- ================= CONTACT ================= -->
   <div id="v-contact" class="story-ov" hidden>
@@ -943,6 +974,7 @@ body.story-open{overflow:hidden}
     <p class="ab-lead" data-a>Let's build connections that feel like heartfelt talks. Pick whatever's easiest for you.</p>
   </div></section><section class="ab-slide" data-bg="blue" aria-label="Email">
   <div class="ab-col">
+    <img class="ab-art ab-badge" src="img/about/contact-mail.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>Email · fastest reply</span>
     <h2 class="ab-l ab-mail" data-a><code id="email">abhijeet.designmail@gmail.com</code></h2>
     <div class="ab-ctas" data-a>
@@ -951,22 +983,26 @@ body.story-open{overflow:hidden}
     </div>
   </div></section><section class="ab-slide" data-bg="yellow" aria-label="Phone">
   <div class="ab-col">
+    <img class="ab-art ab-badge" src="img/about/contact-phone.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>Phone</span>
     <h2 class="ab-xl" data-a>+91 89996<br>33581</h2>
     <div class="ab-ctas" data-a><a class="ab-btn dk" href="tel:+918999633581">Call me</a></div>
   </div></section><section class="ab-slide" data-bg="paper" aria-label="LinkedIn">
   <div class="ab-col">
+    <img class="ab-art ab-badge" src="img/about/contact-network.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>LinkedIn</span>
     <h2 class="ab-l" data-a>Work updates, design thoughts and <mark>case notes</mark>.</h2>
     <div class="ab-ctas" data-a><a class="ab-btn bl" href="https://www.linkedin.com/in/abhijeetpurandare/" target="_blank" rel="noopener">Open LinkedIn ↗</a></div>
   </div></section><section class="ab-slide" data-bg="magenta" aria-label="Instagram">
   <div class="ab-col">
+    <img class="ab-art ab-badge" src="img/about/contact-gallery.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>Instagram</span>
     <h2 class="ab-xl" data-a>@uxpected<br>.abhi</h2>
     <p class="ab-lead" data-a>Design bits, photos and the occasional short film.</p>
     <div class="ab-ctas" data-a><a class="ab-btn y" href="https://www.instagram.com/uxpected.abhi" target="_blank" rel="noopener">Open Instagram ↗</a></div>
   </div></section><section class="ab-slide" data-bg="dark" aria-label="Resume">
   <div class="ab-end">
+    <img class="ab-art ab-badge" src="img/about/contact-pin.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>Based in Bengaluru, India</span>
     <h2 class="ab-xl" data-a>Want the <span class="hl-y">full picture?</span></h2>
     <div class="ab-ctas" data-a>
@@ -1729,7 +1765,7 @@ body.story-open{overflow:hidden}
   function route(){
     var h=location.hash.replace('#','');
     if(views.indexOf(h)<0) h='home';
-    var story=(h==='about'||h==='contact');
+    var story=(h==='about'||h==='contact'||h==='resume');
     var base=story?'home':h;
     views.forEach(function(v){document.getElementById('v-'+v).hidden=!(v===base||v===h);});
     nav.hidden=(base==='home');
@@ -1747,11 +1783,12 @@ body.story-open{overflow:hidden}
     var slides=[].slice.call(deck.querySelectorAll('.ab-slide'));
     var bars=[].slice.call(deck.querySelectorAll('.ab-bars b'));
     var pbtn=deck.querySelector('.ab-pause'), cbtn=deck.querySelector('.ab-close');
-    var DUR=15000, i=0, n=slides.length, t=0, last=0, raf=0, running=false;
+    var DUR=+(deck.getAttribute('data-dur')||15000), i=0, n=slides.length, t=0, last=0, raf=0, running=false;
+    var timed=DUR>0;
     var userPaused=false, holdPaused=false, dragging=false;
     function paused(){return userPaused||holdPaused||dragging||document.hidden;}
     function paint(){
-      bars.forEach(function(b,j){b.style.width=(j<i?100:j>i?0:Math.min(100,t/DUR*100))+'%';});
+      bars.forEach(function(b,j){b.style.width=(!timed||j<i?100:j>i?0:Math.min(100,t/DUR*100))+'%';});
       deck.classList.toggle('paused',userPaused||holdPaused);
       pbtn.textContent=userPaused?'▶':'❙❙'; pbtn.setAttribute('aria-label',userPaused?'Play story':'Pause story');
     }
@@ -1765,7 +1802,7 @@ body.story-open{overflow:hidden}
     function loop(now){
       if(!running) return;
       var dt=Math.min(100,now-(last||now)); last=now;
-      if(!paused()){t+=dt; if(t>=DUR){show(i+1); if(!running) return;}}
+      if(timed&&!paused()){t+=dt; if(t>=DUR){show(i+1); if(!running) return;}}
       paint(); raf=requestAnimationFrame(loop);
     }
     function open(){
@@ -1793,7 +1830,7 @@ body.story-open{overflow:hidden}
     deck.addEventListener('pointermove',function(e){
       if(!st) return;
       var dx=e.clientX-st.x, dy=e.clientY-st.y;
-      if(!dragging && dy>12 && dy>Math.abs(dx)*1.2){dragging=true;clearTimeout(holdT);deck.classList.add('dragging');}
+      var sc=slides[i]; if(!dragging && dy>12 && dy>Math.abs(dx)*1.2 && !(sc && sc.scrollTop>0)){dragging=true;clearTimeout(holdT);deck.classList.add('dragging');}
       if(Math.abs(dx)>12||Math.abs(dy)>12) moved=true;
       if(dragging){
         var d=Math.max(0,dy), k=Math.min(1,d/(innerHeight*0.6));
@@ -1811,9 +1848,10 @@ body.story-open{overflow:hidden}
         if(dy>Math.min(140,innerHeight*0.18)){close();return;}
         deck.style.transform=''; deck.style.borderRadius=''; ov.style.setProperty('--ov','.72'); paint(); return;
       }
-      if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){seen();show(i+(dx<0?1:-1));return;}
+      if(n>1&&Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){seen();show(i+(dx<0?1:-1));return;}
       if(held||moved){paint();return;}
       seen();
+      if(n<2) return;
       var r=deck.getBoundingClientRect();
       if(e.clientX-r.left<r.width*0.3) show(i-1); else show(i+1);
     }
