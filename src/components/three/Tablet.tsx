@@ -35,7 +35,7 @@ function drawIdleScreen(): HTMLCanvasElement {
   ctx.fillText("◈  TAP TO OPEN", 128, 96);
   ctx.font = "500 10px 'Courier New', monospace";
   ctx.globalAlpha = 0.8;
-  ctx.fillText("waybill · resume · music", 128, 116);
+  ctx.fillText("portfolio · work · resume", 128, 116);
   return c;
 }
 

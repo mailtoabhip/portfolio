@@ -1,0 +1,1713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abhijeet Purandare</title>
+</head>
+<body>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Saira:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: Mudra system. Warm paper ground, hairline 1px grids with square corners, blue ticker band on top; home is a 2x2 grid of tiles with 3D objects. */
+:root{
+  color-scheme:light;
+  --paper:#EDE9E0; --paper-2:#E4DFD4; --fg:#1A1A1A; --ash:#7A756B;
+  --blue:#2B3AFF; --on-blue:#EDE9E0; --magenta:#FF2D78; --on-magenta:#EDE9E0;
+  --line:rgba(26,26,26,.18); --line-strong:rgba(26,26,26,.42);
+  --display:"Saira Stencil One",Impact,"Arial Narrow",sans-serif;
+  --body:"Saira","Helvetica Neue",Arial,sans-serif;
+  --mono:"Space Mono",ui-monospace,"Courier New",monospace;
+  --gut:clamp(16px,4vw,56px);
+  /* aliases used by inline styles */
+  --ink:var(--fg); --shade-50:var(--ash); --shade-60:var(--ash);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+h1,h2,h3{margin:0;text-wrap:balance;font-weight:400}
+p{margin:0}
+.disp{font-family:var(--display);text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.eyebrow,.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);font-weight:400}
+.caption{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
+.wrap{max-width:1400px;margin-inline:auto}
+.muted{color:var(--ash)}
+.r-mirror{display:inline-block;transform:scaleX(-1)}
+
+/* ticker */
+.ticker{background:var(--blue);color:var(--on-blue);overflow:hidden;white-space:nowrap;padding:7px 0;
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+.ticker__track{display:inline-flex;animation:slide 40s linear infinite}
+.ticker span{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;padding-inline:22px;position:relative}
+.ticker span::after{content:"";position:absolute;right:-2px;top:50%;width:4px;height:4px;margin-top:-2px;border-radius:50%;background:currentColor;opacity:.7}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* nav */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;height:72px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:16px}
+.mark{font-family:var(--display);font-size:clamp(20px,2.6vw,28px);text-transform:uppercase;letter-spacing:.03em;text-decoration:none;color:var(--blue)}
+.nav nav{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.nav nav .btn{flex:none}
+@media (max-width:560px){.nav{height:auto;padding-block:12px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:14px 26px;border:1px solid var(--magenta);background:transparent;color:var(--magenta);text-decoration:none;cursor:pointer;min-height:44px;
+  transition:background .2s ease-out,border-color .2s ease-out,color .2s ease-out}
+.btn:hover{background:var(--magenta);color:var(--on-magenta)}
+.btn.out{border-color:var(--line-strong);color:var(--fg)}
+.btn.out:hover{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.btn.sm{padding:8px 13px;font-size:11px;letter-spacing:.14em;min-height:34px}
+
+/* ---------- HOME ---------- */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);
+  height:calc(100vh - 150px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 150px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:420px}
+body:has(#v-home:not([hidden])){padding-block-end:16px}
+.tile{position:relative;display:flex;flex-direction:column;min-height:0;padding:clamp(18px,2.4vw,32px);gap:16px;background:var(--paper);text-decoration:none;transition:background .2s ease-out}
+.tile:hover{background:var(--paper-2)}
+.tile .media{position:relative;flex:1 1 auto;min-height:0;background:var(--paper-2);border:1px solid var(--line);overflow:hidden}
+.tile:hover .media{background:#DAD4C7}
+.tile canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tile .tbody{display:grid;grid-template-columns:1fr auto;align-items:end;gap:4px 16px;flex:none}
+.tile h2{font-family:var(--display);text-transform:uppercase;letter-spacing:.03em;font-size:clamp(20px,2.4vw,32px);line-height:1;grid-column:1}
+.tile p{grid-column:1;font-size:14px;color:var(--ash);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile .pbtn{grid-column:2;grid-row:1/3;align-self:end;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:10px 14px;border:1px solid var(--line-strong);color:var(--fg);white-space:nowrap;transition:background .2s,border-color .2s,color .2s}
+.tile:hover .pbtn{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+@media (max-width:700px){.tile{padding:16px;gap:10px}.tile .tbody{grid-template-columns:1fr}.tile p{display:none}.tile .pbtn{grid-column:1;grid-row:auto;justify-self:start;padding:7px 10px;font-size:10px}.tile h2{font-size:18px}}
+
+/* ---------- inner pages ---------- */
+.page{max-width:1140px;margin-inline:auto}
+.back{margin:8px 0 24px}
+.ph{display:flex;flex-direction:column;gap:14px;padding-block:20px 40px}
+.ph h1{font-family:var(--display);text-transform:uppercase;letter-spacing:.02em;font-size:clamp(36px,6.4vw,72px);line-height:1}
+.ph .lead{font-size:18px;line-height:1.55;max-width:60ch;color:var(--fg)}
+.card{background:var(--paper);border:1px solid var(--line-strong);padding:clamp(18px,3vw,28px);min-width:0}
+.card.aloe{background:var(--blue);border-color:var(--blue)}
+.card.aloe,.card.aloe *{color:var(--on-blue)!important}
+.card.aloe .btn{border-color:var(--on-blue)}
+.card.aloe .btn:hover{background:var(--on-blue);color:var(--blue)!important}
+.card.pist{background:var(--paper-2)}
+
+/* projects */
+.feat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);padding:0;overflow:hidden;text-decoration:none}
+.feat .txt{padding:clamp(18px,3vw,32px);display:flex;flex-direction:column;gap:14px}
+.feat h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(28px,3.6vw,46px);line-height:1}
+.feat .img{background:var(--fg);display:flex;align-items:flex-end;padding:28px 22px 0}
+.feat .img img{width:100%;display:block}
+.feat:hover{border-color:var(--blue)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--line-strong);color:var(--ash)}
+.tag.m{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.plist{margin-top:1px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.plist a{display:flex;flex-direction:column;gap:8px;text-decoration:none;border:0;transition:background .2s}
+.plist a:hover{background:var(--paper-2)}
+.plist a:hover .caption{color:var(--blue)}
+.plist h3{font-family:var(--display);text-transform:uppercase;font-size:22px;letter-spacing:.03em;line-height:1.05}
+.plist .caption{margin-top:auto}
+@media (max-width:800px){.feat{grid-template-columns:1fr}.plist{grid-template-columns:1fr}}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.about-grid .card{border:0}
+.about-grid .wide{grid-column:span 2}
+.stat b{display:block;font-family:var(--display);font-size:52px;line-height:1;color:var(--blue);font-weight:400}
+.tl{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:12px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:0}
+.tl b{font-weight:600}
+.tl span{font-size:14px;color:var(--ash)}
+.tl time{grid-row:1/3;grid-column:2;align-self:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ash)}
+.ai{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.ai li{display:grid;grid-template-columns:32px 1fr;gap:8px}
+.ai li i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--magenta);padding-top:4px}
+blockquote{margin:12px 0 0;font-size:20px;line-height:1.4}
+@media (max-width:860px){.about-grid{grid-template-columns:1fr}.about-grid .wide{grid-column:auto}}
+
+/* resume */
+.rv{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;align-items:start}
+.rv .sheet{padding:0;overflow:hidden;position:relative}
+.rv .sheet img{display:block;width:100%}
+.rv aside{position:sticky;top:20px;display:flex;flex-direction:column;gap:12px}
+.hot{position:absolute;display:block}
+.hot:hover,.hot:focus-visible{background:rgba(43,58,255,.14);outline:1px solid var(--blue)}
+@media (max-width:800px){.rv{grid-template-columns:1fr}.rv aside{position:static;order:-1}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.contact .card{display:flex;flex-direction:column;gap:12px;border:0}
+.contact code{font-family:var(--mono);font-size:16px;user-select:all;word-break:break-all}
+@media (max-width:700px){.contact{grid-template-columns:1fr}}
+
+/* ---------- case study ---------- */
+.cs-hero{display:flex;flex-direction:column;gap:18px;padding-block:20px 36px}
+.cs-hero h1{font-family:var(--display);text-transform:uppercase;font-size:clamp(36px,6.4vw,72px);line-height:1;max-width:20ch}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.meta div{display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--paper);padding:14px 16px}
+.meta b{font-weight:500;font-size:15px}
+.shotband{background:var(--fg);padding:clamp(16px,4vw,44px) clamp(16px,4vw,44px) 0;overflow:hidden}
+.shotband img{display:block;width:100%}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
+.kpis .card{border:0}
+.kpi{display:flex;flex-direction:column;gap:8px}
+.kpi b{font-family:var(--display);font-size:clamp(40px,4.6vw,60px);line-height:1;font-weight:400;color:var(--blue)}
+.kpi p{font-size:14px;color:var(--ash)}
+.src{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash);margin-top:10px}
+.sec{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px 48px;padding-top:80px;margin-top:0}
+.sec>.eyebrow{padding-top:12px;position:sticky;top:20px;align-self:start;color:var(--blue)}
+.sec h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(28px,4.2vw,50px);line-height:1.02;margin-bottom:20px}
+.prose{display:flex;flex-direction:column;gap:16px;max-width:70ch}
+.prose.full{max-width:none}
+.prose p{font-size:17px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.two .card{border:0}
+.two ul{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.two h3{font-family:var(--display);text-transform:uppercase;font-size:24px;letter-spacing:.03em}
+.two p{font-size:15px;color:var(--ash);margin-top:8px}
+.decision{display:flex;flex-direction:column;gap:18px;padding-top:36px;margin-top:36px;border-top:1px solid var(--line)}
+.decision:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.decision h3{font-family:var(--display);text-transform:uppercase;font-size:clamp(20px,2.4vw,28px);letter-spacing:.02em;line-height:1.1}
+.why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.why div{font-size:15px;background:var(--paper);padding:16px}
+.why .eyebrow{display:block;margin-bottom:6px}
+.why .res{background:var(--blue);color:var(--on-blue)}
+.why .res .eyebrow{color:var(--on-blue)}
+figure{margin:0;border:1px solid var(--line-strong);overflow:hidden;background:var(--paper)}
+figure img{display:block;width:100%}
+figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash);padding:10px 14px;border-top:1px solid var(--line)}
+.funnels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.funnels .card{border:0}
+.funnels .wide{grid-column:span 2}
+.funnel{display:flex;flex-direction:column;gap:12px}
+.funnel h3{font-family:var(--display);text-transform:uppercase;font-size:20px;letter-spacing:.03em}
+.frow{display:grid;grid-template-columns:minmax(110px,180px) minmax(0,1fr) 100px;gap:12px;align-items:center;font-size:14px}
+.track{height:22px;background:var(--paper-2);overflow:hidden}
+.bar{height:100%;background:var(--line-strong)}
+.frow.end .bar{background:var(--blue)}
+.frow.key .bar{background:var(--magenta)}
+.n{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.n s{text-decoration:none;color:var(--ash)}
+.fnote{font-size:14px;color:var(--ash);border-top:1px solid var(--line);padding-top:12px}
+.fnote b{color:var(--fg);font-weight:600}
+.next{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.next .card{display:flex;flex-direction:column;gap:8px;border:0}
+.next .eyebrow{color:var(--magenta)}
+.next h3{font-family:var(--display);text-transform:uppercase;font-size:20px;letter-spacing:.03em}
+.next p{font-size:15px;color:var(--ash)}
+.endcta{margin-top:80px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:28px}
+.endcta h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(26px,3.6vw,44px);max-width:20ch;line-height:1.02}
+@media (max-width:900px){
+  .sec{grid-template-columns:1fr;padding-top:56px;gap:8px}
+  .sec>.eyebrow{position:static}
+  .kpis,.meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .why,.next{grid-template-columns:1fr}
+  .funnels{grid-template-columns:1fr}.funnels .wide{grid-column:auto}
+}
+@media (max-width:560px){
+  .two{grid-template-columns:1fr}
+  .frow{grid-template-columns:minmax(0,1fr) 92px}
+  .track{grid-column:1/-1;grid-row:2}
+}
+
+/* home: profile column + 2x2 tiles */
+.home{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px;
+  height:calc(100vh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:520px}
+.home .tiles{height:auto;min-height:0;border:0;margin:0}
+.profile{background:var(--paper);display:flex;flex-direction:column;gap:clamp(14px,2.4vh,24px);padding:clamp(18px,2.4vw,32px);min-height:0;overflow:hidden}
+.profile .photo{width:clamp(96px,11vw,148px);aspect-ratio:1;object-fit:cover;display:block;filter:saturate(1.05)}
+.pinfo{display:flex;flex-direction:column;gap:12px}
+.profile h1{font-size:clamp(34px,4.2vw,64px);color:var(--blue);line-height:.95}
+.pline{font-size:clamp(15px,1.25vw,18px);line-height:1.5;max-width:34ch}
+.pfacts{margin:auto 0 0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.pfacts div{background:var(--paper);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.pfacts dd{margin:0;font-weight:500;font-size:15px}
+@media (max-width:900px){
+  .home{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);height:auto;min-height:calc(100dvh - 32px)}
+  .profile{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:14px}
+  .pinfo{gap:6px}
+  .profile .photo{width:84px}
+  .profile h1{font-size:28px}
+  .pline{grid-column:1/-1;font-size:14px}
+  .pfacts{grid-column:1/-1;grid-template-columns:repeat(4,1fr);margin:0}
+  .pfacts div{padding:8px}
+  .pfacts dd{font-size:12px}
+  .home .tiles{min-height:360px}
+  .gamecta{font-size:10px;padding:8px 10px}
+}
+@media (max-width:480px){.pfacts{grid-template-columns:1fr 1fr}}
+.tile .media{background:transparent!important;border:0!important}
+.about-grid .full{grid-column:1/-1}
+.story{font-size:17px;margin-top:10px;max-width:62ch}
+.big{font-family:var(--display);text-transform:uppercase;font-size:clamp(24px,2.6vw,34px);line-height:1;margin-top:10px;color:var(--blue)}
+.tl.stack li{grid-template-columns:1fr}
+.tl a{text-decoration:none}.tl a:hover b{color:var(--blue)}
+.ai a{color:var(--blue)}
+.quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:12px}
+.quotes .q{border:0;margin:0;padding:18px;background:var(--paper);display:flex;flex-direction:column;gap:12px;justify-content:space-between}
+.quotes blockquote{margin:0;font-size:17px}
+.quotes figcaption{border:0;padding:0}
+@media (max-width:860px){.quotes{grid-template-columns:1fr}}
+.contact{grid-template-columns:repeat(3,minmax(0,1fr))}
+.contact p{font-size:17px}
+@media (max-width:860px){.contact{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.contact{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.tile .media{overflow:visible!important}
+.tile .media img{position:absolute;left:50%;top:50%;height:100%;width:auto;max-width:80%;object-fit:contain;object-position:center;
+  transform:translate(-50%,-50%);transform-origin:center;transition:transform .45s cubic-bezier(.2,.7,.2,1);animation:tfloat 5s ease-in-out infinite}
+.tile:nth-child(2) .media img{animation-delay:-1.2s}.tile:nth-child(3) .media img{animation-delay:-2.4s}.tile:nth-child(4) .media img{animation-delay:-3.6s}
+.tile:hover .media img,.tile:focus-visible .media img{transform:translate(-50%,-50%) scale(1.08) rotate(-3deg);animation-play-state:paused}
+@keyframes tfloat{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@media (prefers-reduced-motion:reduce){.tile .media img{animation:none}}
+.tile .tbody{display:flex!important;justify-content:center;text-align:center;padding-top:4px!important}
+.tile{justify-content:center!important;gap:14px!important}
+.tile .media{flex:0 0 auto!important;height:clamp(96px,15vh,150px)!important}
+.tile h2{text-align:center}
+
+.gamecta{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:4px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 14px;background:#141414;color:var(--on-blue);text-decoration:none;border:1px solid #141414;transition:background .2s,border-color .2s}
+.gamecta:hover{background:var(--magenta);border-color:var(--magenta)}
+.gc-dot{width:8px;height:8px;border-radius:50%;background:#7EE6A1;box-shadow:0 0 0 0 rgba(126,230,161,.6);animation:gcp 2s infinite}
+@keyframes gcp{0%{box-shadow:0 0 0 0 rgba(126,230,161,.6)}70%{box-shadow:0 0 0 8px rgba(126,230,161,0)}100%{box-shadow:0 0 0 0 rgba(126,230,161,0)}}
+@media (prefers-reduced-motion:reduce){.gc-dot{animation:none}}
+/* GEN-CSS */
+.cs-lede{font-size:18px;line-height:1.55;max-width:64ch}
+.grid2,.grid3,.rel{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3,.rel{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid2 .card,.grid3 .card,.rel .card{border:0;display:flex;flex-direction:column;gap:8px}
+.grid2 h3,.grid3 h3,.rel h3{font-family:var(--display);text-transform:uppercase;font-size:20px;letter-spacing:.03em;line-height:1.1}
+.grid2 p,.grid3 p{font-size:15px;color:var(--ash)}
+.rel a{text-decoration:none;transition:background .2s}.rel a:hover{background:var(--paper-2)}.rel a:hover .caption{color:var(--blue)}
+.rel .caption{margin-top:auto}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.steps li{counter-increment:s;background:var(--paper);padding:16px 18px 16px 64px;position:relative;display:flex;flex-direction:column;gap:2px}
+.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:18px;top:16px;font-family:var(--mono);font-size:12px;color:var(--magenta)}
+.steps b{font-weight:600}.steps span{color:var(--ash);font-size:15px}
+.bt{border:1px solid var(--line-strong);display:grid}
+.bt-row{display:grid;grid-template-columns:minmax(0,2fr) 1fr 1fr 1fr;gap:12px;padding:12px 16px;border-top:1px solid var(--line);align-items:center;font-size:15px}
+.bt-row:first-child{border-top:0}
+.bt-head{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);background:var(--paper-2)}
+.bt-row b{font-weight:600}
+.bt .chg{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--blue);text-transform:uppercase}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.mx{background:var(--paper);padding:18px}.mx ul{margin:10px 0 0;padding-left:18px;font-size:15px;display:grid;gap:4px}
+.mx.hot{background:var(--blue)}.mx.hot,.mx.hot *{color:var(--on-blue)}
+.mx.hot2{background:var(--paper-2)}.mx.hot2 .eyebrow{color:var(--blue)}
+.boards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;align-items:start}
+.boards figure{margin:0}.boards img{display:block;width:100%;max-height:720px;object-fit:cover;object-position:top}
+.boards a:hover img,figure a:hover img{opacity:.92}
+.prose .quotes{margin-top:4px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+@media (max-width:860px){.grid3,.rel{grid-template-columns:1fr}.grid2,.matrix{grid-template-columns:1fr}.bt-row{grid-template-columns:1fr 1fr 1fr;}.bt-row span:first-child{grid-column:1/-1;font-weight:500}}
+
+.cs-hero .tag.rt{margin-left:auto;border-color:transparent;padding-inline:0}
+.glance{border:1px solid var(--line-strong);background:var(--paper);margin-bottom:16px}
+.glance-head{background:var(--blue);padding:9px 16px}.glance-head .eyebrow{color:var(--on-blue)}
+.glance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line)}
+.glance-grid div{background:var(--paper);padding:18px;display:flex;flex-direction:column;gap:8px}
+.glance-grid div .eyebrow{color:var(--blue)}
+.glance-grid p{font-size:16px;line-height:1.5}
+.glance-meta{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.glance-meta li{background:var(--paper-2);padding:10px 16px;display:flex;flex-direction:column;gap:2px;font-size:14px;font-weight:500}
+.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none;
+  background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(8px);border-block:1px solid var(--line);padding:10px 0;margin-bottom:16px}
+.jump::-webkit-scrollbar{display:none}
+.jump .eyebrow{flex:none;margin-right:6px}
+.jump button{flex:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--line-strong);padding:6px 10px;cursor:pointer;color:var(--fg);transition:background .2s,color .2s,border-color .2s}
+.jump button:hover,.jump button.on{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.sec{scroll-margin-top:64px}
+.story-block{border-left:3px solid var(--magenta);padding-left:20px;display:flex;flex-direction:column;gap:14px}
+.story-block p{font-size:18px;line-height:1.65}
+.rel p{font-size:15px;color:var(--ash)}
+@media (max-width:860px){.glance-grid{grid-template-columns:1fr}.glance-meta{grid-template-columns:1fr 1fr}}
+/* /GEN-CSS */
+
+/* STORY-CSS */
+.dstory{position:fixed;inset:0;z-index:100;background:var(--sbg,#1A1A1A);color:var(--sfg,#EDE9E0);display:flex;flex-direction:column;overflow:hidden;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);transition:background .4s}
+.dstory[data-bg="paper"]{--sbg:var(--paper);--sfg:var(--fg)}
+.dstory[data-bg="blue"]{--sbg:var(--blue);--sfg:var(--on-blue)}
+.dstory[data-bg="dark"]{--sbg:#141414;--sfg:var(--on-blue)}
+.st-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px max(16px,3vw);position:relative;z-index:3}
+.st-top button,.st-top a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:inherit;background:transparent;border:1px solid currentColor;padding:8px 12px;cursor:pointer;text-decoration:none;opacity:.9}
+.st-top button:hover,.st-top a:hover{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+.st-top-r{display:flex;gap:8px}
+.st-count{font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.7}
+.st-menu{position:absolute;top:58px;left:max(16px,3vw);z-index:6;background:var(--paper);color:var(--fg);border:1px solid var(--fg);min-width:260px;max-width:calc(100vw - 32px)}
+.st-menu button{display:flex;justify-content:space-between;gap:16px;width:100%;text-align:left;font:inherit;font-size:14px;padding:12px 16px;border:0;border-top:1px solid var(--line);background:transparent;cursor:pointer;color:var(--fg)}
+.st-menu button:first-child{border-top:0}
+.st-menu button:hover,.st-menu button.on{background:var(--blue);color:var(--on-blue)}
+.st-menu span{font-family:var(--mono);font-size:11px;opacity:.7}
+.st-stage{flex:1;min-height:0;position:relative;display:flex;justify-content:center;padding:8px max(16px,4vw) 96px;overflow-y:auto}
+.slide{width:100%;max-width:1200px;min-height:100%;margin:auto 0;display:flex;align-items:center;gap:clamp(20px,4vw,56px);animation:stIn .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes stIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.slide.col{flex-direction:column;justify-content:center;text-align:center}
+.st-h{font-family:var(--display);text-transform:uppercase;letter-spacing:.02em;line-height:1;font-size:clamp(24px,min(3.6vw,6vh),50px);max-width:22ch;margin:0 auto}
+.st-hint{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.65}
+/* scene */
+.st-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.st-art img,.st-art svg{width:100%;height:100%;object-fit:cover;display:block}
+.st-art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 60%)}
+.slide.scene{position:relative;height:100%;min-height:0;align-items:flex-start;flex-direction:column;justify-content:center;gap:16px;padding-left:2vw}
+.cap{position:relative;z-index:2;background:#F6EFC4;color:#1A1A1A;border:2px solid #1A1A1A;box-shadow:6px 6px 0 #1A1A1A;padding:14px 20px;font-size:clamp(18px,2.2vw,30px);line-height:1.2;max-width:min(560px,86vw);animation:capIn .35s cubic-bezier(.2,.7,.2,1)}
+.cap:nth-child(3){margin-left:clamp(0px,6vw,90px)}.cap:nth-child(4){margin-left:clamp(0px,12vw,180px)}
+@keyframes capIn{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:none}}
+.st-cta{position:relative;z-index:2;margin-top:8px}
+.st-btn{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;padding:14px 22px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;transition:background .2s,color .2s}
+.st-btn:hover,.st-btn.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+.dstory[data-bg="paper"] .st-btn:hover,.dstory[data-bg="paper"] .st-btn.on{background:var(--blue);border-color:var(--blue)}
+/* steps */
+.st-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:100%;margin-top:28px;text-align:left}
+.st-step{border:2px solid currentColor;padding:18px;min-height:150px;cursor:pointer;background:transparent;color:inherit;font:inherit;text-align:left;display:flex;flex-direction:column;gap:10px;transition:background .2s,transform .2s}
+.st-step i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--magenta)}
+.st-step b{font-family:var(--display);text-transform:uppercase;font-size:22px;font-weight:400}
+.st-step span{opacity:0;transform:translateY(6px);transition:.3s;font-size:15px}
+.st-step.open span{opacity:1;transform:none}
+.st-step.open{background:var(--fg);color:var(--paper)}
+.st-step:hover{transform:translateY(-3px)}
+/* chips */
+.slide.split{align-items:center}
+.st-vis{flex:1 1 50%;min-width:0;height:min(70vh,520px);position:relative;overflow:hidden;border:2px solid currentColor}
+.st-copy{flex:1 1 45%;min-width:0;display:flex;flex-direction:column;gap:18px}
+.bubble{position:absolute;left:6%;top:8%;z-index:2;background:#fff;color:#1A1A1A;border:2px solid #1A1A1A;border-radius:40px;padding:14px 24px;font-size:clamp(20px,2.4vw,32px);font-weight:600}
+.st-chips{display:flex;flex-wrap:wrap;gap:10px}
+.st-chip{font:inherit;font-size:15px;padding:10px 14px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.st-chip.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+.st-note{min-height:96px;font-size:clamp(17px,1.6vw,21px);line-height:1.5;border-left:3px solid var(--magenta);padding-left:16px}
+.st-copy .st-h{margin:0;text-align:left}
+/* choice */
+.st-opts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.st-opt{font:inherit;font-size:clamp(17px,1.6vw,22px);padding:22px 26px;min-width:240px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer;transition:transform .2s,background .2s}
+.st-opt:hover{transform:translateY(-3px)}
+.st-opt.on{background:var(--paper);color:var(--fg)}
+.st-resp{margin-top:22px;max-width:56ch;font-size:clamp(17px,1.6vw,22px);line-height:1.5}
+.st-after{margin-top:14px;font-size:clamp(20px,2vw,28px);line-height:1.35;max-width:30ch}
+/* phones */
+.st-phones{display:flex;gap:clamp(8px,1.6vw,22px);justify-content:center;align-items:flex-start;width:100%;margin-top:10px}
+.st-ph{position:relative;flex:0 1 200px;min-width:0}
+.st-ph img{width:100%;height:min(38vh,380px);object-fit:cover;object-position:top;display:block;border:2px solid currentColor;background:#fff}
+.st-dot{position:absolute;top:-14px;right:-10px;width:34px;height:34px;border-radius:50%;background:var(--magenta);color:#fff;border:2px solid var(--paper);font-family:var(--mono);font-size:13px;cursor:pointer;animation:pulse 2s infinite}
+.st-dot.on{background:var(--blue);animation:none}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,45,120,.5)}50%{box-shadow:0 0 0 10px rgba(255,45,120,0)}}
+.st-phone-note{display:flex;gap:20px;align-items:center;justify-content:center;margin-top:20px;min-height:72px;text-align:left;flex-wrap:wrap}
+.st-phone-note .t{max-width:52ch;font-size:clamp(15px,1.4vw,19px);line-height:1.45}
+.st-phone-note .t b{display:block;font-family:var(--display);text-transform:uppercase;font-weight:400;font-size:20px;margin-bottom:4px}
+.st-res{display:flex;align-items:baseline;gap:10px;border:2px solid currentColor;padding:10px 16px}
+.st-res b{font-family:var(--display);font-size:34px;color:var(--blue);font-weight:400}
+.st-res span{font-size:14px;max-width:18ch;text-align:left}
+/* copy toggle */
+.st-tog{display:inline-flex;border:2px solid currentColor;margin:22px auto 0}
+.st-tog button{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:10px 18px;border:0;background:transparent;color:inherit;cursor:pointer}
+.st-tog button.on{background:var(--fg);color:var(--paper)}
+.dstory[data-bg="dark"] .st-tog button.on{background:var(--paper);color:var(--fg)}
+.st-msg{margin:26px auto 0;background:#fff;color:#1A1A1A;border:2px solid #1A1A1A;max-width:420px;width:100%;padding:22px;text-align:left;box-shadow:8px 8px 0 #1A1A1A}
+.st-msg small{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#7A756B}
+.st-msg p{font-size:20px;margin:10px 0 0}
+.st-msg p.hl{background:#FFF3B0;padding:8px 10px;font-weight:600}
+.st-why{margin-top:22px;font-size:17px;opacity:.85}
+.st-ba{width:100%;display:flex;gap:28px;align-items:center;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.st-ba .vis{width:min(560px,90vw);height:min(46vh,380px);position:relative;border:2px solid currentColor;overflow:hidden;background:#fff}
+.st-ba .vis.ph{display:flex;gap:8px;justify-content:center;background:transparent;border:0}
+.st-ba .vis.ph img{height:100%;width:auto;border:2px solid currentColor;background:#fff}
+.st-ba .txt{max-width:30ch;font-size:clamp(18px,1.8vw,24px);line-height:1.4;text-align:left}
+/* stats */
+.st-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;width:100%;margin-top:30px;text-align:left}
+.st-stat{border-top:3px solid currentColor;padding-top:14px}
+.st-stat b{display:block;font-family:var(--display);font-size:clamp(38px,5vw,72px);font-weight:400;line-height:1}
+.st-stat span{font-size:15px;opacity:.9}
+.st-fun{width:100%;margin-top:30px;display:grid;gap:8px;text-align:left}
+.st-fun div{display:grid;grid-template-columns:150px 1fr 60px;gap:12px;align-items:center;font-size:14px}
+.st-fun i{display:block;height:18px;background:currentColor;opacity:.9;width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.st-fun em{font-style:normal;font-family:var(--mono);font-size:12px;text-align:right}
+.st-src{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-top:14px}
+/* insight */
+.st-ins{max-width:640px;background:#fff;color:#1A1A1A;border-left:6px solid var(--magenta);padding:clamp(22px,3vw,40px);text-align:left;box-shadow:0 20px 50px rgba(0,0,0,.15)}
+.st-ins small{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta)}
+.st-ins h3{font-family:var(--display);text-transform:uppercase;font-size:clamp(28px,3.4vw,44px);font-weight:400;margin:10px 0 14px}
+.st-ins p{font-size:clamp(17px,1.6vw,20px);line-height:1.55;margin:0 0 12px}
+/* layers */
+.st-layers{width:min(760px,100%);margin-top:26px;display:grid;gap:10px}
+.st-svc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.st-svc button{font:inherit;padding:18px 8px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center}
+.st-svc button b{font-family:var(--display);text-transform:uppercase;font-weight:400;font-size:18px}
+.st-svc button span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.st-svc button.live{background:var(--blue);border-color:var(--blue);color:#fff}
+.st-base{border:2px solid currentColor;padding:18px;cursor:pointer;background:var(--fg);color:var(--paper);font:inherit;width:100%}
+.st-base small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;margin-top:6px;opacity:.7}
+.st-lnote{margin-top:16px;max-width:60ch;font-size:clamp(16px,1.5vw,19px);line-height:1.5;min-height:60px}
+/* end */
+.st-end{position:relative;z-index:2;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.st-rev{display:flex;gap:10px;flex-wrap:wrap}
+.st-rev span{background:#fff;color:#1A1A1A;padding:8px 12px;border:2px solid #1A1A1A;font-size:15px}
+.st-les{display:grid;gap:6px;font-size:clamp(16px,1.5vw,19px)}
+.st-les div::before{content:"→ ";color:var(--magenta)}
+/* narrator, nav, progress */
+.st-narrator{position:absolute;left:max(16px,3vw);bottom:28px;z-index:4;display:flex;align-items:flex-end;gap:12px;max-width:min(440px,70vw)}
+.st-narrator img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #fff;flex:none}
+.st-say{background:#fff;color:#1A1A1A;border:2px solid #1A1A1A;border-radius:22px 22px 22px 4px;padding:12px 16px;font-size:15px;line-height:1.35;animation:capIn .35s}
+.st-nav{position:absolute;right:max(16px,3vw);bottom:28px;z-index:4;display:flex;gap:8px}
+.st-nav button{width:52px;height:52px;border:2px solid currentColor;background:transparent;color:inherit;font-size:28px;line-height:1;cursor:pointer}
+.st-nav button:hover{background:var(--magenta);border-color:var(--magenta);color:#fff}
+.st-nav button:disabled{opacity:.3;cursor:default;background:transparent}
+.st-prog{position:absolute;left:0;right:0;bottom:0;height:6px;background:color-mix(in srgb,currentColor 18%,transparent)}
+.st-prog div{height:100%;background:var(--magenta);transition:width .35s}
+.story-launch{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#141414;color:var(--on-blue);padding:clamp(18px,3vw,28px);margin:16px 0}
+.story-launch .t{flex:1 1 280px}
+.story-launch .t b{display:block;font-family:var(--display);text-transform:uppercase;font-size:clamp(22px,2.6vw,32px);font-weight:400;line-height:1.05}
+.story-launch .t span{font-size:15px;opacity:.8}
+.story-launch .btn{border-color:var(--magenta)}
+body.story-open{overflow:hidden}
+@media (max-width:860px){
+  .st-steps,.st-stats{grid-template-columns:1fr 1fr}
+  .slide.split{flex-direction:column}
+  .st-vis{width:100%;height:30vh;flex:none}
+  .st-phones{overflow-x:auto;justify-content:flex-start;padding:16px 4px 4px}
+  .st-ph{flex:0 0 42vw}
+  .st-ph img{height:46vh}
+  .st-svc{grid-template-columns:repeat(3,1fr)}
+  .st-stage{padding-bottom:100px;overflow-y:auto;align-items:flex-start}
+  .slide{height:auto;min-height:100%}
+  .st-narrator{max-width:calc(100vw - 160px)}.st-narrator img{width:48px;height:48px}
+  .st-fun div{grid-template-columns:100px 1fr 44px}
+  .st-text{display:none}
+}
+@media (prefers-reduced-motion:reduce){.slide,.cap,.st-say{animation:none}.st-dot{animation:none}}
+/* /STORY-CSS */
+
+</style>
+
+<div class="wrap">
+  <header class="nav" id="topbar" hidden>
+    <nav aria-label="Main" id="topnav">
+      <a class="btn out sm" href="#">Home</a>
+      <a class="btn out sm" href="#projects">Projects</a>
+      <a class="btn out sm" href="#about">About</a>
+      <a class="btn out sm" href="#resume">Resume</a>
+      <a class="btn sm" href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ================= HOME ================= -->
+  <main id="v-home">
+    <div class="home">
+      <section class="profile" aria-label="About Abhijeet">
+        <img class="photo" src="img/abhijeet.jpg" alt="Portrait of Abhijeet Purandare">
+        <div class="pinfo">
+          <span class="eyebrow">Product Designer · Delhivery</span>
+          <h1 class="disp">Abhijeet Purandare</h1>
+          <p class="pline">I turn complex B2B and fintech workflows into simple, self-serve products, and design AI features people can trust.</p>
+          <a class="gamecta" id="gamecta" href="https://the-night-run.vercel.app/" target="_blank" rel="noopener"><span class="gc-dot" aria-hidden="true"></span>Play the gaming mode: The Night Run ↗</a>
+        </div>
+        <dl class="pfacts">
+          <div><dt class="eyebrow">Experience</dt><dd>5+ years</dd></div>
+          <div><dt class="eyebrow">Based in</dt><dd>Bengaluru</dd></div>
+          <div><dt class="eyebrow">Focus</dt><dd>B2B · Fintech · AI</dd></div>
+          <div><dt class="eyebrow">Certified</dt><dd>HFI-CUA</dd></div>
+        </dl>
+      </section>
+      <div class="tiles">
+        <a class="tile" href="#projects" data-shape="projects">
+          <div class="media"><img src="img/tiles/tile-projects.webp" alt="" width="900" height="900"></div>
+          <div class="tbody"><h2>Projects</h2></div>
+        </a>
+        <a class="tile" href="#about" data-shape="about">
+          <div class="media"><img src="img/tiles/tile-about.webp" alt="" width="900" height="900"></div>
+          <div class="tbody"><h2>About me</h2></div>
+        </a>
+        <a class="tile" href="#resume" data-shape="resume">
+          <div class="media"><img src="img/tiles/tile-resume.webp" alt="" width="900" height="900"></div>
+          <div class="tbody"><h2>Resume</h2></div>
+        </a>
+        <a class="tile" href="#contact" data-shape="contact">
+          <div class="media"><img src="img/tiles/tile-contact.webp" alt="" width="900" height="900"></div>
+          <div class="tbody"><h2>Contact me</h2></div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= PROJECTS ================= -->
+  <main id="v-projects" class="page" hidden>
+    <a class="btn out sm back" href="#">← Home</a>
+    <div class="ph">
+      <span class="eyebrow">Projects</span>
+      <h1 class="disp">Selected work</h1>
+    </div>
+    <a class="card feat" href="#delfin">
+      <div class="txt">
+        <div class="tags"><span class="tag m">Case study</span><span class="tag">Delhivery · 2026</span></div>
+        <h2 class="disp">DelFin: fleet services, fully self-serve</h2>
+        <p class="muted">Truck owners used to buy FASTags over phone calls with paper KYC. Now 80% of orders go from purchase to an active tag inside the app.</p>
+        <span class="btn" style="align-self:flex-start;margin-top:auto">Read case study →</span>
+      </div>
+      <div class="img"><img src="img/onboarding.jpg" alt="DelFin onboarding screens"></div>
+    </a>
+    <div class="plist">
+      <a class="card" href="#tvs"><span class="eyebrow">TVS Motor · Extentia · Series of 3</span><h3>TVS Accelerator: dealership sales</h3><p class="muted">Enquiries 90% faster, quotes 85% faster, and digital logging up from 40% to 80%.</p><span class="caption">Read case study →</span></a>
+      <a class="card" href="#kiosk"><span class="eyebrow">Pennsylvania Dept. of Health · Extentia</span><h3>Birth certificate kiosks</h3><p class="muted">Requests in about 5 minutes instead of up to 25, and abandonment down from 34% to 15%.</p><span class="caption">Read case study →</span></a>
+      <a class="card" href="#audit"><span class="eyebrow">TVS Motor · UX audit</span><h3>TVS iQube &amp; 3W websites</h3><p class="muted">Heuristic audits of two sites, turned into a prioritised roadmap with the client.</p><span class="caption">Read audit →</span></a>
+      <a class="card" href="https://dlv-ap.github.io/app-research/" target="_blank" rel="noopener"><span class="eyebrow">Field research · Delhivery</span><h3>Rider app journey studies</h3><p class="muted">Touchpoints, challenges and opportunities for the LM-FE and Hyperlocal rider apps.</p><span class="caption">View research ↗</span></a>
+      <a class="card" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · SaaS</span><h3>FoodMunafa</h3><p class="muted">POS and QR ordering for Indian restaurants, with UPI payments and a live kitchen dashboard.</p><span class="caption">Visit site ↗</span></a>
+      <a class="card" href="https://www.wearmudra.shop/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · E-commerce</span><h3>Mudra</h3><p class="muted">A live store for graphic tees, with catalogue, product pages, cart and order tracking.</p><span class="caption">Visit site ↗</span></a>
+    </div>
+  </main>
+
+  <!-- ================= ABOUT ================= -->
+  <main id="v-about" class="page" hidden>
+    <a class="btn out sm back" href="#">← Home</a>
+    <div class="ph">
+      <span class="eyebrow">About me</span>
+      <h1 class="disp">I design impactful, simple &amp; awesome digital products.</h1>
+      <p class="lead">I'm a product designer in Bengaluru with 5+ years in UX and UI. I build digital experiences that feel effortless, and for me good design starts with understanding people and solving real problems.</p>
+    </div>
+    <div class="about-grid">
+      <div class="card aloe"><span class="eyebrow">Now</span><p style="font-size:24px;margin-top:10px;line-height:1.2">Product Designer at Delhivery</p><p class="caption" style="margin-top:8px">DelFin, JARVIS, AXLE and fleet management tools on the Tarmac Design System.</p></div>
+      <div class="card stat"><b>5+ yrs</b><span class="caption">in product design</span></div>
+      <div class="card stat"><b>10+</b><span class="caption">complex UX projects led</span></div>
+
+      <div class="card wide"><span class="eyebrow">How it started</span>
+        <p class="story">It began in college with logo design, graphic art and a bit of coding. Then I found UX, and learned the difference between designing to look good and designing so something is easy to use. I've been designing for usability ever since.</p>
+      </div>
+      <div class="card pist"><span class="eyebrow">What I believe</span>
+        <p class="big">Design should be invisible.</p>
+        <p class="caption" style="margin-top:8px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px">Interactions should feel natural, with no extra clicks and no guesswork. That holds for enterprise tools and consumer apps alike, and it only works through close collaboration.</p>
+      </div>
+
+      <div class="card wide"><span class="eyebrow">Working with me</span>
+        <ul class="ai">
+          <li><i>01</i><span>I enjoy hard problems and open discussion, and I treat UX as a way to move the business and the product forward.</span></li>
+          <li><i>02</i><span>I like fast feedback loops: quick reviews, usability tests and A/B tests over long debates.</span></li>
+          <li><i>03</i><span>When the team needs it, I take on mentoring, project management and scrum master duties.</span></li>
+          <li><i>04</i><span>I can explain design decisions clearly to anyone, from engineers to founders to first-time users.</span></li>
+        </ul>
+      </div>
+      <div class="card"><span class="eyebrow">Credentials</span>
+        <ul class="tl">
+          <li><b>HFI-CUA</b><span>Certified Usability Analyst</span><time>2024</time></li>
+          <li><b>B.Tech</b><span>Mechanical Engineering, VIIT Pune</span><time>2022</time></li>
+        </ul>
+      </div>
+
+      <div class="card wide"><span class="eyebrow">Experience</span>
+        <ul class="tl">
+          <li><b>Delhivery</b><span>Product Designer</span><time>2026 – now</time></li>
+          <li><b>Parallel Design Studio</b><span>Product Designer · insurance platform</span><time>2025 – 26</time></li>
+          <li><b>Extentia, a Merkle company</b><span>UX Designer · Star Employee 2022 &amp; 2023</span><time>2022 – 25</time></li>
+          <li><b>Ogee Studio, Santa Clara (remote)</b><span>UX Design Intern · Salesforce &amp; SAP</span><time>2021 – 22</time></li>
+          <li><b>Design Consultants Architects</b><span>UX/UI Intern · SaaS learning platform</span><time>2021</time></li>
+        </ul>
+      </div>
+      <div class="card"><span class="eyebrow">I have worked with</span>
+        <ul class="tl">
+          <li><b>Delhivery</b><span>Logistics</span></li>
+          <li><b>ParallelHQ</b><span>Design studio</span></li>
+          <li><b>Extentia Merkle</b><span>Digital agency</span></li>
+          <li><b>TVS Motor</b><span>Automotive</span></li>
+          <li><b>TORM</b><span>Shipping</span></li>
+          <li><b>Fractal Ink</b><span>Design studio</span></li>
+          <li><b>Netnimbus Technologies</b><span>IT services</span></li>
+        </ul>
+      </div>
+
+      <div class="card wide"><span class="eyebrow">How I work with AI</span>
+        <ul class="ai">
+          <li><i>01</i><span>Built about 75% of the AXLE bidding flow with Claude and the Figma MCP, on design-system components, so UX was reviewed in days instead of weeks.</span></li>
+          <li><i>02</i><span>Built a Figma plugin that writes on-brand illustration prompts using only design-system colours, contrast-checked to WCAG 3:1.</span></li>
+          <li><i>03</i><span>Designed an AI assistant that edits support routing rules in plain language, with a person approving every change.</span></li>
+          <li><i>04</i><span>Designed and built three live products end to end with AI: <a href="https://www.wearmudra.shop/" target="_blank" rel="noopener">Mudra</a>, <a href="https://foodmedi.co/" target="_blank" rel="noopener">FoodMedi.Co</a> and <a href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener">FoodMunafa</a>.</span></li>
+        </ul>
+      </div>
+      <div class="card"><span class="eyebrow">Beyond work</span>
+        <ul class="tl">
+          <li><b>Photography</b><span>and video editing</span></li>
+          <li><b>Writing</b><span>short-film scripts</span></li>
+          <li><b>Fitness</b><span>rope skipping and running</span></li>
+          <li><b>Cooking</b><span>experimenting with recipes</span></li>
+          <li><b>Travel</b><span>planning the next trip</span></li>
+        </ul>
+      </div>
+
+      <div class="card wide"><span class="eyebrow">Explorations</span>
+        <p class="caption" style="margin-top:6px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px">Branding, T-shirt design and more, alongside product work.</p>
+        <ul class="tl">
+          <li><b>Catering service</b><span>Brand identity, Thane</span></li>
+          <li><b>Nutritionist</b><span>Personal branding logo</span></li>
+          <li><b>VIIT Pune</b><span>Technical event branding</span></li>
+          <li><b>Proton Projects</b><span>IT services company, Pune</span></li>
+        </ul>
+      </div>
+      <div class="card"><span class="eyebrow">My thoughts</span>
+        <ul class="tl stack">
+          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_kodak-nokia-two-giants-that-dominated-activity-7301836156025946113-Tz-7" target="_blank" rel="noopener"><b>When great products fail ↗</b></a><span>Kodak, Nokia and why innovation isn't enough</span></li>
+          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_look-down-at-your-keyboard-ever-wondered-activity-7302908248699846656-mK1T" target="_blank" rel="noopener"><b>The QWERTY trap ↗</b></a><span>Why inefficient designs stick around</span></li>
+          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_ever-opened-an-app-for-the-first-time-and-activity-7301285564689838081-p09e" target="_blank" rel="noopener"><b>Design that feels like home ↗</b></a><span>Experiences users connect with instantly</span></li>
+        </ul>
+      </div>
+
+      <div class="card full"><span class="eyebrow">What colleagues say</span>
+        <div class="quotes">
+          <figure class="q"><blockquote>“Abhijeet is a detail-oriented designer who carefully considers every use case to create well-rounded solutions.”</blockquote><figcaption>Avid Kadam · Senior UX Lead, Fractal Ink Design Studio</figcaption></figure>
+          <figure class="q"><blockquote>“Abhijeet is a proactive and energetic designer who brings enthusiasm to every project.”</blockquote><figcaption>Rohan Nikam · UX Lead, Extentia Merkle</figcaption></figure>
+          <figure class="q"><blockquote>“I had the opportunity to work with Abhijeet on a project and was truly impressed by his UX design skills.”</blockquote><figcaption>Vikas Jadhav · Tech Lead, Extentia Merkle</figcaption></figure>
+          <figure class="q"><blockquote>“As a UX Lead, I have worked with Abhijeet on client pitches and observed his contributions to various projects.”</blockquote><figcaption>Aditee Gaikwad · UX Lead, Extentia Merkle</figcaption></figure>
+          <figure class="q"><blockquote>“I've had the pleasure of working with Abhijeet Purandare and am truly impressed by his expertise as a UX designer.”</blockquote><figcaption>Shantanu Khoraskar · Founder, Netnimbus Technologies</figcaption></figure>
+          <figure class="q"><blockquote>“I had the pleasure of working with Abhijeet on a B2C website project.”</blockquote><figcaption>Pranav Pendharkar · Assistant Manager, Design, TORM</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= RESUME ================= -->
+  <main id="v-resume" class="page" hidden>
+    <a class="btn out sm back" href="#">← Home</a>
+    <div class="ph">
+      <span class="eyebrow">Resume</span>
+      <h1 class="disp">Resume</h1>
+    </div>
+    <div class="rv">
+      <div class="card sheet"><img src="img/resume.jpg" alt="Abhijeet Purandare's one-page resume"><a class="hot" href="tel:+918999633581" target="_blank" rel="noopener" aria-label="Call" style="left:27.87%;top:5.59%;width:10.99%;height:1.6%"></a><a class="hot" href="mailto:abhijeet.designmail@gmail.com" target="_blank" rel="noopener" aria-label="Email" style="left:41.550000000000004%;top:5.59%;width:19.75%;height:1.6%"></a><a class="hot" href="https://www.linkedin.com/in/abhijeetpurandare/" target="_blank" rel="noopener" aria-label="LinkedIn" style="left:63.99000000000001%;top:5.59%;width:21.23%;height:1.6%"></a><a class="hot" href="https://www.wearmudra.shop/" target="_blank" rel="noopener" aria-label="Mudra" style="left:7.3100000000000005%;top:92.8%;width:5.04%;height:1.72%"></a><a class="hot" href="https://foodmedi.co/" target="_blank" rel="noopener" aria-label="FoodMedi.Co" style="left:7.3100000000000005%;top:94.31%;width:9.73%;height:1.72%"></a><a class="hot" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener" aria-label="FoodMunafa" style="left:7.3100000000000005%;top:95.82%;width:9.23%;height:1.72%"></a></div>
+      <aside>
+        <div class="card aloe" style="display:flex;flex-direction:column;gap:12px">
+          <span class="eyebrow">Updated Oct 2026</span>
+          <p style="font-size:20px;font-weight:500;line-height:1.3">One page, PDF</p>
+          <a class="btn" href="Abhijeet_Purandare_Resume.pdf" target="_blank" rel="noopener" style="align-self:flex-start">Open PDF ↗</a>
+        </div>
+        <a class="btn out" href="#contact" style="justify-content:center">Contact me</a>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ================= CONTACT ================= -->
+  <main id="v-contact" class="page" hidden>
+    <a class="btn out sm back" href="#">← Home</a>
+    <div class="ph">
+      <span class="eyebrow">Reach out to me</span>
+      <h1 class="disp">Let's build connections that feel like heartfelt talks.</h1>
+    </div>
+    <div class="contact">
+      <div class="card aloe"><span class="eyebrow">Email</span><code id="email">abhijeet.designmail@gmail.com</code><button class="btn" id="copy" type="button" style="align-self:flex-start">Copy email</button></div>
+      <div class="card"><span class="eyebrow">Phone</span><code>+91-8999633581</code><a class="btn out" href="tel:+918999633581" style="align-self:flex-start">Call</a></div>
+      <div class="card"><span class="eyebrow">LinkedIn</span><p>Abhijeet Purandare</p><a class="btn out" href="https://www.linkedin.com/in/abhijeetpurandare/" target="_blank" rel="noopener" style="align-self:flex-start">Open LinkedIn ↗</a></div>
+      <div class="card"><span class="eyebrow">Instagram</span><p>@uxpected.abhi</p><a class="btn out" href="https://www.instagram.com/uxpected.abhi" target="_blank" rel="noopener" style="align-self:flex-start">Open Instagram ↗</a></div>
+      <div class="card"><span class="eyebrow">Resume</span><p>One page, updated October 2026</p><a class="btn out" href="#resume" style="align-self:flex-start">View resume</a></div>
+      <div class="card"><span class="eyebrow">Based in</span><p>Bengaluru, India</p></div>
+    </div>
+  </main>
+  <!-- GEN-START -->
+  <!-- ================= DELFIN ================= -->
+  <main id="v-delfin" class="page" hidden>
+    <a class="btn out sm back" href="#projects">← Projects</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">Flagship case study</span><span class="tag">Delhivery · 2026 · Live</span><span class="tag rt">5 min read</span></div>
+      <h1 class="disp">Taking fleet services off the phone and into the app</h1>
+      <p class="cs-lede">DelFin is Delhivery's app for truck owners and drivers. When I joined, almost everything it was meant to do still happened over phone calls and paper. This is the story of turning it into a product people can use on their own, and what the live data says about it.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Fleet owners bought FASTags and GPS trackers through sales calls and paper KYC, then waited with no status. Every order needed a person on our side.</p></div><div><span class="eyebrow">What I did</span><p>Designed DelFin end to end: onboarding, FASTag purchase and tracking, GPS, wallet, GST invoices and refunds, on the Tarmac Design System.</p></div><div><span class="eyebrow">The outcome</span><p>80% of FASTag orders now reach an active tag inside the app, in about 6 hours, with no sales call. 98% of new users finish setup.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>Product designer, end to end</li><li><span class="eyebrow">Team</span>With product and engineering</li><li><span class="eyebrow">Timeline</span>Mar 2026 – present</li><li><span class="eyebrow">Platform</span>Android app</li></ul>
+    </section>
+    <div class="story-launch"><div class="t"><b>Prefer a story to a scroll?</b><span>An interactive, slide-by-slide version of this case study. About 3 minutes, with a few choices along the way.</span></div><button class="btn" data-story type="button">▶ Play the interactive story</button></div>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="delfin--story">The story</button><button type="button" data-goto="delfin--users">Who it's for</button><button type="button" data-goto="delfin--scope">What I designed</button><button type="button" data-goto="delfin--dives">Deep dives</button><button type="button" data-goto="delfin--impact">Impact</button><button type="button" data-goto="delfin--more">Beyond FASTag</button><button type="button" data-goto="delfin--learned">Reflection</button></nav>
+    <div class="shotband"><img src="img/fastag-kyc.jpg" alt="FASTag purchase screens: document upload, KYC and wallet top-up"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>80.4%</b><p>of FASTag orders reach an active tag inside the app</p></div><div class="card kpi"><b>~6h</b><p>average time from order to an active tag, with no sales call</p></div><div class="card kpi"><b>98.3%</b><p>of new users who see role selection complete it</p></div><div class="card kpi"><b>99.6%</b><p>complete the tag handover step once it appears</p></div></div>
+    <p class="src">Live data, Google Analytics funnels, 1–7 Oct 2026</p>
+    <section class="sec" id="delfin--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">A truck stuck at a toll is a business problem</h2>
+        <div class="story-block"><p>Picture a fleet owner with a handful of trucks on the highway. Every truck needs a FASTag to pass a toll plaza. If a tag is inactive, blacklisted or low on balance, the truck stops, the driver calls the owner, and the owner calls whoever sold them the tag.</p><p>When I joined Delhivery, that was DelFin's reality. Buying a tag meant a call with sales, KYC documents sent separately, and then waiting with no idea where the order was. Problems surfaced at the toll, not before it.</p><p>For the business, the same picture looked like this: every single order needed a salesperson or a support agent. Growth meant hiring. My brief was to make DelFin something owners and drivers could use on their own.</p></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin--users" data-nav="Who it's for">
+      <span class="eyebrow">Who it's for</span>
+      <div class="prose">
+        <h2 class="disp">Two users sharing one truck</h2>
+        <p>Owners and drivers share the same vehicles but need very different things, so the app has to know who it's talking to from the first screen.</p><div class="grid2"><div class="card"><span class="eyebrow">Fleet owner</span><h3>Pays and manages</h3><p>Owns one or more trucks. Buys tags and trackers, needs GST invoices to claim tax credit, and wants to see every vehicle at once.</p></div><div class="card"><span class="eyebrow">Driver</span><h3>Drives and recharges</h3><p>Drives someone else's truck. Needs the tag to work at the toll and an easy way to recharge, without seeing the owner's money or documents.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin--scope" data-nav="What I designed">
+      <span class="eyebrow">What I designed</span>
+      <div class="prose">
+        <h2 class="disp">Five areas, one consistent set of patterns</h2>
+        <p>I designed DelFin end to end, working with the PM and engineers on scope and trade-offs. Rather than five separate features, I treated it as a few reusable patterns: buy, verify, pay, track, and fix. Once those worked for FASTag, every other service could start from them.</p><div class="grid3"><div class="card"><span class="eyebrow">Onboarding</span><h3>Get to the right first screen</h3><p>Benefit-led tutorial, phone OTP and an owner-or-driver split. <em>Live.</em></p></div><div class="card"><span class="eyebrow">FASTag</span><h3>Buy and track a tag</h3><p>RC auto-fill, KYC with fallbacks, itemised payment, live activation status. <em>Live.</em></p></div><div class="card"><span class="eyebrow">Money</span><h3>GST, wallet and refunds</h3><p>GSTIN at payment, bulk invoices, self-serve refunds. <em>Designed.</em></p></div><div class="card"><span class="eyebrow">GPS</span><h3>Track the fleet</h3><p>Device purchase, installation booking and a running/idle/stopped dashboard. <em>Live.</em></p></div><div class="card"><span class="eyebrow">Home &amp; consent</span><h3>One place for what needs action</h3><p>Action-led home, role-based profile and clear data-sharing consent with AXLE. <em>Designed.</em></p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin--dives" data-nav="Deep dives">
+      <span class="eyebrow">Deep dives</span>
+      <div class="prose full">
+        <h2 class="disp">Read the parts that matter to you</h2>
+        <p>Each deep dive tells one part of the story in detail, with the decisions, trade-offs and data behind it.</p><div class="rel"><a class="card" href="#delfin-fastag"><span class="eyebrow">Deep dive 1 · Payments &amp; KYC</span><h3>From a sales call to an active FASTag in about 6 hours</h3><p>How a phone-and-paper sale became a self-serve purchase, and why tracking mattered more than checkout.</p><span class="caption">80% of orders reach an active tag →</span></a><a class="card" href="#delfin-onboarding"><span class="eyebrow">Deep dive 2 · Onboarding &amp; data</span><h3>One question, and a 37% drop-off that wasn't one</h3><p>How splitting owners and drivers simplified everything, and how a second funnel saved a needless redesign.</p><span class="caption">98% complete setup →</span></a><a class="card" href="#delfin-money"><span class="eyebrow">Deep dive 3 · Fintech</span><h3>Self-serve GST invoices and refunds</h3><p>Why compliance is a feature in B2B fintech, and how we designed the unhappy path first.</p><span class="caption">18% tax credit, refunds in 2 min →</span></a></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin--impact" data-nav="Impact">
+      <span class="eyebrow">Impact</span>
+      <div class="prose full">
+        <h2 class="disp">What the live data shows</h2>
+        <p>One week of real usage after launch. The purchase flow works. Recharge and the wallet are where people still drop off, which is exactly where the next round of work goes.</p><div class="funnels"><div class="card funnel wide"><h3>FASTag purchase: order to active tag</h3><div class="frow"><span>Order created</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">840 <s>100%</s></span></div><div class="frow key"><span>Payment done</span><div class="track"><div class="bar" style="width:84.3%"></div></div><span class="n">708 <s>84.3%</s></span></div><div class="frow"><span>Tag handover done</span><div class="track"><div class="bar" style="width:83.5%"></div></div><span class="n">701 <s>83.5%</s></span></div><div class="frow"><span>Activation started</span><div class="track"><div class="bar" style="width:83.1%"></div></div><span class="n">698 <s>83.1%</s></span></div><div class="frow end"><span>Tag active</span><div class="track"><div class="bar" style="width:80.4%"></div></div><span class="n">675 <s>80.4%</s></span></div><p class="fnote">After payment, almost nobody drops: <b>95% of paid orders become active tags.</b></p></div><div class="card funnel"><h3>Recharge from home</h3><div class="frow"><span>Home screen</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">1,422</span></div><div class="frow"><span>Opened FASTags</span><div class="track"><div class="bar" style="width:67.8%"></div></div><span class="n">964</span></div><div class="frow key"><span>Recharge page</span><div class="track"><div class="bar" style="width:25.2%"></div></div><span class="n">359</span></div><div class="frow end"><span>Recharged</span><div class="track"><div class="bar" style="width:14.1%"></div></div><span class="n">200</span></div><p class="fnote"><b>63% leave the FASTag list</b> without recharging. Recharge needs to sit on each tag.</p></div><div class="card funnel"><h3>Adding money to the wallet</h3><div class="frow"><span>Home screen</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">2,057</span></div><div class="frow"><span>Opened wallet</span><div class="track"><div class="bar" style="width:47.8%"></div></div><span class="n">984</span></div><div class="frow key"><span>Tapped add money</span><div class="track"><div class="bar" style="width:16.4%"></div></div><span class="n">338</span></div><div class="frow end"><span>Money added</span><div class="track"><div class="bar" style="width:11.8%"></div></div><span class="n">243</span></div><p class="fnote">Once people start, <b>72% finish</b>. The drop is before they start.</p></div></div><p class="src">Google Analytics funnel explorations, 1–7 Oct 2026. Bar length is the share of each funnel's first step.</p>
+      </div>
+    </section>
+    <section class="sec" id="delfin--more" data-nav="Beyond FASTag">
+      <span class="eyebrow">Beyond FASTag</span>
+      <div class="prose full">
+        <h2 class="disp">The same patterns, applied to GPS and the home screen</h2>
+        <figure><a href="img/gps-buy.jpg" target="_blank" rel="noopener"><img src="img/gps-buy.jpg" alt="GPS purchase: plan, vehicles, installation address and booking, with no sales call" loading="lazy"></a><figcaption>GPS purchase: plan, vehicles, installation address and booking, with no sales call</figcaption></figure><figure><a href="img/gps-track.jpg" target="_blank" rel="noopener"><img src="img/gps-track.jpg" alt="Fleet tracking: running, idle and stopped filters, map and per-vehicle analytics" loading="lazy"></a><figcaption>Fleet tracking: running, idle and stopped filters, map and per-vehicle analytics</figcaption></figure><figure><a href="img/home-consent.jpg" target="_blank" rel="noopener"><img src="img/home-consent.jpg" alt="Action-led home and clear consent controls for sharing data with AXLE" loading="lazy"></a><figcaption>Action-led home and clear consent controls for sharing data with AXLE</figcaption></figure>
+      </div>
+    </section>
+    <section class="sec" id="delfin--learned" data-nav="Reflection">
+      <span class="eyebrow">Reflection</span>
+      <div class="prose">
+        <h2 class="disp">What I learned</h2>
+        <p><strong>Design the status, not just the purchase.</strong> Buying is one moment; keeping the tag working is every day after. Live status and "action needed" cards are what make the app worth reopening.</p><p><strong>Check a number before you act on it.</strong> The onboarding "drop-off" looked urgent until a second funnel explained it.</p><p><strong>Solve it once as a pattern.</strong> Purchase, KYC, payment and status became reusable patterns, so GPS started from them instead of a blank page.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Start with the deep dive that matters most to you</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#delfin-fastag">FASTag deep dive →</a><a class="btn out" href="#projects">All projects</a></div>
+    </div>
+  </main>
+
+  <!-- ================= DELFIN-FASTAG ================= -->
+  <main id="v-delfin-fastag" class="page" hidden>
+    <a class="btn out sm back" href="#delfin">← DelFin overview</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">DelFin · Deep dive 1</span><span class="tag">Payments &amp; KYC · Live</span><span class="tag rt">5 min read</span></div>
+      <h1 class="disp">From a sales call to an active FASTag in about 6 hours</h1>
+      <p class="cs-lede">Buying a FASTag used to take a phone call, paper KYC and a lot of waiting. I redesigned the whole journey, from choosing a bank to the tag working on the truck. The surprise: the biggest wins came after the payment screen, not before it.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Owners bought tags over the phone, sent KYC on paper, paid separately and then had no idea where their order was.</p></div><div><span class="eyebrow">What I did</span><p>Designed the in-app purchase (RC auto-fill, KYC with fallbacks, itemised payment) and the post-purchase journey (handover, activation, action-needed alerts).</p></div><div><span class="eyebrow">The outcome</span><p>80.4% of orders reach an active tag, 95% of paid ones do, in about 6 hours on average, with no sales call.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>Product designer, end to end</li><li><span class="eyebrow">Team</span>With product and engineering</li><li><span class="eyebrow">Timeline</span>2026</li><li><span class="eyebrow">Status</span>Live</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="delfin-fastag--story">The story</button><button type="button" data-goto="delfin-fastag--before">Before &amp; after</button><button type="button" data-goto="delfin-fastag--constraints">Constraints</button><button type="button" data-goto="delfin-fastag--decisions">Key decisions</button><button type="button" data-goto="delfin-fastag--impact">Impact</button><button type="button" data-goto="delfin-fastag--next">What's next</button><button type="button" data-goto="delfin-fastag--learned">Reflection</button></nav>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>80.4%</b><p>of FASTag orders reach an active tag inside the app</p></div><div class="card kpi"><b>95%</b><p>of paid orders become active tags</p></div><div class="card kpi"><b>~6h</b><p>average time from order to an active tag</p></div><div class="card kpi"><b>99.6%</b><p>complete the tag handover once it appears</p></div></div>
+    <p class="src">Live data, Google Analytics funnels, 1–7 Oct 2026</p>
+    <section class="sec" id="delfin-fastag--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">"Where is my tag?"</h2>
+        <div class="story-block"><p>If you asked a fleet owner what buying a FASTag from us felt like, the honest answer was: a phone call, then paperwork, then silence.</p><p>They'd call sales, share their RC and KYC documents separately, pay, and wait. Nothing told them whether the tag had been issued, shipped or activated. Often the first sign of a problem was a truck stuck at a toll plaza.</p><p>So I didn't start with the checkout. I started by asking what an owner actually needs to stop worrying: knowing the tag is coming, knowing it's working, and hearing about problems before the toll does.</p></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--before" data-nav="Before &amp; after">
+      <span class="eyebrow">Before &amp; after</span>
+      <div class="prose">
+        <h2 class="disp">What changed for the owner</h2>
+        <div class="two"><div class="card"><span class="eyebrow">Before</span><ul><li>Owner calls sales to place an order</li><li>KYC documents shared on paper or chat</li><li>Payment and GST handled separately</li><li>No status after the order</li><li>Tag problems found at the toll</li></ul></div><div class="card aloe"><span class="eyebrow">After</span><ul><li>Order inside the app in a few steps</li><li>Vehicle details fetched from the RC</li><li>KYC, payment and GST in one flow</li><li>Live status from payment to activation</li><li>Problems flagged on the home screen first</li></ul></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--constraints" data-nav="Constraints">
+      <span class="eyebrow">Constraints</span>
+      <div class="prose">
+        <h2 class="disp">Why this was harder than a checkout</h2>
+        <p>A FASTag isn't an ordinary product. A bank issues it, it's tied to one vehicle's registration, and someone physically sticks it on a truck. Each of those shaped the design.</p><div class="grid2"><div class="card"><span class="eyebrow">Two banks</span><h3>Different KYC rules</h3><p>Tags are issued by partner banks (IDFC First and Axis), each with its own KYC requirements.</p></div><div class="card"><span class="eyebrow">Vehicle data</span><h3>Trust the RC, not typing</h3><p>Vehicle class, owner and registration must match the RC exactly, or the bank rejects the tag.</p></div><div class="card"><span class="eyebrow">Physical step</span><h3>A tag changes hands</h3><p>Every order ends with a physical handover and a tag stuck on a truck, which the app has to track.</p></div><div class="card"><span class="eyebrow">Real fleets</span><h3>Messy edge cases</h3><p>Owners bring tags bought elsewhere, have several customer IDs and manage many vehicles at once.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--decisions" data-nav="Key decisions">
+      <span class="eyebrow">Key decisions</span>
+      <div class="prose full">
+        <h2 class="disp">Five decisions that shaped the flow</h2>
+        <article class="decision">
+          <h3>1. Let the RC fill in the form</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Owners typed vehicle details by hand, and small mistakes caused bank rejections.</div>
+            <div><span class="eyebrow">What I did</span>Upload the RC once; the app fetches the vehicle details and asks the owner to confirm, not type.</div>
+            <div class="res"><span class="eyebrow">Result</span>Fewer fields to type, and data the bank accepts first time.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>2. Give KYC a fallback, not a dead end</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>If one KYC method failed, the only option was calling sales.</div>
+            <div><span class="eyebrow">What I did</span>Pick the bank first, then a checklist of KYC methods (OTP, Aadhaar, biometric, PAN), with "Alternative KYC methods" one tap away.</div>
+            <div class="res"><span class="eyebrow">Result</span>KYC no longer ends in a call to sales when one method fails.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>3. Show every rupee before payment</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Owners didn't trust a total they couldn't break down.</div>
+            <div><span class="eyebrow">What I did</span>An itemised summary: tag, vehicle, minimum balance, platform fee with GST, issuance fee and grand total, with GSTIN on the same screen.</div>
+            <div class="res"><span class="eyebrow">Result</span><strong>84%</strong> of created orders are paid.</div>
+          </div>
+          <figure><a href="img/fastag-pay.jpg" target="_blank" rel="noopener"><img src="img/fastag-pay.jpg" alt="Photo guidance, barcode scan and an itemised payment summary" loading="lazy"></a><figcaption>Photo guidance, barcode scan and an itemised payment summary</figcaption></figure>
+        </article><article class="decision">
+          <h3>4. Treat activation as part of the purchase</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>After paying, owners couldn't tell if their tag was coming or working.</div>
+            <div><span class="eyebrow">What I did</span>Track the order through handover and activation with live status; the delivery agent scans the tag barcode in the app.</div>
+            <div class="res"><span class="eyebrow">Result</span><strong>95%</strong> of paid orders end with an active tag, in about 6 hours.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>5. Surface problems before the toll</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Owners found out about low balance or blacklisting only when a truck was stopped.</div>
+            <div><span class="eyebrow">What I did</span>"Action needed" cards on the home screen, tags split into active and inactive, and problem tags pinned to the top.</div>
+            <div class="res"><span class="eyebrow">Result</span><strong>68%</strong> of users on the home screen open their FASTags.</div>
+          </div>
+          <figure><a href="img/fastag-home.jpg" target="_blank" rel="noopener"><img src="img/fastag-home.jpg" alt="Home with pending actions, and the FASTag list with balance per tag" loading="lazy"></a><figcaption>Home with pending actions, and the FASTag list with balance per tag</figcaption></figure>
+        </article>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--impact" data-nav="Impact">
+      <span class="eyebrow">Impact</span>
+      <div class="prose full">
+        <h2 class="disp">What the live data shows</h2>
+        <p>Here's the honest picture from one week of live usage. Once someone pays, the flow almost never breaks. The gap is earlier, between creating an order and paying for it.</p><div class="funnels"><div class="card funnel wide"><h3>FASTag purchase: order to active tag</h3><div class="frow"><span>Order created</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">840 <s>100%</s></span></div><div class="frow key"><span>Payment done</span><div class="track"><div class="bar" style="width:84.3%"></div></div><span class="n">708 <s>84.3%</s></span></div><div class="frow"><span>Tag handover done</span><div class="track"><div class="bar" style="width:83.5%"></div></div><span class="n">701 <s>83.5%</s></span></div><div class="frow"><span>Activation started</span><div class="track"><div class="bar" style="width:83.1%"></div></div><span class="n">698 <s>83.1%</s></span></div><div class="frow end"><span>Tag active</span><div class="track"><div class="bar" style="width:80.4%"></div></div><span class="n">675 <s>80.4%</s></span></div><p class="fnote"><b>95% of paid orders become active tags.</b> Average time: 4h 28m to payment, 23m to handover, 1h 12m to activation.</p></div></div><p class="src">Google Analytics funnel exploration, 1–7 Oct 2026.</p>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--next" data-nav="What's next">
+      <span class="eyebrow">What's next</span>
+      <div class="prose full">
+        <h2 class="disp">Closing the 16% gap before payment</h2>
+        <div class="grid3"><div class="card"><span class="eyebrow">Research</span><h3>Talk to owners who stopped</h3><p>Call owners who created an order but did not pay, and watch where they hesitate.</p></div><div class="card"><span class="eyebrow">Design</span><h3>Recharge where people look</h3><p>63% leave the FASTag list without recharging. Put recharge on each tag.</p></div><div class="card"><span class="eyebrow">Measurement</span><h3>Time to first value</h3><p>Track time from install to first active tag as the north-star for new owners.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-fastag--learned" data-nav="Reflection">
+      <span class="eyebrow">Reflection</span>
+      <div class="prose">
+        <h2 class="disp">What I learned</h2>
+        <p><strong>The purchase isn't the product; the working tag is.</strong> Most of the value came from status and activation, not from the buying screens.</p><p><strong>Constraints are design material.</strong> Bank KYC rules looked like blockers until they became a checklist with fallbacks.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Next: how one question fixed onboarding</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#delfin-onboarding">Deep dive 2 →</a><a class="btn out" href="#delfin">DelFin overview</a></div>
+    </div>
+  </main>
+
+  <!-- ================= DELFIN-ONBOARDING ================= -->
+  <main id="v-delfin-onboarding" class="page" hidden>
+    <a class="btn out sm back" href="#delfin">← DelFin overview</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">DelFin · Deep dive 2</span><span class="tag">Onboarding &amp; data · Live</span><span class="tag rt">3 min read</span></div>
+      <h1 class="disp">One question, and a 37% drop-off that wasn't one</h1>
+      <p class="cs-lede">New users didn't know what DelFin was for, and owners and drivers got the same setup. I rebuilt onboarding around one early question. Then the data seemed to say it was failing, and the most useful thing I did was not redesign it.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>An unguided, one-size-fits-all setup for two very different users, and no clear reason to sign up.</p></div><div><span class="eyebrow">What I did</span><p>Benefit-led tutorial, phone OTP with inline consent, an owner-or-driver split, and clear AXLE data-sharing consent. Then I read the funnel carefully.</p></div><div><span class="eyebrow">The outcome</span><p>98.3% complete role selection. A scary "37% drop-off" turned out to be returning users, which saved a redesign.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>Product designer, end to end</li><li><span class="eyebrow">Team</span>With product and engineering</li><li><span class="eyebrow">Timeline</span>2026</li><li><span class="eyebrow">Status</span>Live</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="delfin-onboarding--story">The story</button><button type="button" data-goto="delfin-onboarding--decisions">Key decisions</button><button type="button" data-goto="delfin-onboarding--data">Reading the data</button><button type="button" data-goto="delfin-onboarding--learned">Reflection</button></nav>
+    <div class="shotband"><img src="img/onboarding.jpg" alt="Onboarding tutorial, phone login, role selection and owner details"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>98.3%</b><p>of users who see the role question answer it</p></div><div class="card kpi"><b>89%</b><p>of users who start login complete it</p></div><div class="card kpi"><b>84%</b><p>of users who start login reach the home screen</p></div><div class="card kpi"><b>1,690</b><p>users measured in one week of live data</p></div></div>
+    <p class="src">Live data, Google Analytics funnels, 1–7 Oct 2026</p>
+    <section class="sec" id="delfin-onboarding--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">Same app, two very different people</h2>
+        <div class="story-block"><p>The owner pays for everything and needs GST invoices. The driver just needs the tag to work and should never see the owner's money or documents. Yet both opened DelFin and got exactly the same setup, with no explanation of what the app was even for.</p><p>So the first screen a new user sees now says what DelFin does for them, and the first real question it asks is: are you the owner, or the driver?</p></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-onboarding--decisions" data-nav="Key decisions">
+      <span class="eyebrow">Key decisions</span>
+      <div class="prose full">
+        <h2 class="disp">Four decisions</h2>
+        <article class="decision">
+          <h3>1. Lead with benefits, not features</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>New users didn't know what DelFin offered.</div>
+            <div><span class="eyebrow">What I did</span>A short tutorial with three concrete benefits: instant FASTag activation, a low minimum balance and timely low-balance alerts.</div>
+            <div class="res"><span class="eyebrow">Result</span>Users start login knowing what they get.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>2. Phone OTP, with consent built in</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Sign-up asked for too much too early.</div>
+            <div><span class="eyebrow">What I did</span>Phone number and OTP only, with the privacy policy and terms accepted on the same screen.</div>
+            <div class="res"><span class="eyebrow">Result</span><strong>89%</strong> of users who start login finish it.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>3. Ask "owner or driver?" first</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>One setup for two very different users.</div>
+            <div><span class="eyebrow">What I did</span>Two plain-language choices: "I own one or more vehicles" and "I drive someone else's vehicle". Drivers add the owner's details instead of their own documents.</div>
+            <div class="res"><span class="eyebrow">Result</span><strong>98.3%</strong> answer it; only 1.7% abandon this step.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>4. Make data sharing a clear choice</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Profiles were incomplete and data syncing with AXLE was opaque.</div>
+            <div><span class="eyebrow">What I did</span>An action-led home, role-based profile completion and granular, revocable consent for sharing data with AXLE.</div>
+            <div class="res"><span class="eyebrow">Result</span>Users can see and control what is shared.</div>
+          </div>
+          <figure><a href="img/home-consent.jpg" target="_blank" rel="noopener"><img src="img/home-consent.jpg" alt="Menu, home, settings and data-sharing consent" loading="lazy"></a><figcaption>Menu, home, settings and data-sharing consent</figcaption></figure>
+        </article>
+      </div>
+    </section>
+    <section class="sec" id="delfin-onboarding--data" data-nav="Reading the data">
+      <span class="eyebrow">Reading the data</span>
+      <div class="prose full">
+        <h2 class="disp">The day the data said we'd failed</h2>
+        <div class="story-block"><p>A week after launch, the onboarding funnel showed <strong>37% of users</strong> leaving between login and role selection. On a dashboard, that looks like the biggest leak in the app, and the obvious next step was to redesign role selection.</p><p>Before doing that, I put it next to a second funnel from the same week. <strong>1,422 users reached the home screen, but only 944 ever saw role selection.</strong> Returning users skip setup and go straight home. Most of that 37% never needed the screen at all.</p></div><div class="funnels"><div class="card funnel"><h3>What the onboarding funnel showed</h3><div class="frow"><span>Login page</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">1,690</span></div><div class="frow"><span>Login success</span><div class="track"><div class="bar" style="width:89%"></div></div><span class="n">1,504</span></div><div class="frow key"><span>Role selection shown</span><div class="track"><div class="bar" style="width:55.9%"></div></div><span class="n">944</span></div><div class="frow end"><span>Role selected</span><div class="track"><div class="bar" style="width:54.9%"></div></div><span class="n">928</span></div><p class="fnote">Taken alone, a 37% leak right after login.</p></div><div class="card funnel"><h3>What actually happened</h3><div class="frow"><span>Login page</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">1,690</span></div><div class="frow"><span>Login success</span><div class="track"><div class="bar" style="width:89%"></div></div><span class="n">1,504</span></div><div class="frow end"><span>Reached home</span><div class="track"><div class="bar" style="width:84.1%"></div></div><span class="n">1,422</span></div><p class="fnote"><b>84% reach the home screen.</b> Returning users skip role selection.</p></div></div><p>So the step didn't need a redesign; it already works for 98.3% of the people who see it. The real fix was in measurement: track new and returning users separately, and spend design effort on recharge and the wallet, where the drop-off is real.</p>
+      </div>
+    </section>
+    <section class="sec" id="delfin-onboarding--learned" data-nav="Reflection">
+      <span class="eyebrow">Reflection</span>
+      <div class="prose">
+        <h2 class="disp">What I learned</h2>
+        <p><strong>Check a number before you act on it.</strong> A second funnel saved a redesign of a screen that was working.</p><p><strong>One good question beats a long form.</strong> Splitting by role early made every later screen shorter.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Next: money, tax and trust</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#delfin-money">Deep dive 3 →</a><a class="btn out" href="#delfin">DelFin overview</a></div>
+    </div>
+  </main>
+
+  <!-- ================= DELFIN-MONEY ================= -->
+  <main id="v-delfin-money" class="page" hidden>
+    <a class="btn out sm back" href="#delfin">← DelFin overview</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">DelFin · Deep dive 3</span><span class="tag">Fintech · Designed</span><span class="tag rt">3 min read</span></div>
+      <h1 class="disp">Self-serve GST invoices and refunds for fleet owners</h1>
+      <p class="cs-lede">Fleet owners were quietly overpaying 18% on our fees because they couldn't add a GSTIN, and money in their wallet could only come back through a support ticket. I designed both flows so owners handle tax and refunds themselves.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>No GSTIN support, so no input tax credit. Wallet money stuck without a self-serve refund.</p></div><div><span class="eyebrow">What I did</span><p>GSTIN at payment with PAN auto-fetch and live validation, bulk GST invoices, and self-serve wallet-to-bank refunds with a clear partial-refund case.</p></div><div><span class="eyebrow">The outcome</span><p>Owners can claim 18% input tax credit and raise a refund in under 2 minutes. Wallet top-ups finish 72% of the time once started.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>Product designer, end to end</li><li><span class="eyebrow">Team</span>With product and engineering</li><li><span class="eyebrow">Timeline</span>2026</li><li><span class="eyebrow">Status</span>GST &amp; refunds designed; wallet live</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="delfin-money--story">The story</button><button type="button" data-goto="delfin-money--decisions">Key decisions</button><button type="button" data-goto="delfin-money--measure">How we'll measure it</button><button type="button" data-goto="delfin-money--learned">Reflection</button></nav>
+    <div class="shotband"><img src="img/gst.jpg" alt="Adding a GSTIN at payment, choosing invoice generation and downloading GST invoices"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>18%</b><p>input tax credit owners can claim on DelFin fees</p></div><div class="card kpi"><b><2 min</b><p>to raise a wallet-to-bank refund, no ticket</p></div><div class="card kpi"><b>72%</b><p>of users who start adding money finish it</p></div><div class="card kpi"><b>48%</b><p>of users on the home screen open the wallet</p></div></div>
+    <p class="src">Wallet figures: Google Analytics, 1–7 Oct 2026. GST and refund figures are design targets.</p>
+    <section class="sec" id="delfin-money--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">Money that was stuck, and credit left on the table</h2>
+        <div class="story-block"><p>For a business, a GST invoice isn't paperwork. It's 18% of the fee coming back as input tax credit. Without GSTIN support in the app, every owner paying us was overpaying, and their accountant was emailing support for invoices one by one.</p><p>The wallet had the same shape of problem. Owners topped up to pay for tags and trackers, but the only way to get unused money back was to raise a ticket and wait. Nothing erodes trust in a fintech product faster than money you can't get out.</p></div><div class="two"><div class="card"><span class="eyebrow">Before</span><ul><li>No GSTIN in the app, so no tax credit</li><li>Invoices requested from support, one by one</li><li>Wallet money stuck without a withdrawal option</li><li>Refund status unknown</li></ul></div><div class="card aloe"><span class="eyebrow">After</span><ul><li>GSTIN at payment, auto-fetched from PAN</li><li>Bulk GST invoices by date range</li><li>Refund to bank from wallet history</li><li>Refund amount capped and tracked live</li></ul></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-money--decisions" data-nav="Key decisions">
+      <span class="eyebrow">Key decisions</span>
+      <div class="prose full">
+        <h2 class="disp">Three decisions</h2>
+        <article class="decision">
+          <h3>1. Ask for GSTIN where it pays off</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>A GSTIN field buried in settings would never be found.</div>
+            <div><span class="eyebrow">What I did</span>GSTIN on the payment summary, auto-fetched from PAN, validated live and saved to the profile for next time.</div>
+            <div class="res"><span class="eyebrow">Result</span>Owners claim 18% input tax credit without contacting support.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>2. Invoices in bulk, not one at a time</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Accountants need a month of invoices, not one receipt.</div>
+            <div><span class="eyebrow">What I did</span>Download GST invoices for any date range from Order History.</div>
+            <div class="res"><span class="eyebrow">Result</span>Tax filing no longer depends on a support queue.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>3. Design the unhappy path first</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Wallet money could only come back through a ticket, and edge cases were where trust broke.</div>
+            <div><span class="eyebrow">What I did</span>Start a refund from wallet history, pick a reason and see the refunded amount. When the balance is below the minimum, the app explains the partial refund instead of failing.</div>
+            <div class="res"><span class="eyebrow">Result</span>A refund takes under 2 minutes to raise.</div>
+          </div>
+          <figure><a href="img/refund.jpg" target="_blank" rel="noopener"><img src="img/refund.jpg" alt="Refund request, reason, refunded amount and the partial-refund case" loading="lazy"></a><figcaption>Refund request, reason, refunded amount and the partial-refund case</figcaption></figure>
+        </article>
+      </div>
+    </section>
+    <section class="sec" id="delfin-money--measure" data-nav="How we'll measure it">
+      <span class="eyebrow">How we'll measure it</span>
+      <div class="prose full">
+        <h2 class="disp">The numbers this has to move</h2>
+        <div class="grid3"><div class="card"><span class="eyebrow">Support</span><h3>Fewer tickets</h3><p>GST invoice and refund tickets per 1,000 orders, and refund follow-up queries.</p></div><div class="card"><span class="eyebrow">Adoption</span><h3>Self-serve rate</h3><p>Share of invoices and refunds done in the app, GSTIN adoption, and drop-off at the GST step.</p></div><div class="card"><span class="eyebrow">Quality</span><h3>Fewer errors</h3><p>Invalid or expired GSTINs on invoices, and failed refunds returned to the wallet.</p></div></div><div class="funnels" style="margin-top:16px"><div class="card funnel wide"><h3>Adding money to the wallet (live)</h3><div class="frow"><span>Home screen</span><div class="track"><div class="bar" style="width:100%"></div></div><span class="n">2,057</span></div><div class="frow"><span>Opened wallet</span><div class="track"><div class="bar" style="width:47.8%"></div></div><span class="n">984</span></div><div class="frow key"><span>Tapped add money</span><div class="track"><div class="bar" style="width:16.4%"></div></div><span class="n">338</span></div><div class="frow end"><span>Money added</span><div class="track"><div class="bar" style="width:11.8%"></div></div><span class="n">243</span></div><p class="fnote">Once people start, <b>72% finish</b>. The drop happens before they start, so the next step is making the reason to top up clearer.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="delfin-money--learned" data-nav="Reflection">
+      <span class="eyebrow">Reflection</span>
+      <div class="prose">
+        <h2 class="disp">What I learned</h2>
+        <p><strong>In B2B fintech, compliance is a feature.</strong> GST support is what makes the app usable for a business, not an add-on.</p><p><strong>Design the unhappy path first.</strong> The partial-refund case is where trust is won or lost.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">That's DelFin</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#delfin">DelFin overview →</a><a class="btn out" href="#projects">All projects</a></div>
+    </div>
+  </main>
+
+  <!-- ================= TVS ================= -->
+  <main id="v-tvs" class="page" hidden>
+    <a class="btn out sm back" href="#projects">← Projects</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">Case study series</span><span class="tag">TVS Motor · Extentia</span><span class="tag rt">2 min read</span></div>
+      <h1 class="disp">Making dealership sales software people want to use</h1>
+      <p class="cs-lede">TVS Accelerator is the app TVS Motor dealerships use to run sales, from a customer's first enquiry to delivery. The people it was built for were quietly avoiding it and going back to paper. Our team found out why, and fixed the parts that mattered most.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Sales executives found Accelerator slow, so they wrote enquiries and quotes on paper. Managers lost visibility and sales went untracked.</p></div><div><span class="eyebrow">What I did</span><p>As one of four designers: dealership research, then redesigns of enquiry logging and quotations, tested on real showroom floors.</p></div><div><span class="eyebrow">The outcome</span><p>Enquiries 90% faster, quotes 85% faster, digital logging up from 40% to 80%, and 98% of sales now traced to an enquiry.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer, one of four</li><li><span class="eyebrow">Team</span>4 designers, BA, PM, developers</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Scale</span>480K+ retail customers a year</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="tvs--story">The story</button><button type="button" data-goto="tvs--users">The users</button><button type="button" data-goto="tvs--series">The series</button><button type="button" data-goto="tvs--learned">Reflection</button></nav>
+    <div class="shotband"><img src="img/tvs-banner.jpg" alt="TVS Accelerator screens"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>90%</b><p>faster enquiry logging: 5–10 minutes to about 10 seconds</p></div><div class="card kpi"><b>85%</b><p>faster quotations: 5–7 minutes to under 30 seconds</p></div><div class="card kpi"><b>40→80%</b><p>of enquiries logged digitally instead of on paper</p></div><div class="card kpi"><b>72→98%</b><p>of sales linked to a logged enquiry</p></div></div>
+    <section class="sec" id="tvs--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">A sales tool its users avoided</h2>
+        <div class="story-block"><p>Walk into a busy TVS showroom and watch a sales executive with a customer. They're talking, answering questions, maybe arranging a test ride. What they're not doing is typing into the dealership app.</p><p>That's what we saw on our first dealership visits. Executives jotted names and numbers on paper and typed them in at the end of the day, if they remembered. Quotations came from a printed quotation book. The app existed; people just routed around it.</p><p>That mattered, because Accelerator is the system that turns walk-ins into tracked leads. If an enquiry isn't logged, nobody can follow it up, and nobody can measure what's working.</p></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs--users" data-nav="The users">
+      <span class="eyebrow">The users</span>
+      <div class="prose full">
+        <h2 class="disp">Three roles, three different jobs</h2>
+        <div class="grid3"><div class="card"><span class="eyebrow">Sales executives (DSEs)</span><h3>Sell on the floor</h3><p>Log enquiries, schedule test rides, process bookings and deliveries, usually while a customer waits.</p></div><div class="card"><span class="eyebrow">Branch managers</span><h3>Run the branch</h3><p>Track enquiries, test rides and bookings, and manage team performance.</p></div><div class="card"><span class="eyebrow">Dealer owners</span><h3>See the business</h3><p>Compare performance across dealerships and decide from the data.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs--series" data-nav="The series">
+      <span class="eyebrow">The series</span>
+      <div class="prose full">
+        <h2 class="disp">Three case studies, in the order it happened</h2>
+        <div class="rel"><a class="card" href="#tvs-research"><span class="eyebrow">Case study 1 · Research</span><h3>Uncovering why people avoided the tool</h3><p>Dealer visits, what we found, and how we prioritised with the business.</p><span class="caption">Start here →</span></a><a class="card" href="#tvs-enquiry"><span class="eyebrow">Case study 2 · Quick Enquiry</span><h3>Cutting enquiry time by 90%</h3><p>Splitting a long form into a 10-second first step, without losing data.</p><span class="caption">5–10 min → 10 sec →</span></a><a class="card" href="#tvs-quotes"><span class="eyebrow">Case study 3 · Quotations</span><h3>Replacing the paper quotation book</h3><p>Templates managers control, sent on WhatsApp in under 30 seconds.</p><span class="caption">85% faster →</span></a></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs--learned" data-nav="Reflection">
+      <span class="eyebrow">Reflection</span>
+      <div class="prose">
+        <h2 class="disp">What this project taught me</h2>
+        <p><strong>Business and users wanted different things.</strong> DSEs wanted speed; the business wanted complete data. Every decision needed evidence that it served both.</p><p><strong>No two dealerships work the same way.</strong> Workflows had to be standard enough to track and flexible enough for real showrooms.</p><p><strong>Modernising a live system means working within it.</strong> Some things could not be rebuilt, so the job was meaningful change inside real constraints.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Start with the research</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#tvs-research">Case study 1 →</a><a class="btn out" href="#projects">All projects</a></div>
+    </div>
+  </main>
+
+  <!-- ================= TVS-RESEARCH ================= -->
+  <main id="v-tvs-research" class="page" hidden>
+    <a class="btn out sm back" href="#tvs">← TVS Accelerator</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">TVS Accelerator · Case study 1</span><span class="tag">Research &amp; prioritisation</span><span class="tag rt">2 min read</span></div>
+      <h1 class="disp">Uncovering why sales executives avoided their own sales tool</h1>
+      <p class="cs-lede">Before designing anything, we went to the showroom floor. What we found there, and how we got the business to agree on what to fix first, shaped everything that followed.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Accelerator had low real-world use, but nobody knew exactly why, or which fix would matter most.</p></div><div><span class="eyebrow">What I did</span><p>Dealer visits and interviews with DSEs and managers, synthesis into themes, a findings presentation to TVS, and an impact-vs-effort prioritisation.</p></div><div><span class="eyebrow">The outcome</span><p>A shared, prioritised roadmap with three big bets: Quick Enquiry, digital quotations and a digital delivery checklist.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer, research and synthesis</li><li><span class="eyebrow">Method</span>Dealer visits, interviews, incognito visits</li><li><span class="eyebrow">Cadence</span>Two-week sprints</li><li><span class="eyebrow">Output</span>Prioritised roadmap</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="tvs-research--story">The story</button><button type="button" data-goto="tvs-research--found">What we found</button><button type="button" data-goto="tvs-research--align">Aligning with the business</button><button type="button" data-goto="tvs-research--process">How we worked</button></nav>
+    <div class="shotband"><img src="img/tvs-banner.jpg" alt="TVS Accelerator screens"></div>
+    <section class="sec" id="tvs-research--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">What we saw on the showroom floor</h2>
+        <div class="story-block"><p>Our first visits were to dealerships in Pune and Bangalore. We sat with sales executives and branch managers, and sometimes walked in as customers to see the process first-hand.</p><p>The pattern was the same everywhere. Executives weren't against the app; they were protecting the conversation with the customer. Typing into a long form while someone waits felt rude and slow, so paper won.</p></div><div class="quotes"><figure class="q"><blockquote>“Customers are in a hurry. If I take too long to enter details, they lose patience and walk away.”</blockquote><figcaption>Sales executive</figcaption></figure><figure class="q"><blockquote>“We still use the TVS quotation book. It's just faster.”</blockquote><figcaption>Sales executive</figcaption></figure><figure class="q"><blockquote>“Sometimes the checklist gets misplaced, and we have no record of what was checked before delivery.”</blockquote><figcaption>Sales executive</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-research--found" data-nav="What we found">
+      <span class="eyebrow">What we found</span>
+      <div class="prose">
+        <h2 class="disp">Four problems behind the workarounds</h2>
+        <div class="grid2"><div class="card"><span class="eyebrow">Too many steps</span><h3>Paper first, app later</h3><p>The enquiry form was long and distracting mid-conversation, so DSEs wrote on paper and typed later.</p></div><div class="card"><span class="eyebrow">Workarounds everywhere</span><h3>Registers and Excel</h3><p>Many dealerships still ran on quotation books, registers or Excel because the app felt slow.</p></div><div class="card"><span class="eyebrow">Need for speed</span><h3>Capture now, finish later</h3><p>DSEs asked for a two-step enquiry: basics now, the rest when the customer has left.</p></div><div class="card"><span class="eyebrow">Visibility gaps</span><h3>Managers flying blind</h3><p>Managers couldn't track enquiry status, follow-ups or team performance without clear reports.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-research--align" data-nav="Aligning with the business">
+      <span class="eyebrow">Aligning with the business</span>
+      <div class="prose full">
+        <h2 class="disp">Same problems, different priorities</h2>
+        <p>When we presented to the TVS business team, they agreed with the problems but cared about something different: complete, accurate data for tracking. Speed for DSEs and data for managers looked like a trade-off. Our job was to design so it wasn't one.</p><p>We scored every idea on impact and effort, together.</p><div class="matrix"><div class="mx hot"><span class="eyebrow">Quick wins · high impact, low effort</span><ul><li>Better filters and follow-up visibility</li><li>Remove redundant enquiry fields</li><li>Tooltips and walkthroughs</li></ul></div><div class="mx hot2"><span class="eyebrow">Big bets · high impact, high effort</span><ul><li>Quick Enquiry mode</li><li>Fully digital quotations</li><li>Digital delivery checklist</li></ul></div><div class="mx"><span class="eyebrow">Incremental · medium impact, low effort</span><ul><li>Auto-save and drafts</li><li>Standard DSE training material</li></ul></div><div class="mx"><span class="eyebrow">Parked · low impact, high effort</span><ul><li>AI-driven insights for DSEs</li></ul></div></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-research--process" data-nav="How we worked">
+      <span class="eyebrow">How we worked</span>
+      <div class="prose">
+        <h2 class="disp">Two-week sprints, tested in real showrooms</h2>
+        <ol class="steps"><li><b>Week 1: design</b><span>Wireframes, flows and UI, with developer requests handled in parallel.</span></li><li><b>Week 2: review</b><span>Present to the client and internal teams, then refine.</span></li><li><b>Test in dealerships</b><span>Prototypes tested with sales executives in Pune and Bangalore showrooms.</span></li><li><b>Hand off a sprint ahead</b><span>Design stayed one sprint ahead of development, so nothing waited on design.</span></li></ol>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">See what we built first</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#tvs-enquiry">Case study 2: Quick Enquiry →</a><a class="btn out" href="#tvs">TVS overview</a></div>
+    </div>
+  </main>
+
+  <!-- ================= TVS-ENQUIRY ================= -->
+  <main id="v-tvs-enquiry" class="page" hidden>
+    <a class="btn out sm back" href="#tvs">← TVS Accelerator</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">TVS Accelerator · Case study 2</span><span class="tag">Quick Enquiry · Live</span><span class="tag rt">3 min read</span></div>
+      <h1 class="disp">Cutting enquiry time from 10 minutes to 10 seconds</h1>
+      <p class="cs-lede">Sales executives wrote enquiries on paper because the form took too long to fill in front of a customer. We split it in two: the essentials in seconds, the rest later, with the app making sure 'later' actually happens.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>A long, rigid enquiry form meant DSEs logged leads on paper first, and 27% of enquiries were late or never logged.</p></div><div><span class="eyebrow">What I did</span><p>Designed Quick Enquiry: a 3-field first step, a complete-later flow with nudges, and changes across 8 connected parts of the app.</p></div><div><span class="eyebrow">The outcome</span><p>Logging dropped from 5–10 minutes to about 10 seconds, digital logging rose from 40% to 68%, and 98% of sales now link to an enquiry.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer</li><li><span class="eyebrow">Users</span>Sales executives, branch managers</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Status</span>Live across dealerships</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="tvs-enquiry--story">The story</button><button type="button" data-goto="tvs-enquiry--decisions">Key decisions</button><button type="button" data-goto="tvs-enquiry--design">The design</button><button type="button" data-goto="tvs-enquiry--impact">Impact</button><button type="button" data-goto="tvs-enquiry--next">What came next</button></nav>
+    <div class="shotband"><img src="img/tvs-banner.jpg" alt="TVS Accelerator screens"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>90%</b><p>faster: 5–10 minutes down to about 10 seconds</p></div><div class="card kpi"><b>40→68%</b><p>of enquiries logged digitally</p></div><div class="card kpi"><b>27→<5%</b><p>of enquiries logged late or not at all</p></div><div class="card kpi"><b>72→98%</b><p>of sales linked to a logged enquiry</p></div></div>
+    <section class="sec" id="tvs-enquiry--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">Every missed enquiry is a missed sale</h2>
+        <div class="story-block"><p>Picture a Saturday at a busy showroom. A customer walks in, asks about a scooter, and has ten minutes. The sales executive can either look them in the eye and sell, or look down at a phone and fill in a long form. They chose the customer, and wrote the name on paper.</p><p>Some of those notes made it into Accelerator at the end of the day. Some didn't. Either way, follow-ups slipped and managers couldn't see what was really happening on the floor.</p></div><div class="quotes"><figure class="q"><blockquote>“Entering details while talking to a customer is too distracting. I prefer noting it down and entering it later.”</blockquote><figcaption>Sales executive</figcaption></figure><figure class="q"><blockquote>“If the showroom is busy, I don't have time to type everything out. I just get their name and number.”</blockquote><figcaption>Sales executive</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-enquiry--decisions" data-nav="Key decisions">
+      <span class="eyebrow">Key decisions</span>
+      <div class="prose full">
+        <h2 class="disp">Four decisions</h2>
+        <article class="decision">
+          <h3>1. Ask only for what you need now</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>The form asked for everything up front.</div>
+            <div><span class="eyebrow">What I did</span>We mapped every field and kept only name, phone and vehicle of interest for the first step.</div>
+            <div class="res"><span class="eyebrow">Result</span>An enquiry is logged in about 10 seconds.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>2. Make "complete it later" hard to forget</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>A quick entry risks incomplete data, which the business wouldn't accept.</div>
+            <div><span class="eyebrow">What I did</span>Incomplete enquiries get a status marker, filters, a task in Today's and Missed tasks, and a notification with a "Complete enquiry" action.</div>
+            <div class="res"><span class="eyebrow">Result</span>Speed for DSEs without losing data for managers.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>3. Design for a loud, bright showroom</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Lab testing would miss real conditions.</div>
+            <div><span class="eyebrow">What I did</span>We tested in busy showrooms, in bright daylight and during real customer conversations.</div>
+            <div class="res"><span class="eyebrow">Result</span>The flow held up where it is actually used.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>4. Map every touchpoint before designing screens</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Enquiries connect to dashboards, test rides, tasks and customer history.</div>
+            <div><span class="eyebrow">What I did</span>We mapped all eight places the change would touch, from the dashboard to notifications and follow-ups.</div>
+            <div class="res"><span class="eyebrow">Result</span>No broken flows elsewhere in the app.</div>
+          </div>
+          <figure><a href="img/enq-ideation.jpg" target="_blank" rel="noopener"><img src="img/enq-ideation.jpg" alt="Early user flow for Quick Enquiry and its impact areas" loading="lazy"></a><figcaption>Early user flow for Quick Enquiry and its impact areas</figcaption></figure>
+        </article>
+      </div>
+    </section>
+    <section class="sec" id="tvs-enquiry--design" data-nav="The design">
+      <span class="eyebrow">The design</span>
+      <div class="prose full">
+        <h2 class="disp">Quick Enquiry, screen by screen</h2>
+        <p>We already had a mature design system, so once the flow and impact areas were agreed we went straight to high-fidelity screens. Click a board to see it full size.</p><div class="boards"><figure><a href="img/enq-hifi-1.jpg" target="_blank" rel="noopener" aria-label="Open full board: Creating a quick enquiry"><img src="img/enq-hifi-1.jpg" alt="Creating a quick enquiry" loading="lazy"></a><figcaption>Creating a quick enquiry · open full size ↗</figcaption></figure><figure><a href="img/enq-hifi-2.jpg" target="_blank" rel="noopener" aria-label="Open full board: Completing the enquiry later"><img src="img/enq-hifi-2.jpg" alt="Completing the enquiry later" loading="lazy"></a><figcaption>Completing the enquiry later · open full size ↗</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-enquiry--impact" data-nav="Impact">
+      <span class="eyebrow">Impact</span>
+      <div class="prose full">
+        <h2 class="disp">Before and after</h2>
+        <div class="bt"><div class="bt-row bt-head"><span>Metric</span><span>Before</span><span>After</span><span>Change</span></div><div class="bt-row"><span>Time to log an enquiry</span><span>5–10 min</span><span><b>~10 sec</b></span><span class="chg">90% faster</span></div><div class="bt-row"><span>Enquiries logged digitally</span><span>40%</span><span><b>68%</b></span><span class="chg">+28 pts</span></div><div class="bt-row"><span>Enquiries logged late or missed</span><span>27%</span><span><b><5%</b></span><span class="chg">80% fewer</span></div><div class="bt-row"><span>Sales linked to an enquiry</span><span>72%</span><span><b>98%</b></span><span class="chg">+26 pts</span></div></div><p class="src">Measured after rollout across dealerships.</p><div class="quotes"><figure class="q"><blockquote>“Now I just enter their name and number, and I'm done in seconds. I don't have to ask them to wait.”</blockquote><figcaption>Sales executive, Pune</figcaption></figure><figure class="q"><blockquote>“We're now capturing way more enquiries on Accelerator than on paper.”</blockquote><figcaption>Branch manager</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-enquiry--next" data-nav="What came next">
+      <span class="eyebrow">What came next</span>
+      <div class="prose">
+        <h2 class="disp">Speed alone didn't change every habit</h2>
+        <p>Some DSEs still skipped the second step, and a few kept using paper. Making the app faster wasn't enough; it had to be more useful than paper. That led straight to the next case study: digital quotations.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Next: replacing the paper quotation book</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#tvs-quotes">Case study 3 →</a><a class="btn out" href="#tvs">TVS overview</a></div>
+    </div>
+  </main>
+
+  <!-- ================= TVS-QUOTES ================= -->
+  <main id="v-tvs-quotes" class="page" hidden>
+    <a class="btn out sm back" href="#tvs">← TVS Accelerator</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">TVS Accelerator · Case study 3</span><span class="tag">Quotations</span><span class="tag rt">2 min read</span></div>
+      <h1 class="disp">Replacing the paper quotation book with a quote on WhatsApp</h1>
+      <p class="cs-lede">Dealerships still wrote quotes by hand. Not because they loved paper, but because the digital version was slow, rigid and, oddly, less trusted by customers. Here's how we fixed all three.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Quotes took 5–7 minutes by hand, varied in price, got lost, and could not be followed up.</p></div><div><span class="eyebrow">What I did</span><p>Designed manager-controlled quotation templates, one-tap sharing on WhatsApp, and tracking of every quote sent.</p></div><div><span class="eyebrow">The outcome</span><p>Quotes in under 30 seconds, 90% of customers opened theirs, and digital logging rose from 68% to 80%.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer</li><li><span class="eyebrow">Users</span>DSEs, branch managers, customers</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Scope</span>Quotes, pricing controls, sharing</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="tvs-quotes--story">The story</button><button type="button" data-goto="tvs-quotes--decisions">Key decisions</button><button type="button" data-goto="tvs-quotes--design">The design</button><button type="button" data-goto="tvs-quotes--impact">Impact</button></nav>
+    <div class="shotband"><img src="img/tvs-banner.jpg" alt="TVS Accelerator screens"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>85%</b><p>faster quotes: 5–7 minutes down to under 30 seconds</p></div><div class="card kpi"><b>90%</b><p>of customers opened their digital quote</p></div><div class="card kpi"><b>68→80%</b><p>of enquiries logged digitally</p></div><div class="card kpi"><b>~0</b><p>lost quotations, now stored on WhatsApp</p></div></div>
+    <section class="sec" id="tvs-quotes--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose full">
+        <h2 class="disp">Why paper kept winning</h2>
+        <div class="story-block"><p>We shadowed sales executives, including in rural dealerships, and asked a simple question: why the quotation book? The answers surprised us.</p><p>It wasn't only speed. Prices, accessories and offers changed by dealership and the app couldn't keep up. And customers saw a printed quote as fixed, while a handwritten one felt personal and negotiable. Paper was winning on trust.</p></div><div class="grid3"><div class="card"><span class="eyebrow">Speed</span><h3>Manual felt faster</h3><p>The digital flow didn't fit how DSEs actually quoted.</p></div><div class="card"><span class="eyebrow">Flexibility</span><h3>Prices change</h3><p>Accessories, discounts and offers couldn't be adjusted properly.</p></div><div class="card"><span class="eyebrow">Trust</span><h3>Paper felt negotiable</h3><p>A printed quote felt fixed; a handwritten one felt personal.</p></div></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-quotes--decisions" data-nav="Key decisions">
+      <span class="eyebrow">Key decisions</span>
+      <div class="prose full">
+        <h2 class="disp">Three decisions</h2>
+        <article class="decision">
+          <h3>1. Put pricing in the branch manager's hands</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Prices, accessories and state taxes vary by dealership and region.</div>
+            <div><span class="eyebrow">What I did</span>Branch managers create and update quotation templates, including discounts, extra costs and offers.</div>
+            <div class="res"><span class="eyebrow">Result</span>Consistent pricing that still fits each dealership.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>2. Make sending a quote one tap</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Rewriting the same quote for every customer took minutes.</div>
+            <div><span class="eyebrow">What I did</span>DSEs pick a template, adjust it and share it on WhatsApp in under 30 seconds.</div>
+            <div class="res"><span class="eyebrow">Result</span>Quotes are 85% faster.</div>
+          </div>
+          
+        </article><article class="decision">
+          <h3>3. Make every quote trackable</h3>
+          <div class="why">
+            <div><span class="eyebrow">The issue</span>Paper quotes were lost and could not be followed up.</div>
+            <div><span class="eyebrow">What I did</span>Every quote is stored, and managers can see which were opened and which led to a sale.</div>
+            <div class="res"><span class="eyebrow">Result</span>90% of customers opened their quote.</div>
+          </div>
+          
+        </article>
+      </div>
+    </section>
+    <section class="sec" id="tvs-quotes--design" data-nav="The design">
+      <span class="eyebrow">The design</span>
+      <div class="prose full">
+        <h2 class="disp">From enquiry to quote on WhatsApp</h2>
+        <p>Click a board to see it full size.</p><div class="boards"><figure><a href="img/quotes-1.jpg" target="_blank" rel="noopener" aria-label="Open full board: Capturing interest, including QR self-registration"><img src="img/quotes-1.jpg" alt="Capturing interest, including QR self-registration" loading="lazy"></a><figcaption>Capturing interest, including QR self-registration · open full size ↗</figcaption></figure><figure><a href="img/quotes-2.jpg" target="_blank" rel="noopener" aria-label="Open full board: Instant quotation generation and sharing"><img src="img/quotes-2.jpg" alt="Instant quotation generation and sharing" loading="lazy"></a><figcaption>Instant quotation generation and sharing · open full size ↗</figcaption></figure><figure><a href="img/quotes-3.jpg" target="_blank" rel="noopener" aria-label="Open full board: Branch manager controls for pricing and brochures"><img src="img/quotes-3.jpg" alt="Branch manager controls for pricing and brochures" loading="lazy"></a><figcaption>Branch manager controls for pricing and brochures · open full size ↗</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="tvs-quotes--impact" data-nav="Impact">
+      <span class="eyebrow">Impact</span>
+      <div class="prose full">
+        <h2 class="disp">Before and after</h2>
+        <div class="bt"><div class="bt-row bt-head"><span>Metric</span><span>Before</span><span>After</span><span>Change</span></div><div class="bt-row"><span>Time to create a quote</span><span>5–7 min</span><span><b><30 sec</b></span><span class="chg">85% faster</span></div><div class="bt-row"><span>Lost or missing quotes</span><span>Frequent</span><span><b>Near zero</b></span><span class="chg">Stored on WhatsApp</span></div><div class="bt-row"><span>Customers opening quotes</span><span>Unknown</span><span><b>90%</b></span><span class="chg">Now trackable</span></div><div class="bt-row"><span>Enquiries logged digitally</span><span>68%</span><span><b>80%</b></span><span class="chg">+12 pts</span></div></div><div class="quotes"><figure class="q"><blockquote>“I used to rewrite the same quotation multiple times. Now I just send it instantly.”</blockquote><figcaption>Sales executive, Pune</figcaption></figure><figure class="q"><blockquote>“Now I can track every quote and see if it leads to a sale.”</blockquote><figcaption>Branch manager, Bangalore</figcaption></figure></div>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">Back to the series</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#tvs">TVS overview →</a><a class="btn out" href="#projects">All projects</a></div>
+    </div>
+  </main>
+
+  <!-- ================= KIOSK ================= -->
+  <main id="v-kiosk" class="page" hidden>
+    <a class="btn out sm back" href="#projects">← Projects</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">Case study</span><span class="tag">Pennsylvania Dept. of Health · Extentia</span><span class="tag rt">3 min read</span></div>
+      <h1 class="disp">Birth certificates in minutes, at a kiosk anyone can use</h1>
+      <p class="cs-lede">A third of people who walked up to Pennsylvania's birth certificate kiosk gave up before finishing. We found out why, all 100+ reasons of it, and redesigned the journey so older, less tech-savvy and Spanish-speaking residents could finish on their own.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Unclear instructions, repeated typing and no preview meant 34% of requests were abandoned and 22% had errors.</p></div><div><span class="eyebrow">What I did</span><p>Heuristic audit of 100+ issues, four user types, a three-step guided journey, accessibility and Spanish support, and high-fidelity screens.</p></div><div><span class="eyebrow">The outcome</span><p>Requests take about 5 minutes instead of up to 25. Abandonment fell to 15%, errors to 8%, and satisfaction rose from 3.5 to 4.7.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer</li><li><span class="eyebrow">Client</span>Pennsylvania Dept. of Health, US</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Platform</span>Self-service kiosk</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="kiosk--story">The story</button><button type="button" data-goto="kiosk--problem">The problem</button><button type="button" data-goto="kiosk--users">Who it's for</button><button type="button" data-goto="kiosk--redesign">The redesign</button><button type="button" data-goto="kiosk--impact">Impact</button><button type="button" data-goto="kiosk--next">Next steps</button></nav>
+    <div class="shotband"><img src="img/kiosk-banner.jpg" alt="Redesigned birth certificate kiosk screens"></div>
+    <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>~5 min</b><p>to complete a request, down from up to 25 minutes</p></div><div class="card kpi"><b>34→15%</b><p>of requests abandoned</p></div><div class="card kpi"><b>22→8%</b><p>user error rate</p></div><div class="card kpi"><b>3.5→4.7</b><p>user satisfaction out of 5</p></div></div>
+    <section class="sec" id="kiosk--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">Why this one is personal</h2>
+        <div class="story-block"><p>A few months before this project, I tried to get a birth certificate online in India. I submitted the request, and never heard back. So when we were asked to fix a birth certificate kiosk for Pennsylvania residents, I knew exactly how that frustration feels.</p><p>The kiosk was meant to save people a trip to a government counter. Instead, a third of them gave up halfway, and many who finished made mistakes they couldn't see until it was too late.</p></div>
+      </div>
+    </section>
+    <section class="sec" id="kiosk--problem" data-nav="The problem">
+      <span class="eyebrow">The problem</span>
+      <div class="prose full">
+        <h2 class="disp">100+ usability issues in one kiosk</h2>
+        <p>We audited the existing kiosk against Nielsen's 10 usability heuristics and logged more than 100 issues, each rated by severity. They clustered into four themes.</p><div class="grid2"><div class="card"><span class="eyebrow">Guidance</span><h3>Unclear instructions</h3><p>Few tooltips and poor error messages made people hesitate and abandon verification.</p></div><div class="card"><span class="eyebrow">Efficiency</span><h3>Typing and repetition</h3><p>Users re-entered saved data, and verification and payment had too many steps.</p></div><div class="card"><span class="eyebrow">Confidence</span><h3>No preview</h3><p>There was no way to check the certificate before submitting, or to fix it easily.</p></div><div class="card"><span class="eyebrow">Consistency</span><h3>No design system</h3><p>Buttons, spacing and styles changed from screen to screen.</p></div></div><figure><a href="img/kiosk-old.jpg" target="_blank" rel="noopener"><img src="img/kiosk-old.jpg" alt="Part of the audit: each issue mapped to a heuristic, rated by severity, with a proposed fix" loading="lazy"></a><figcaption>Part of the audit: each issue mapped to a heuristic, rated by severity, with a proposed fix</figcaption></figure>
+      </div>
+    </section>
+    <section class="sec" id="kiosk--users" data-nav="Who it's for">
+      <span class="eyebrow">Who it's for</span>
+      <div class="prose full">
+        <h2 class="disp">Four residents we designed for</h2>
+        <p>A kiosk in a government office serves everyone, so we designed for four very different people: a general user, an older user, a user with limited dexterity, and a Spanish speaker.</p><figure><a href="img/kiosk-user.jpg" target="_blank" rel="noopener"><img src="img/kiosk-user.jpg" alt="The four user types we designed for" loading="lazy"></a><figcaption>The four user types we designed for</figcaption></figure>
+      </div>
+    </section>
+    <section class="sec" id="kiosk--redesign" data-nav="The redesign">
+      <span class="eyebrow">The redesign</span>
+      <div class="prose full">
+        <h2 class="disp">Three steps, designed for everyone</h2>
+        <ol class="steps"><li><b>Tell us who you are</b><span>Check required documents, verify identity, or continue a saved application.</span></li><li><b>Preview your certificate</b><span>See exactly how it will look, and fix details before submitting.</span></li><li><b>Pay and confirm</b><span>Choose copies, pay in a few taps, and get a clear confirmation.</span></li></ol><div class="grid2"><div class="card"><span class="eyebrow">Accessibility</span><h3>Readable by everyone</h3><p>Larger type, high contrast and plain language for less tech-savvy users.</p></div><div class="card"><span class="eyebrow">Language</span><h3>English and Spanish</h3><p>Full Spanish support for Pennsylvania's Spanish-speaking residents.</p></div><div class="card"><span class="eyebrow">Speed</span><h3>Less typing</h3><p>Auto-fill, retrieval of saved data, and real-time validation that catches errors early.</p></div><div class="card"><span class="eyebrow">Consistency</span><h3>One component set</h3><p>Standard components across every screen.</p></div></div><figure><a href="img/kiosk-journey.jpg" target="_blank" rel="noopener"><img src="img/kiosk-journey.jpg" alt="Previous journey vs new journey: fewer steps and fewer low points" loading="lazy"></a><figcaption>Previous journey vs new journey: fewer steps and fewer low points</figcaption></figure><div class="boards"><figure><a href="img/kiosk-hifi-1.jpg" target="_blank" rel="noopener" aria-label="Open full board: Identification: language, order type, verification"><img src="img/kiosk-hifi-1.jpg" alt="Identification: language, order type, verification" loading="lazy"></a><figcaption>Identification: language, order type, verification · open full size ↗</figcaption></figure><figure><a href="img/kiosk-hifi-2.jpg" target="_blank" rel="noopener" aria-label="Open full board: Certificate preview and acknowledgement"><img src="img/kiosk-hifi-2.jpg" alt="Certificate preview and acknowledgement" loading="lazy"></a><figcaption>Certificate preview and acknowledgement · open full size ↗</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="kiosk--impact" data-nav="Impact">
+      <span class="eyebrow">Impact</span>
+      <div class="prose full">
+        <h2 class="disp">Before and after</h2>
+        <div class="bt"><div class="bt-row bt-head"><span>Metric</span><span>Before</span><span>After</span><span>Change</span></div><div class="bt-row"><span>Time to complete a request</span><span>Up to 25 min</span><span><b>4–5 min</b></span><span class="chg">~80% faster</span></div><div class="bt-row"><span>Requests abandoned</span><span>34%</span><span><b>15%</b></span><span class="chg">55% fewer</span></div><div class="bt-row"><span>User error rate</span><span>22%</span><span><b>8%</b></span><span class="chg">64% fewer</span></div><div class="bt-row"><span>Completed on first attempt</span><span>68%</span><span><b>90%</b></span><span class="chg">+22 pts</span></div><div class="bt-row"><span>Satisfaction (out of 5)</span><span>3.5</span><span><b>4.7</b></span><span class="chg">+34%</span></div></div><p class="src">Post-launch analytics and user testing.</p><div class="quotes"><figure class="q"><blockquote>“The clear step-by-step guidance and ability to preview my details saved me so much time.”</blockquote><figcaption>Working parent</figcaption></figure><figure class="q"><blockquote>“The text is easier to read, and I didn't feel lost at any step.”</blockquote><figcaption>Retired veteran</figcaption></figure><figure class="q"><blockquote>“The Spanish option made it much easier. Before, I had to ask for help.”</blockquote><figcaption>Spanish-speaking resident</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="sec" id="kiosk--next" data-nav="Next steps">
+      <span class="eyebrow">Next steps</span>
+      <div class="prose full">
+        <h2 class="disp">Where it could go next</h2>
+        <div class="grid3"><div class="card"><span class="eyebrow">Iterate</span><h3>Keep listening</h3><p>Keep gathering feedback from residents to refine usability.</p></div><div class="card"><span class="eyebrow">Languages</span><h3>Beyond Spanish</h3><p>Add more languages for other communities.</p></div><div class="card"><span class="eyebrow">Technology</span><h3>Less effort still</h3><p>Explore voice assistance and biometric verification.</p></div></div>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">More work</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#projects">All projects →</a><a class="btn out" href="#delfin">DelFin case study</a></div>
+    </div>
+  </main>
+
+  <!-- ================= AUDIT ================= -->
+  <main id="v-audit" class="page" hidden>
+    <a class="btn out sm back" href="#projects">← Projects</a>
+    <section class="cs-hero">
+      <div class="tags"><span class="tag m">UX audit</span><span class="tag">TVS Motor · Extentia</span><span class="tag rt">2 min read</span></div>
+      <h1 class="disp">Auditing two TVS websites, and getting the fixes prioritised</h1>
+      <p class="cs-lede">Finding usability problems is the easy part. The hard part is getting a busy team to fix them next to feature work. This is how we audited two TVS websites and turned the findings into a roadmap the client agreed to.</p>
+    </section>
+    <section class="glance" aria-label="At a glance">
+      <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>The TVS iQube and three-wheeler websites had inconsistent navigation, cluttered content and low contrast, but fixes kept losing to feature work.</p></div><div><span class="eyebrow">What I did</span><p>Heuristic evaluations of both sites against Nielsen's 10 principles, severity ratings, findings presentations and a prioritisation workshop with the client.</p></div><div><span class="eyebrow">The outcome</span><p>Severity-rated reports, critical issues shortlisted into sprints, and work started on standard buttons, menus and navigation.</p></div></div>
+      <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer, audit and workshop</li><li><span class="eyebrow">Scope</span>TVS iQube and TVS 3W websites</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Method</span>10 heuristics, severity rating</li></ul>
+    </section>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="audit--story">The story</button><button type="button" data-goto="audit--process">The process</button><button type="button" data-goto="audit--found">What we found</button><button type="button" data-goto="audit--outcome">Outcome</button></nav>
+    <div class="shotband"><img src="img/audit-banner.jpg" alt="TVS three-wheeler and TVS iQube"></div>
+    <section class="sec" id="audit--story" data-nav="The story">
+      <span class="eyebrow">The story</span>
+      <div class="prose">
+        <h2 class="disp">A list of problems is not a plan</h2>
+        <div class="story-block"><p>Every team knows its website has issues. What it rarely has is a clear, ranked list of which ones hurt users most, and a reason to fix them before the next feature.</p><p>So we treated this as two jobs: find the issues rigorously, then make it easy for the client to decide what to do about them.</p></div>
+      </div>
+    </section>
+    <section class="sec" id="audit--process" data-nav="The process">
+      <span class="eyebrow">The process</span>
+      <div class="prose">
+        <h2 class="disp">From audit to roadmap</h2>
+        <ol class="steps"><li><b>Audit</b><span>Heuristic evaluation of both sites against Nielsen's 10 usability principles.</span></li><li><b>Rate</b><span>Every issue categorised by heuristic and rated by severity.</span></li><li><b>Present</b><span>Findings shared with each site's team.</span></li><li><b>Prioritise</b><span>A workshop with the client and internal teams to agree a roadmap.</span></li></ol>
+      </div>
+    </section>
+    <section class="sec" id="audit--found" data-nav="What we found">
+      <span class="eyebrow">What we found</span>
+      <div class="prose full">
+        <h2 class="disp">Key issues on each site</h2>
+        <div class="two"><div class="card"><span class="eyebrow">Three-wheelers</span><h3>TVS 3W</h3><ul><li>Hamburger menu in different places on different pages</li><li>Too many colours and too much text</li><li>Buttons and navigation without clear states</li><li>Few ways to undo or exit key actions</li></ul></div><div class="card aloe"><span class="eyebrow">Electric scooter</span><h3>TVS iQube</h3><ul><li>Features and specifications buried in long text</li><li>Long scrolls with an unclear section hierarchy</li><li>Inconsistent button and tab styles</li><li>Low contrast, especially on mobile</li></ul></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><a class="btn out" href="https://drive.google.com/file/d/1g6p2iiZqRNuJ6_a2h8kj50rXtKuYPgus/view?usp=sharing" target="_blank" rel="noopener">3W audit file ↗</a><a class="btn out" href="https://drive.google.com/file/d/1I0fmCFAnrbNFUt93Xj8Iyiqg22rTqzq7/view?usp=sharing" target="_blank" rel="noopener">iQube audit file ↗</a></div>
+      </div>
+    </section>
+    <section class="sec" id="audit--outcome" data-nav="Outcome">
+      <span class="eyebrow">Outcome</span>
+      <div class="prose full">
+        <h2 class="disp">What happened next</h2>
+        <div class="grid3"><div class="card"><span class="eyebrow">Reports</span><h3>Shared with both teams</h3><p>Severity-rated reports guided later design changes.</p></div><div class="card"><span class="eyebrow">Workshop</span><h3>Critical issues into sprints</h3><p>The highest-severity issues were shortlisted for upcoming sprints.</p></div><div class="card"><span class="eyebrow">Components</span><h3>One set of patterns</h3><p>Work started on standard buttons, menus and navigation.</p></div></div><p><strong>What I took away:</strong> severity ratings and a shared workshop are what turn a list of problems into decisions. It also gave me my first real taste of guiding other designers and keeping quality consistent across projects.</p>
+      </div>
+    </section>
+    <div class="endcta">
+      <h2 class="disp">More work</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#projects">All projects →</a><a class="btn out" href="#tvs">TVS Accelerator</a></div>
+    </div>
+  </main>
+  <!-- GEN-END -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+<script>
+(function(){
+  /* ---------- routing ---------- */
+  var views=['home', 'projects', 'about', 'contact', 'resume', 'delfin', 'delfin-fastag', 'delfin-onboarding', 'delfin-money', 'tvs', 'tvs-research', 'tvs-enquiry', 'tvs-quotes', 'kiosk', 'audit'];
+  var nav=document.getElementById('topbar');
+  function route(){
+    var h=location.hash.replace('#','');
+    if(views.indexOf(h)<0) h='home';
+    views.forEach(function(v){document.getElementById('v-'+v).hidden=(v!==h);});
+    nav.hidden=(h==='home');
+    window.scrollTo(0,0);
+    if(window.__tiles) window.__tiles.active=(h==='home');
+  }
+  window.addEventListener('hashchange',route);
+
+  /* ---------- copy email ---------- */
+  var cb=document.getElementById('copy'),em=document.getElementById('email');
+  cb.addEventListener('click',function(){
+    function sel(){var r=document.createRange();r.selectNodeContents(em);var s=getSelection();s.removeAllRanges();s.addRange(r);cb.textContent='Press Ctrl+C';}
+    try{navigator.clipboard.writeText(em.textContent).then(function(){cb.textContent='Copied';setTimeout(function(){cb.textContent='Copy email';},1600);},sel);}catch(e){sel();}
+  });
+
+  /* ---------- 3D tiles ---------- */
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var state={active:true,items:[]};
+  window.__tiles=state;
+  if(window.THREE){
+    var T=THREE;
+    function mat(c,r,m){return new T.MeshStandardMaterial({color:c,roughness:r==null?.35:r,metalness:m||0});}
+    var builders={
+      projects:function(){ // stacked screens
+        var g=new T.Group(), cols=[0x1A1A1A,0xF4F1EA,0x2B3AFF];
+        for(var i=0;i<3;i++){
+          var m=new T.Mesh(new T.BoxGeometry(1.7,1.15,0.09),mat(cols[i],i===1?.5:.25));
+          m.position.set((i-1)*0.32,(i-1)*-0.22,(i-1)*-0.42); g.add(m);
+          if(i===1){ var s=new T.Mesh(new T.BoxGeometry(1.1,0.12,0.02),mat(0xFF2D78,.4)); s.position.set(-.1,.28,.06); m.add(s);
+            var s2=new T.Mesh(new T.BoxGeometry(.8,.08,.02),mat(0xC9C3B6,.5)); s2.position.set(-.25,.08,.06); m.add(s2);}
+        }
+        g.rotation.set(-0.25,0.55,0.05); return g;
+      },
+      about:function(){ // planet + ring
+        var g=new T.Group();
+        g.add(new T.Mesh(new T.SphereGeometry(0.78,64,64),mat(0x2B3AFF,.3)));
+        var ring=new T.Mesh(new T.TorusGeometry(1.25,0.045,24,128),mat(0x1A1A1A,.35)); ring.rotation.x=Math.PI/2.4; g.add(ring);
+        var moon=new T.Mesh(new T.SphereGeometry(0.16,32,32),mat(0xFF2D78,.4)); moon.position.set(1.25,0,0); ring.add(moon);
+        g.userData.ring=ring; g.rotation.z=0.25; return g;
+      },
+      resume:function(){ // paper sheet with lines
+        var g=new T.Group();
+        var back=new T.Mesh(new T.BoxGeometry(1.25,1.65,0.05),mat(0x2B3AFF,.5)); back.position.set(.14,-.1,-.12); back.rotation.z=-.08; g.add(back);
+        var page=new T.Mesh(new T.BoxGeometry(1.25,1.65,0.06),mat(0xF7F4EC,.6)); g.add(page);
+        var w=[.85,.65,.8,.5,.7];
+        for(var i=0;i<w.length;i++){var l=new T.Mesh(new T.BoxGeometry(w[i],i===0?.12:.06,.02),mat(i===0?0x1A1A1A:0x7A756B,.5)); l.position.set(-.5+w[i]/2+.05,.55-i*.22,.04); page.add(l);}
+        var chip=new T.Mesh(new T.CylinderGeometry(.2,.2,.05,40),mat(0xFF2D78,.35)); chip.rotation.x=Math.PI/2; chip.position.set(.38,-.55,.05); page.add(chip);
+        g.rotation.set(-0.2,-0.45,0.08); return g;
+      },
+      contact:function(){ // speech bubble: rounded disc + tail + dots
+        var g=new T.Group();
+        var b=new T.Mesh(new T.CylinderGeometry(0.95,0.95,0.32,64),mat(0x000000,.25)); b.rotation.x=Math.PI/2; b.scale.set(1.25,1,1); g.add(b);
+        var tail=new T.Mesh(new T.ConeGeometry(.28,.6,32),mat(0x000000,.25)); tail.position.set(-.7,-.82,0); tail.rotation.z=-.6; tail.scale.set(1,.8,.35); g.add(tail);
+        for(var i=0;i<3;i++){var d=new T.Mesh(new T.SphereGeometry(.13,32,32),mat(i===1?0xFF2D78:0xEDE9E0,.35)); d.position.set((i-1)*.42,0,.2); g.add(d);}
+        g.rotation.set(-0.15,0.4,0); return g;
+      }
+    };
+    document.querySelectorAll('.tile').forEach(function(tile){
+      var cv=tile.querySelector('canvas'), r;
+      try{ r=new T.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }catch(e){ return; }
+      r.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); r.outputEncoding=T.sRGBEncoding;
+      var sc=new T.Scene(), cam=new T.PerspectiveCamera(32,1,.1,50); cam.position.set(0,0,9);
+      sc.add(new T.HemisphereLight(0xffffff,0xC9C3B6,0.9));
+      var dl=new T.DirectionalLight(0xffffff,1.1); dl.position.set(3,4,5); sc.add(dl);
+      var rl=new T.DirectionalLight(0xffffff,0.35); rl.position.set(-4,-2,2); sc.add(rl);
+      var obj=builders[tile.dataset.shape](); var holder=new T.Group(); holder.add(obj); holder.position.y=0; sc.add(holder);
+      var item={halfW:({projects:1.15,about:1.3,resume:0.75,contact:1.25})[tile.dataset.shape]||1.2,tile:tile,r:r,sc:sc,cam:cam,holder:holder,obj:obj,hover:0,target:0,t:Math.random()*6};
+      var box=tile.querySelector('.media'); function size(){var w=box.clientWidth,h=box.clientHeight; if(!w||!h) return; r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();
+        var vis=2*9*Math.tan(16*Math.PI/180), visW=vis*w/h; var base=0.62*Math.min(vis,visW)/2.2; item.visW=visW; item.base=base;}
+      size(); new ResizeObserver(size).observe(box);
+      tile.addEventListener('pointerenter',function(){item.target=1;});
+      tile.addEventListener('pointerleave',function(){item.target=0;});
+      tile.addEventListener('focus',function(){item.target=1;});
+      tile.addEventListener('blur',function(){item.target=0;});
+      state.items.push(item);
+    });
+    var last=performance.now();
+    function frame(now){
+      var dt=Math.min(.05,(now-last)/1000); last=now;
+      if(state.active){
+        state.items.forEach(function(it){
+          it.hover+=(it.target-it.hover)*Math.min(1,dt*7);
+          it.t+=dt*(reduce?0:1)*(1+it.hover*1.5);
+          var s=(it.base||1)*(1+it.hover*0.28);
+          it.holder.scale.set(s,s,s); it.holder.position.x=-(it.visW||0)/2+(it.halfW+0.12)*s;
+          it.holder.rotation.y=Math.sin(it.t*.6)*.35;
+          it.holder.rotation.x=Math.sin(it.t*.45)*.12;
+          it.holder.position.y=Math.sin(it.t*1.1)*.06;
+          if(it.obj.userData.ring) it.obj.userData.ring.rotation.z=it.t*.8;
+          it.r.render(it.sc,it.cam);
+        });
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  route();
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+<script id="case-nav">
+(function(){
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-goto]'); if(!b) return;
+    var t=document.getElementById(b.getAttribute('data-goto')); if(t) t.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'});
+  });
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){var id=en.target.id;document.querySelectorAll('.jump button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-goto')===id);});}});},{rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('.sec[data-nav]').forEach(function(s){io.observe(s);});
+})();
+</script>
+
+<!-- STORY-START -->
+<div id="story" class="dstory" role="dialog" aria-modal="true" aria-label="DelFin interactive case study" hidden>
+  <div class="st-top">
+    <button class="st-menu-btn" id="st-menu-btn" aria-expanded="false" aria-controls="st-menu">☰ <span id="st-chap"></span></button>
+    <span class="st-count" id="st-count"></span>
+    <div class="st-top-r"><a class="st-text" href="#delfin-fastag">Read as text</a><button class="st-close" id="st-close" aria-label="Close story">✕</button></div>
+  </div>
+  <nav class="st-menu" id="st-menu" hidden></nav>
+  <div class="st-stage" id="st-stage" aria-live="polite"></div>
+  <div class="st-narrator" id="st-narr" hidden><img src="img/abhijeet.jpg" alt=""><div class="st-say" id="st-say"></div></div>
+  <div class="st-nav"><button id="st-prev" aria-label="Previous">‹</button><button id="st-next" aria-label="Next">›</button></div>
+  <div class="st-prog"><div id="st-bar"></div></div>
+</div>
+<!-- STORY-END -->
+
+<script id="story-js">
+(function(){
+  var S=[{"ch": "The toll", "type": "scene", "bg": "dark", "art": "hook-toll", "svg": "toll", "caps": ["Every trip runs through a toll.", "Every toll needs a <b>FASTag</b>.", "And when the tag fails\u2026<br><b>the truck stops.</b>"], "cta": "Start the story"}, {"ch": "The toll", "type": "scene", "bg": "paper", "art": "owner-office", "svg": "office", "caps": ["Meet a fleet owner.", "A few trucks, always on the road.", "And a phone that <b>never stops ringing</b>."], "say": "This is who DelFin is for."}, {"ch": "The toll", "type": "steps", "bg": "paper", "title": "Buying a FASTag used to look like this.", "hint": "Tap each step", "steps": [["Call sales", "No way to start on your own."], ["Paper KYC", "Documents sent offline, one by one."], ["Wait for days", "No idea where the order is."], ["Fail at the toll", "Low balance or a blacklisted tag, found too late."]]}, {"ch": "The toll", "type": "chips", "bg": "dark", "art": "paper-kyc", "svg": "paper", "bubble": "\"Where is my tag?\"", "title": "Four problems behind one question", "hint": "Tap a problem", "chips": [["Unguided start", "Partners signed up without knowing what DelFin offered, and owners and drivers got the same setup."], ["No activation status", "Nobody could see where a tag was, or that it needed action, before reaching a toll."], ["Money felt risky", "Wallet balance, fees and refunds were unclear, so owners hesitated to pay in the app."], ["Support for everything", "Profile, GST details and invoices needed a call instead of a screen."]]}, {"ch": "Two users", "type": "choice", "bg": "blue", "q": "Quick question. Who opens DelFin first?", "opts": [["The fleet owner", "Right, owners pay, manage many trucks and need GST invoices."], ["The driver", "Also right. Drivers need the tag to work at the toll, without seeing the owner's money."]], "after": "It's both. So the app asks <b>one question</b> before anything else."}, {"ch": "Two users", "type": "phones", "bg": "paper", "title": "Onboarding in four screens", "hint": "Tap the numbers", "phones": ["onb-1", "onb-2", "onb-3", "onb-4"], "notes": [["Benefits first", "Why DelFin, in three lines: instant activation, low minimum balance, low-balance alerts."], ["Phone OTP", "No password to remember. Privacy and terms accepted on the same screen."], ["Owner or driver?", "One plain-language question that splits the whole setup."], ["Only what's needed now", "Drivers add the owner's details instead of their own documents."]], "result": ["98.3%", "pick a role once they see the question"]}, {"ch": "The purchase", "type": "choice", "bg": "blue", "q": "If you could fix one thing first, which would it be?", "opts": [["Make checkout faster", "Tempting. But speed wasn't what owners were calling about."], ["Fix what happens after paying", "Exactly. Owners weren't calling to buy; they were calling to ask where their tag was."]], "after": "So purchase and tracking became <b>one journey</b>: from first tap to an active tag."}, {"ch": "The purchase", "type": "phones", "bg": "paper", "title": "Buying a tag, without a phone call", "hint": "Tap the numbers", "phones": ["kyc-1", "kyc-2", "pay-2", "pay-3"], "notes": [["Let the RC fill the form", "Upload the RC and PAN once; vehicle details come from the RC, not from typing."], ["KYC with fallbacks", "Pick the bank, then OTP, Aadhaar, biometric or PAN, with alternatives one tap away."], ["Scan, don't type", "The tag barcode is scanned at handover, so the tag is linked to the right truck."], ["Every rupee explained", "Tag, minimum balance, platform fee with GST, issuance fee and total, before you pay."]], "result": ["84%", "of created orders are paid"]}, {"ch": "The purchase", "type": "copy", "bg": "paper", "title": "When money is involved, say exactly what happens.", "sub": "Cancelling an activation. Toggle to compare.", "before": "The amount will be refunded.", "after": "\u20b9599 back to your DelFin wallet.", "why": "Vague refund copy made owners call support just to confirm."}, {"ch": "The purchase", "type": "toggle", "bg": "dark", "title": "Hearing about problems before the toll does", "before": {"label": "Before", "art": "toll-stop", "svg": "toll", "text": "Low balance or blacklisting found <b>at the toll</b>."}, "after": {"label": "After", "phones": ["home-1", "home-2"], "text": "\"Action needed\" on the home screen, and problem tags <b>pinned to the top</b>."}}, {"ch": "Money", "type": "phones", "bg": "paper", "title": "Tax and refunds, without a ticket", "hint": "Tap the numbers", "phones": ["gst-1", "gst-3", "refund-2", "refund-4"], "notes": [["GSTIN at payment", "Auto-fetched from PAN and validated live, so owners can claim 18% input tax credit."], ["Invoices in bulk", "Download a whole month of GST invoices by date range."], ["Refund in under 2 minutes", "Start from wallet history, pick a reason, done."], ["The unhappy path", "When the balance is below the minimum, the app explains the partial refund instead of failing."]], "result": ["18%", "input tax credit owners can now claim"]}, {"ch": "Results", "type": "stats", "bg": "blue", "title": "So, did people finish?", "stats": [["80.4", "%", "of FASTag orders reached an active tag, no sales call"], ["98.3", "%", "picked a role once they saw the question"], ["71.9", "%", "finished a wallet top-up after tapping Add money"], ["4.9", "\u2605", "early Play Store rating, 1K+ downloads"]], "funnel": [["Order created", 840], ["Payment done", 708], ["Tag handed over", 701], ["Tag active", 675]], "src": "Google Analytics funnels, 1\u20137 Oct 2026"}, {"ch": "Results", "type": "twist", "bg": "dark", "q": "Plot twist. 37% of users vanished between login and role selection. Redesign the role screen?", "opts": ["Yes, redesign it", "Look closer first"], "a": [["Login shown", 1690], ["Logged in", 1504], ["Role screen shown", 944]], "b": [["Login shown", 1690], ["Logged in", 1504], ["Reached home", 1422]], "reveal": "Same week, second funnel: <b>1,422 people reached home</b>. Returning users skip setup. The screen was fine; the measurement wasn't."}, {"ch": "Results", "type": "insight", "bg": "paper", "tag": "#Design insight", "title": "Status beats speed", "body": ["Owners relaxed when they could <b>see progress</b>, not when checkout got a few seconds shorter.", "Every truck gets a tracker: six steps for FASTag, four for GPS. A day-long KYC or installation picks up exactly where it stopped."], "say": "That's the lesson I'd take to any fintech product."}, {"ch": "The bigger bet", "type": "layers", "bg": "paper", "title": "Not a FASTag feature. A base for a new business.", "hint": "Tap a layer", "services": [["FASTag", "Live"], ["GPS", "Live"], ["Fuel", "Next"], ["Insurance", "Next"], ["Credit", "Next"]], "base": "Identity \u00b7 Vehicles \u00b7 Documents \u00b7 Wallet \u00b7 Payments", "note": "Two banks run FASTag wallets differently: IDFC keeps a balance per tag, Axis pools them. The owner only ever sees <b>my truck, my balance, what needs attention</b>."}, {"ch": "The bigger bet", "type": "end", "bg": "blue", "art": "toll-pass", "svg": "pass", "title": "Fleet finance a truck owner can run alone.", "quotes": ["Super easy to use.", "Most user friendly FASTag app.", "Great app for truck owners."], "lessons": ["Design the system, not just the first feature.", "Simplify the owner's model, not the backend.", "Measure every step from day one."]}], SVG={"toll": "<svg viewBox=\"0 0 800 450\" role=\"img\" aria-label=\"A truck stopped at a toll barrier at dusk\"><defs><linearGradient id=\"sk\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2B3AFF\"/><stop offset=\"1\" stop-color=\"#FF2D78\"/></linearGradient></defs><rect width=\"800\" height=\"450\" fill=\"url(#sk)\"/><circle cx=\"640\" cy=\"120\" r=\"46\" fill=\"#EDE9E0\" opacity=\".9\"/><rect y=\"300\" width=\"800\" height=\"150\" fill=\"#1A1A1A\"/><rect y=\"365\" width=\"800\" height=\"8\" fill=\"#EDE9E0\" opacity=\".5\"/><rect x=\"430\" y=\"170\" width=\"120\" height=\"140\" fill=\"#E4DFD4\"/><rect x=\"420\" y=\"150\" width=\"140\" height=\"28\" fill=\"#1A1A1A\"/><rect x=\"445\" y=\"200\" width=\"40\" height=\"40\" fill=\"#2B3AFF\"/><rect x=\"540\" y=\"262\" width=\"230\" height=\"12\" fill=\"#FF2D78\"/><rect x=\"540\" y=\"262\" width=\"20\" height=\"12\" fill=\"#EDE9E0\"/><rect x=\"600\" y=\"262\" width=\"20\" height=\"12\" fill=\"#EDE9E0\"/><rect x=\"660\" y=\"262\" width=\"20\" height=\"12\" fill=\"#EDE9E0\"/><rect x=\"720\" y=\"262\" width=\"20\" height=\"12\" fill=\"#EDE9E0\"/><rect x=\"80\" y=\"200\" width=\"250\" height=\"110\" fill=\"#EDE9E0\"/><rect x=\"330\" y=\"230\" width=\"90\" height=\"80\" fill=\"#2B3AFF\"/><rect x=\"345\" y=\"242\" width=\"50\" height=\"30\" fill=\"#E4DFD4\"/><circle cx=\"130\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/><circle cx=\"270\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/><circle cx=\"375\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/><text x=\"380\" y=\"200\" font-size=\"54\" fill=\"#EDE9E0\" font-family=\"Saira Stencil One, Impact\" text-anchor=\"middle\">!</text></svg>", "office": "<svg viewBox=\"0 0 800 450\" role=\"img\" aria-label=\"A fleet owner's office with trucks outside\"><rect width=\"800\" height=\"450\" fill=\"#E4DFD4\"/><rect x=\"60\" y=\"60\" width=\"380\" height=\"220\" fill=\"#2B3AFF\"/><rect x=\"60\" y=\"230\" width=\"380\" height=\"50\" fill=\"#1A1A1A\"/><g fill=\"#EDE9E0\"><rect x=\"90\" y=\"190\" width=\"90\" height=\"42\"/><rect x=\"180\" y=\"205\" width=\"34\" height=\"27\"/><rect x=\"250\" y=\"190\" width=\"90\" height=\"42\"/><rect x=\"340\" y=\"205\" width=\"34\" height=\"27\"/></g><rect y=\"330\" width=\"800\" height=\"120\" fill=\"#1A1A1A\"/><rect x=\"480\" y=\"300\" width=\"260\" height=\"34\" fill=\"#7A756B\"/><rect x=\"560\" y=\"150\" width=\"90\" height=\"150\" rx=\"10\" fill=\"#1A1A1A\"/><rect x=\"570\" y=\"165\" width=\"70\" height=\"115\" fill=\"#EDE9E0\"/><circle cx=\"660\" cy=\"150\" r=\"10\" fill=\"#FF2D78\"/><circle cx=\"680\" cy=\"135\" r=\"7\" fill=\"#FF2D78\" opacity=\".7\"/><circle cx=\"696\" cy=\"122\" r=\"5\" fill=\"#FF2D78\" opacity=\".5\"/></svg>", "paper": "<svg viewBox=\"0 0 800 450\" role=\"img\" aria-label=\"A pile of paper documents and a phone\"><rect width=\"800\" height=\"450\" fill=\"#1A1A1A\"/><g transform=\"rotate(-8 300 230)\"><rect x=\"170\" y=\"110\" width=\"220\" height=\"280\" fill=\"#EDE9E0\"/><rect x=\"195\" y=\"140\" width=\"150\" height=\"14\" fill=\"#7A756B\"/><rect x=\"195\" y=\"170\" width=\"170\" height=\"10\" fill=\"#C9C3B6\"/><rect x=\"195\" y=\"190\" width=\"120\" height=\"10\" fill=\"#C9C3B6\"/></g><g transform=\"rotate(6 360 230)\"><rect x=\"260\" y=\"90\" width=\"220\" height=\"280\" fill=\"#E4DFD4\"/><rect x=\"285\" y=\"120\" width=\"150\" height=\"14\" fill=\"#7A756B\"/><rect x=\"285\" y=\"150\" width=\"170\" height=\"10\" fill=\"#C9C3B6\"/><rect x=\"380\" y=\"290\" width=\"70\" height=\"40\" fill=\"#FF2D78\" opacity=\".8\"/></g><rect x=\"560\" y=\"120\" width=\"130\" height=\"230\" rx=\"16\" fill=\"#2B3AFF\"/><rect x=\"574\" y=\"140\" width=\"102\" height=\"180\" fill=\"#EDE9E0\"/><text x=\"625\" y=\"245\" font-size=\"64\" text-anchor=\"middle\" fill=\"#1A1A1A\" font-family=\"Saira Stencil One, Impact\">?</text></svg>", "pass": "<svg viewBox=\"0 0 800 450\" role=\"img\" aria-label=\"A truck passing an open toll barrier\"><rect width=\"800\" height=\"450\" fill=\"#2B3AFF\"/><circle cx=\"660\" cy=\"110\" r=\"50\" fill=\"#EDE9E0\"/><rect y=\"300\" width=\"800\" height=\"150\" fill=\"#1A1A1A\"/><rect x=\"430\" y=\"170\" width=\"120\" height=\"140\" fill=\"#E4DFD4\"/><rect x=\"420\" y=\"150\" width=\"140\" height=\"28\" fill=\"#1A1A1A\"/><rect x=\"445\" y=\"200\" width=\"40\" height=\"40\" fill=\"#7EE6A1\"/><g transform=\"rotate(-70 548 268)\"><rect x=\"540\" y=\"262\" width=\"230\" height=\"12\" fill=\"#EDE9E0\"/></g><g transform=\"translate(260 0)\"><rect x=\"80\" y=\"200\" width=\"250\" height=\"110\" fill=\"#EDE9E0\"/><rect x=\"330\" y=\"230\" width=\"90\" height=\"80\" fill=\"#FF2D78\"/><rect x=\"345\" y=\"242\" width=\"50\" height=\"30\" fill=\"#E4DFD4\"/><circle cx=\"130\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/><circle cx=\"270\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/><circle cx=\"375\" cy=\"318\" r=\"24\" fill=\"#1A1A1A\" stroke=\"#EDE9E0\" stroke-width=\"6\"/></g></svg>"}, ART=[];
+  var el=document.getElementById('story'), stage=document.getElementById('st-stage'), bar=document.getElementById('st-bar'),
+      cnt=document.getElementById('st-count'), chap=document.getElementById('st-chap'), menu=document.getElementById('st-menu'),
+      mbtn=document.getElementById('st-menu-btn'), narr=document.getElementById('st-narr'), say=document.getElementById('st-say'),
+      prev=document.getElementById('st-prev'), next=document.getElementById('st-next');
+  var i=0, step=0, lastFocus=null;
+  function art(name, svg){ return ART.indexOf(name)>=0 ? '<img src="img/art/'+name+'.png" alt="">' : SVG[svg]; }
+  function ph(n){ return '<img src="img/s/'+n+'.jpg" alt="DelFin screen" loading="lazy">'; }
+  function caps(s){ var h=''; for(var k=0;k<=Math.min(step,s.caps.length-1);k++) h+='<div class="cap">'+s.caps[k]+'</div>'; return h; }
+  function render(){
+    var s=S[i]; el.setAttribute('data-bg', s.bg); var h='';
+    if(s.type==='scene'){
+      h='<div class="slide scene"><div class="st-art">'+art(s.art,s.svg)+'</div>'+caps(s)+(s.cta&&step>=s.caps.length-1?'<div class="st-cta"><button class="st-btn" data-act="next">'+s.cta+' →</button></div>':'')+'</div>';
+    } else if(s.type==='steps'){
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><p class="st-hint">'+s.hint+'</p><div class="st-steps">'+s.steps.map(function(x,k){return '<button class="st-step" data-act="flip"><i>0'+(k+1)+'</i><b>'+x[0]+'</b><span>'+x[1]+'</span></button>';}).join('')+'</div></div>';
+    } else if(s.type==='chips'){
+      h='<div class="slide split"><div class="st-vis"><div class="st-art">'+art(s.art,s.svg)+'</div><div class="bubble">'+s.bubble+'</div></div><div class="st-copy"><h2 class="st-h">'+s.title+'</h2><p class="st-hint">'+s.hint+'</p><div class="st-chips">'+s.chips.map(function(x,k){return '<button class="st-chip" data-act="chip" data-k="'+k+'">'+x[0]+'</button>';}).join('')+'</div><div class="st-note" id="st-note">'+s.chips[0][1]+'</div></div></div>';
+    } else if(s.type==='choice'){
+      h='<div class="slide col"><h2 class="st-h">'+s.q+'</h2><div class="st-opts">'+s.opts.map(function(x,k){return '<button class="st-opt" data-act="choose" data-k="'+k+'">'+x[0]+'</button>';}).join('')+'</div><div id="st-resp"></div></div>';
+    } else if(s.type==='phones'){
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><p class="st-hint">'+s.hint+'</p><div class="st-phones">'+s.phones.map(function(n,k){return '<div class="st-ph">'+ph(n)+'<button class="st-dot" data-act="note" data-k="'+k+'" aria-label="'+s.notes[k][0]+'">'+(k+1)+'</button></div>';}).join('')+'</div><div class="st-phone-note"><div class="t" id="st-pn"><b>'+s.notes[0][0]+'</b>'+s.notes[0][1]+'</div><div class="st-res"><b>'+s.result[0]+'</b><span>'+s.result[1]+'</span></div></div></div>';
+    } else if(s.type==='copy'){
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><p class="st-hint">'+s.sub+'</p><div class="st-tog"><button data-act="tog" data-k="0" class="on">Before</button><button data-act="tog" data-k="1">After</button></div><div class="st-msg"><small>Cancel activation</small><p id="st-msgp">'+s.before+'</p></div><p class="st-why">Why: '+s.why+'</p></div>';
+    } else if(s.type==='toggle'){
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><div class="st-tog"><button data-act="ba" data-k="0" class="on">Before</button><button data-act="ba" data-k="1">After</button></div><div class="st-ba" id="st-ba"></div></div>';
+    } else if(s.type==='stats'){
+      var mx=s.funnel[0][1];
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><div class="st-stats">'+s.stats.map(function(x){return '<div class="st-stat"><b data-to="'+x[0]+'" data-suf="'+x[1]+'">0'+x[1]+'</b><span>'+x[2]+'</span></div>';}).join('')+'</div><div class="st-fun">'+s.funnel.map(function(x){return '<div><span>'+x[0]+'</span><i data-w="'+(x[1]/mx*100)+'"></i><em>'+x[1]+'</em></div>';}).join('')+'</div><p class="st-src">'+s.src+'</p></div>';
+    } else if(s.type==='twist'){
+      h='<div class="slide col"><h2 class="st-h" style="max-width:24ch">'+s.q+'</h2><div class="st-opts">'+s.opts.map(function(x,k){return '<button class="st-opt" data-act="twist" data-k="'+k+'">'+x+'</button>';}).join('')+'</div><div id="st-resp" style="width:100%"></div></div>';
+    } else if(s.type==='insight'){
+      h='<div class="slide col"><div class="st-ins"><small>'+s.tag+'</small><h3>'+s.title+'</h3>'+s.body.map(function(p){return '<p>'+p+'</p>';}).join('')+'</div></div>';
+    } else if(s.type==='layers'){
+      h='<div class="slide col"><h2 class="st-h">'+s.title+'</h2><p class="st-hint">'+s.hint+'</p><div class="st-layers"><div class="st-svc">'+s.services.map(function(x){return '<button class="'+(x[1]==='Live'?'live':'')+'" data-act="layer" data-t="'+x[0]+': '+(x[1]==='Live'?'live on Android, built on the shared layer below.':'next to plug into the same layer, without rebuilding identity, vehicles or the wallet.')+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></button>';}).join('')+'</div><button class="st-base" data-act="layer" data-t="'+s.note.replace(/"/g,'&quot;')+'">'+s.base+'<small>SHARED PLATFORM LAYER</small></button></div><p class="st-lnote" id="st-ln">'+s.note+'</p></div>';
+    } else if(s.type==='end'){
+      h='<div class="slide scene"><div class="st-art">'+art(s.art,s.svg)+'</div><div class="st-end"><div class="cap">'+s.title+'</div><div class="st-rev">'+s.quotes.map(function(q){return '<span>“'+q+'”</span>';}).join('')+'</div><div class="cap" style="font-size:18px"><div class="st-les">'+s.lessons.map(function(l){return '<div>'+l+'</div>';}).join('')+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="st-btn" data-act="close" style="background:#fff;color:#1A1A1A;border-color:#fff">Back to summary</button><button class="st-btn" data-act="goto" data-h="#delfin-fastag">Read the deep dives</button><button class="st-btn" data-act="goto" data-h="#contact">Contact me</button></div></div></div>';
+    }
+    stage.innerHTML=h;
+    if(s.say){ narr.hidden=false; say.innerHTML=s.say; } else if(i===0){ narr.hidden=false; say.innerHTML='Hi, I\'m Abhijeet. Let me walk you through DelFin.'; } else narr.hidden=true;
+    cnt.textContent=(i+1)+' / '+S.length; chap.textContent=s.ch;
+    bar.style.width=((i+(s.caps?Math.min(step+1,s.caps.length)/s.caps.length:1))/S.length*100)+'%';
+    prev.disabled=(i===0&&step===0); next.disabled=(i===S.length-1);
+    if(s.type==='toggle') ba(0);
+    if(s.type==='stats') setTimeout(count,120);
+    [].forEach.call(menu.children,function(b){b.classList.toggle('on',b.getAttribute('data-ch')===s.ch);});
+  }
+  function ba(k){ var s=S[i], o=k?s.after:s.before, v=o.phones?'<div class="vis ph">'+o.phones.map(ph).join('')+'</div>':'<div class="vis"><div class="st-art">'+art(o.art,o.svg)+'</div></div>';
+    document.getElementById('st-ba').innerHTML=v+'<div class="txt">'+o.text+'</div>';
+    [].forEach.call(stage.querySelectorAll('[data-act=ba]'),function(b){b.classList.toggle('on',+b.getAttribute('data-k')===k);}); }
+  function count(){ stage.querySelectorAll('.st-stat b').forEach(function(b){ var to=parseFloat(b.getAttribute('data-to')), suf=b.getAttribute('data-suf'), t0=performance.now(), d=matchMedia('(prefers-reduced-motion: reduce)').matches?0:900;
+      (function f(t){ var p=d?Math.min(1,(t-t0)/d):1; b.textContent=(to*p).toFixed(1)+suf; if(p<1) requestAnimationFrame(f); })(t0); });
+    stage.querySelectorAll('.st-fun i').forEach(function(x){ x.style.width=x.getAttribute('data-w')+'%'; }); }
+  function go(d){ var s=S[i];
+    if(d>0 && s.caps && step<s.caps.length-1){ step++; render(); return; }
+    if(d<0 && s.caps && step>0){ step--; render(); return; }
+    var n=i+d; if(n<0||n>=S.length) return; i=n; step=(d<0&&S[i].caps)?S[i].caps.length-1:0; render(); stage.focus&&stage.focus(); }
+  function jump(n){ i=n; step=0; render(); closeMenu(); }
+  function open(){ lastFocus=document.activeElement; el.hidden=false; document.body.classList.add('story-open'); i=0; step=0; render(); next.focus(); }
+  function close(){ el.hidden=true; document.body.classList.remove('story-open'); closeMenu(); if(location.hash==='#delfin-story') history.replaceState(null,'','#delfin'); if(lastFocus) lastFocus.focus(); }
+  function closeMenu(){ menu.hidden=true; mbtn.setAttribute('aria-expanded','false'); }
+  // chapter menu
+  var chs=[]; S.forEach(function(s,k){ if(!chs.some(function(c){return c[0]===s.ch;})) chs.push([s.ch,k]); });
+  menu.innerHTML=chs.map(function(c,k){return '<button data-ch="'+c[0]+'" data-i="'+c[1]+'">'+c[0]+'<span>0'+(k+1)+'</span></button>';}).join('');
+  menu.addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) jump(+b.getAttribute('data-i')); });
+  mbtn.addEventListener('click',function(){ var o=menu.hidden; menu.hidden=!o; mbtn.setAttribute('aria-expanded',String(o)); });
+  prev.addEventListener('click',function(){go(-1);}); next.addEventListener('click',function(){go(1);});
+  document.getElementById('st-close').addEventListener('click',close);
+  el.querySelector('.st-text').addEventListener('click',function(){ el.hidden=true; document.body.classList.remove('story-open'); });
+  stage.addEventListener('click',function(e){ var b=e.target.closest('[data-act]'); if(!b) return; var a=b.getAttribute('data-act'), s=S[i], k=+b.getAttribute('data-k');
+    if(a==='next') go(1);
+    else if(a==='flip') b.classList.toggle('open');
+    else if(a==='chip'){ stage.querySelectorAll('.st-chip').forEach(function(c){c.classList.remove('on');}); b.classList.add('on'); document.getElementById('st-note').textContent=s.chips[k][1]; }
+    else if(a==='choose'){ stage.querySelectorAll('.st-opt').forEach(function(c){c.classList.remove('on');}); b.classList.add('on'); document.getElementById('st-resp').innerHTML='<p class="st-resp">'+s.opts[k][1]+'</p><p class="st-after">'+s.after+'</p>'; }
+    else if(a==='note'){ stage.querySelectorAll('.st-dot').forEach(function(c){c.classList.remove('on');}); b.classList.add('on'); document.getElementById('st-pn').innerHTML='<b>'+s.notes[k][0]+'</b>'+s.notes[k][1]; }
+    else if(a==='tog'){ stage.querySelectorAll('[data-act=tog]').forEach(function(c){c.classList.toggle('on',c===b);}); var p=document.getElementById('st-msgp'); p.textContent=k?s.after:s.before; p.classList.toggle('hl',!!k); }
+    else if(a==='ba') ba(k);
+    else if(a==='twist'){ stage.querySelectorAll('.st-opt').forEach(function(c){c.classList.remove('on');}); b.classList.add('on');
+      var row=function(arr,hl){var mx=arr[0][1];return '<div class="st-fun">'+arr.map(function(x,j){return '<div><span>'+x[0]+'</span><i data-w="'+(x[1]/mx*100)+'" style="'+(j===arr.length-1?'background:'+hl:'')+'"></i><em>'+x[1]+'</em></div>';}).join('')+'</div>';};
+      document.getElementById('st-resp').innerHTML=(k===0?'<p class="st-resp">That was the obvious move. But first, a second funnel from the same week…</p>':'<p class="st-resp">Good instinct. Here are both funnels side by side.</p>')+row(s.a,'#FF2D78')+row(s.b,'#7EE6A1')+'<p class="st-after" style="margin-inline:auto">'+s.reveal+'</p>';
+      setTimeout(function(){stage.querySelectorAll('.st-fun i').forEach(function(x){x.style.width=x.getAttribute('data-w')+'%';});},60); }
+    else if(a==='layer'){ document.getElementById('st-ln').innerHTML=b.getAttribute('data-t'); }
+    else if(a==='close') close();
+    else if(a==='goto'){ close(); location.hash=b.getAttribute('data-h'); }
+  });
+  document.addEventListener('keydown',function(e){ if(el.hidden) return; if(e.key==='ArrowRight'){go(1);} else if(e.key==='ArrowLeft'){go(-1);} else if(e.key==='Escape'){ if(!menu.hidden) closeMenu(); else close(); } });
+  var sx=null,sy=null; el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  el.addEventListener('touchend',function(e){ if(sx===null) return; var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1); sx=null; },{passive:true});
+  document.addEventListener('click',function(e){ var b=e.target.closest('[data-story]'); if(b){ e.preventDefault(); open(); } });
+  function fromHash(){ if(location.hash==='#delfin-story'){ var v=document.getElementById('v-delfin'); document.querySelectorAll('main[id^=v-]').forEach(function(m){m.hidden=(m!==v);}); open(); } }
+  window.addEventListener('hashchange',fromHash); fromHash();
+})();
+</script>
+
+<script id="game-embed">
+(function(){var inGame=false;try{inGame=window.self!==window.top;}catch(e){inGame=true;}
+if(inGame){var g=document.getElementById('gamecta');if(g)g.hidden=true;}})();
+</script>
+
+</body>
+</html>

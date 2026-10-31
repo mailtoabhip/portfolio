@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useNightRun } from "@/lib/store";
 import { SHEETS } from "@/lib/destinations";
-import { drive } from "@/lib/driveState";
 import { TRACK_TITLE, TRACK_ARTIST } from "@/lib/audio";
 import EntryView from "@/components/EntryView";
 
@@ -12,7 +11,8 @@ import EntryView from "@/components/EntryView";
  * Replaces the old paper-waybill ReadOverlay: same fullscreen shell/
  * cross-fade timing, new claymorphic chrome, new `tabletApp` levels:
  *
- *   "home"          → three claymorphic app tiles
+ *   "home"          → the full portfolio, on a tablet-shaped screen
+ *                     (public/portfolio/index.html in an iframe)
  *   "case-studies"  → destination === null: the index (parchment)
  *                     destination set: that entry (parchment)
  *   "resume"        → destination is forced to "manifest" by the
@@ -26,25 +26,6 @@ import EntryView from "@/components/EntryView";
 const CLAY_PANEL =
   "rounded-[28px] bg-gradient-to-b from-[#243244] to-[#1a2230] shadow-[0_18px_40px_-12px_rgba(6,10,20,0.65),inset_0_2px_2px_rgba(147,168,209,0.14),inset_0_-8px_14px_rgba(6,10,20,0.4)]";
 
-function CaseStudiesGlyph() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-      <rect x="6" y="4" width="16" height="20" rx="4" stroke="#8fe9ff" strokeWidth="1.4" />
-      <rect x="9" y="9" width="10" height="1.6" rx="0.8" fill="#8fe9ff" opacity="0.7" />
-      <rect x="9" y="14" width="10" height="1.6" rx="0.8" fill="#8fe9ff" opacity="0.7" />
-      <rect x="9" y="19" width="6" height="1.6" rx="0.8" fill="#8fe9ff" opacity="0.7" />
-    </svg>
-  );
-}
-function ResumeGlyph() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-      <rect x="7" y="4" width="16" height="22" rx="5" stroke="#ffb65c" strokeWidth="1.4" />
-      <circle cx="15" cy="11" r="2.6" stroke="#ffb65c" strokeWidth="1.3" />
-      <path d="M10 20c0-3 2.5-4.5 5-4.5s5 1.5 5 4.5" stroke="#ffb65c" strokeWidth="1.3" strokeLinecap="round" />
-    </svg>
-  );
-}
 function MusicGlyph() {
   return (
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
@@ -52,35 +33,6 @@ function MusicGlyph() {
       <circle cx="21" cy="19" r="3" stroke="#8fe9ff" strokeWidth="1.4" />
       <path d="M13 22V8.5L24 6v10.5" stroke="#8fe9ff" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-function AppTile({
-  glyph,
-  label,
-  sub,
-  onClick,
-}: {
-  glyph: React.ReactNode;
-  label: string;
-  sub: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`${CLAY_PANEL} group flex flex-col items-center justify-center gap-2.5 w-full aspect-square p-6 transition-transform duration-150 active:scale-[0.96] hover:-translate-y-0.5`}
-    >
-      <span className="w-14 h-14 rounded-2xl bg-[#0f1620]/60 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]">
-        {glyph}
-      </span>
-      <span className="font-mono text-sm tracking-[0.12em] uppercase text-neutral-100">
-        {label}
-      </span>
-      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-400">
-        {sub}
-      </span>
-    </button>
   );
 }
 
@@ -105,7 +57,6 @@ export default function TabletOS() {
   const delivered = useNightRun((s) => s.delivered);
   const closeSheet = useNightRun((s) => s.closeSheet);
   const selectDestination = useNightRun((s) => s.selectDestination);
-  const openTabletApp = useNightRun((s) => s.openTabletApp);
   const setPhase = useNightRun((s) => s.setPhase);
   const audioOn = useNightRun((s) => s.audioOn);
   const toggleAudio = useNightRun((s) => s.toggleAudio);
@@ -127,6 +78,13 @@ export default function TabletOS() {
     return () => window.removeEventListener("keydown", onKey);
   }, [phase, closeSheet]);
 
+  // The portfolio lives in /public/portfolio. Resolve it against the
+  // current page path so it also works under a GitHub Pages basePath.
+  const portfolioSrc =
+    typeof window === "undefined"
+      ? "portfolio/index.html"
+      : `${window.location.pathname.replace(/\/$/, "")}/portfolio/index.html`;
+
   const open = phase === "reading";
   if (!open && phase !== "returning") return null;
 
@@ -139,55 +97,40 @@ export default function TabletOS() {
       }`}
     >
       <div
-        className={`relative w-[calc(100vw-32px)] sm:w-[min(92vw,860px)] h-[min(88vh,1100px)] overflow-y-auto ${
-          showParchment
-            ? "bg-[#efeade] text-[#1d1a15] rounded-sm shadow-2xl"
-            : `${CLAY_PANEL} text-neutral-100`
+        className={`relative ${
+          tabletApp === "home"
+            ? "w-[calc(100vw-16px)] sm:w-[min(96vw,1240px)] h-[min(90vh,860px)] rounded-[34px] bg-gradient-to-b from-[#1d2126] to-[#111418] p-3 sm:p-4 pb-16 sm:pb-4 text-neutral-100 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_2px_2px_rgba(147,168,209,0.14),inset_0_0_0_1px_rgba(143,233,255,0.12)]"
+            : `w-[calc(100vw-32px)] sm:w-[min(92vw,860px)] h-[min(88vh,1100px)] overflow-y-auto ${
+                showParchment
+                  ? "bg-[#efeade] text-[#1d1a15] rounded-sm shadow-2xl"
+                  : `${CLAY_PANEL} text-neutral-100`
+              }`
         }`}
         style={{ touchAction: "pan-y" }}
       >
         {tabletApp === "home" && (
-          <div className="p-8 md:p-14 pb-24 sm:pb-14">
-            <div className="flex items-baseline justify-between font-mono text-[11px] tracking-[0.3em] uppercase text-neutral-400">
-              <span>The Night Run</span>
-              <span>Tablet</span>
-            </div>
-            {/* Status strip — diegetic, cheap, optional polish */}
-            <div className="mt-5 flex gap-6 font-mono text-[11px] tracking-[0.15em] uppercase text-neutral-400">
-              <span>
+          <div className="flex h-full flex-col">
+            {/* Tablet status bar, drawn on the bezel */}
+            <div className="flex items-center justify-between gap-4 px-2 pb-3 pt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-400">
+              <span>The Night Run · Tablet</span>
+              <span className="hidden sm:inline">
                 Deliveries <span className="text-[#8fe9ff]">{delivered.length}/{SHEETS.length}</span>
               </span>
-              <span>
-                Next drop{" "}
-                <span className="text-[#ffb65c]">
-                  {drive.nextStopDist >= 0 ? `${drive.nextStopDist}m` : "—"}
-                </span>
-              </span>
+              <button
+                onClick={toggleAudio}
+                className="flex items-center gap-2 rounded-full px-3 py-1 text-[#8fe9ff] transition-colors hover:bg-white/5"
+                aria-label={audioOn ? "Pause music" : "Play music"}
+              >
+                <span>{audioOn ? "❙❙" : "▶"}</span>
+                <span className="hidden sm:inline">{audioOn ? "Music on" : "Music off"}</span>
+              </button>
             </div>
-            <h1 className="mt-5 text-3xl md:text-4xl font-semibold tracking-tight text-white">
-              Good evening, driver
-            </h1>
-            <p className="mt-2 font-mono text-xs text-neutral-400">
-              Everything aboard, one tap away.
-            </p>
-            <div className="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-xl">
-              <AppTile
-                glyph={<CaseStudiesGlyph />}
-                label="Case Studies"
-                sub={`${SHEETS.length} entries`}
-                onClick={() => openTabletApp("case-studies")}
-              />
-              <AppTile
-                glyph={<ResumeGlyph />}
-                label="Resume"
-                sub="the manifest"
-                onClick={() => openTabletApp("resume")}
-              />
-              <AppTile
-                glyph={<MusicGlyph />}
-                label="Music"
-                sub={audioOn ? "playing" : "paused"}
-                onClick={() => openTabletApp("music")}
+            {/* The screen: the full portfolio, served from /public/portfolio */}
+            <div className="relative min-h-0 flex-1 overflow-hidden rounded-[18px] bg-[#EDE9E0] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.6)]">
+              <iframe
+                src={portfolioSrc}
+                title="Abhijeet Purandare — portfolio"
+                className="absolute inset-0 h-full w-full border-0"
               />
             </div>
           </div>
