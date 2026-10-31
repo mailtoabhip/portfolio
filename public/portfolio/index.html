@@ -541,6 +541,8 @@ html.intro-on,html.intro-on body{overflow:hidden}
 }
 .in-logo.landed{animation:inThud .28s ease-out}
 @keyframes inThud{50%{transform:scale(1.035)}}
+/* Returning visitors: the finished mark, then straight up */
+#intro.quick .in-p{animation:none}
 @media (prefers-reduced-motion:reduce){.in-p{animation:none}#intro,.in-logo{transition:opacity .3s}#intro.out{transform:none;opacity:0}}
 /* /INTRO */
 
@@ -750,7 +752,7 @@ body.story-open{overflow:hidden}
 </style>
 
 <div id="intro" aria-hidden="true"><div class="in-logo"><div class="in-p in-acc" style="--k:0"><i style="--r:3;--c:0"></i></div><div class="in-p" style="--k:1"><i style="--r:3;--c:2"></i><i style="--r:2;--c:1"></i><i style="--r:2;--c:2"></i><i style="--r:2;--c:3"></i></div><div class="in-p" style="--k:2"><i style="--r:2;--c:0"></i><i style="--r:1;--c:0"></i><i style="--r:0;--c:0"></i><i style="--r:0;--c:1"></i></div><div class="in-p" style="--k:3"><i style="--r:2;--c:4"></i><i style="--r:1;--c:4"></i><i style="--r:0;--c:4"></i><i style="--r:0;--c:3"></i></div><div class="in-p" style="--k:4"><i style="--r:1;--c:2"></i><i style="--r:0;--c:2"></i></div></div></div>
-<script>(function(){var el=document.getElementById('intro');try{if(sessionStorage.getItem('ap-intro')){el.remove();return;}sessionStorage.setItem('ap-intro','1');}catch(e){}document.documentElement.classList.add('intro-on');})();</script>
+<script>(function(){var seen=false;try{seen=!!localStorage.getItem('ap-intro-seen');localStorage.setItem('ap-intro-seen','1');}catch(e){}if(seen)document.getElementById('intro').classList.add('quick');document.documentElement.classList.add('intro-on');})();</script>
 <div class="wrap">
   <header class="nav" id="topbar" hidden>
     <nav aria-label="Main" id="topnav">
@@ -1812,11 +1814,12 @@ body.story-open{overflow:hidden}
     var el=document.getElementById('intro'); if(!el) return;
     var logo=el.querySelector('.in-logo'), done=false;
     var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var nP=el.querySelectorAll('.in-p').length, land=reduce?300:(150+ (nP-1)*200 + 520);
+    var quick=el.classList.contains('quick');
+    var nP=el.querySelectorAll('.in-p').length, land=reduce||quick?0:(150+ (nP-1)*200 + 520);
     function finish(){ if(done) return; done=true; el.classList.add('out');
       setTimeout(function(){ document.documentElement.classList.remove('intro-on'); el.remove(); },720); }
-    var t1=setTimeout(function(){ logo.classList.add('landed'); },land);
-    var t2=setTimeout(finish,land+(reduce?400:650));
+    var t1=quick?0:setTimeout(function(){ logo.classList.add('landed'); },land);
+    var t2=setTimeout(finish,quick?450:land+(reduce?400:650));
     function skip(){ clearTimeout(t1); clearTimeout(t2); finish(); }
     el.addEventListener('click',skip);
     window.addEventListener('keydown',function k(){ window.removeEventListener('keydown',k); if(!done) skip(); });
