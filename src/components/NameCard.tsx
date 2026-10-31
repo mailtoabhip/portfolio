@@ -54,9 +54,6 @@ export default function NameCard() {
       }`}
     >
       <div className="text-center select-none">
-        <p className="font-mono text-xs tracking-[0.4em] text-neutral-500 uppercase mb-4 animate-pulse">
-          Long night ahead
-        </p>
         <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-neutral-100 [@media(max-width:380px)]:text-3xl">
           Abhijeet Purandare
         </h1>
