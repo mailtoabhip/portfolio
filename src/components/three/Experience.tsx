@@ -1,11 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import Truck from "@/components/three/Truck";
 import Road from "@/components/three/Road";
 import Forest from "@/components/three/Forest";
-import DeliveryStop from "@/components/three/DeliveryStop";
 import SkySystem from "@/components/three/SkySystem";
+import SkyDome from "@/components/three/SkyDome";
+import CurveWorld from "@/components/three/CurveWorld";
 import { useDrivingControls } from "@/lib/controls";
 import { useNightRun } from "@/lib/store";
 
@@ -35,14 +37,17 @@ export default function Experience() {
         {/* Initial values only — night by default. SkySystem takes
             over scene.background / scene.fog every frame once it
             mounts, including day mode. */}
-        <color attach="background" args={["#101c38"]} />
-        <fog attach="fog" args={["#101c38", 8, 60]} />
+        <color attach="background" args={["#14233f"]} />
+        <fog attach="fog" args={["#14233f", 8, 90]} />
 
         <SkySystem />
+        <SkyDome />
         <Truck />
-        <Road />
+        <Suspense fallback={null}>
+          <Road />
+        </Suspense>
         <Forest />
-        <DeliveryStop />
+        <CurveWorld />
       </Canvas>
     </div>
   );

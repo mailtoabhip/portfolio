@@ -71,7 +71,14 @@ export default function DriveHint() {
       className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-1000 ${
         show ? "opacity-100" : "opacity-0"
       } pointer-events-none select-none`}
-      style={{ bottom: "max(32px, calc(env(safe-area-inset-bottom) + 16px))" }}
+      style={{
+        bottom: "max(32px, calc(env(safe-area-inset-bottom) + 16px))",
+        // Dark pill so the hint stays legible over the pale day road.
+        background: "rgba(5,6,8,0.42)",
+        backdropFilter: "blur(6px)",
+        borderRadius: 999,
+        padding: "8px 16px",
+      }}
     >
       {isTouchDevice ? (
         <div className="flex items-center gap-4 font-mono text-[11px] tracking-[0.3em] uppercase text-neutral-400">

@@ -18,6 +18,9 @@ import {
   AMBIENT_COLOR,
   SUN_LIGHT_COLOR,
   SUN_LIGHT_INTENSITY,
+  HEMI,
+  DAY_EXPOSURE,
+  SUN_LIGHT_POS_DAY,
 } from "@/lib/timeOfDayState";
 
 /**
@@ -58,6 +61,7 @@ export default function SkySystem() {
 
   const ambientRef = useRef<THREE.AmbientLight>(null);
   const sunRef = useRef<THREE.DirectionalLight>(null);
+  const hemiRef = useRef<THREE.HemisphereLight>(null);
   const discRef = useRef<THREE.Mesh>(null);
   const discMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
@@ -76,7 +80,7 @@ export default function SkySystem() {
   const sunDiscColor = useMemo(() => new THREE.Color("#ffd9a0"), []);
   const discTexture = useMemo(() => makeDiscTexture(), []);
 
-  useFrame((_, rawDelta) => {
+  useFrame((state, rawDelta) => {
     const delta = Math.min(rawDelta, 0.1);
     const { timeOfDay, setTimeOfDay } = useNightRun.getState();
 
@@ -120,6 +124,10 @@ export default function SkySystem() {
       fog.far = THREE.MathUtils.lerp(FOG_FAR.night, FOG_FAR.day, skyMix);
     }
 
+    // Exposure: ACES tone mapping greys out bright pastels, so lift
+    // exposure in daylight only. Night stays at exactly 1.0.
+    state.gl.toneMappingExposure = THREE.MathUtils.lerp(1, DAY_EXPOSURE, skyMix);
+
     // Ambient
     if (ambientRef.current) {
       ambientRef.current.intensity = THREE.MathUtils.lerp(
@@ -129,6 +137,8 @@ export default function SkySystem() {
       );
       ambientRef.current.color.lerpColors(ambientColNight, ambientColDay, ambientT);
     }
+
+    if (hemiRef.current) hemiRef.current.intensity = HEMI.day * ambientT;
 
     // Directional "sun" light — fades in late, casts the day's shadows.
     if (sunRef.current) {
@@ -140,7 +150,7 @@ export default function SkySystem() {
         if (shadow.mapSize.width !== size) shadow.mapSize.set(size, size);
         shadow.radius = quality >= 2 ? 4 : 0; // soft on tier 2, hard on tier 1
       }
-      sunRef.current.position.set(SUN_X, SUN_Y_DAY, SUN_Z);
+      sunRef.current.position.set(...SUN_LIGHT_POS_DAY);
     }
 
     // The disc itself — climbs from the tree line to a low daytime arc.
@@ -161,13 +171,14 @@ export default function SkySystem() {
   return (
     <>
       <ambientLight ref={ambientRef} intensity={AMBIENT.night} />
+      <hemisphereLight ref={hemiRef} args={[HEMI.sky, HEMI.ground, 0]} />
       <directionalLight
         ref={sunRef}
         intensity={0}
         color={SUN_LIGHT_COLOR}
         position={[SUN_X, SUN_Y_NIGHT, SUN_Z]}
       />
-      <mesh ref={discRef} position={[SUN_X, SUN_Y_NIGHT, SUN_Z]}>
+      <mesh ref={discRef} position={[SUN_X, SUN_Y_NIGHT, SUN_Z]} userData={{ noBend: true }}>
         <planeGeometry args={[10, 10]} />
         <meshBasicMaterial
           ref={discMatRef}

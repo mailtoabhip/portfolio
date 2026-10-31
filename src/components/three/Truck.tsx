@@ -9,6 +9,8 @@ import CameraRig from "@/components/three/CameraRig";
 import { input } from "@/lib/controls";
 import { drive } from "@/lib/driveState";
 import { useNightRun } from "@/lib/store";
+import { curveUniform } from "@/lib/curveWorld";
+import { TRUCK_X_MIN, TRUCK_X_MAX } from "@/lib/highway";
 
 /**
  * The whole vehicle (cab + headlights + camera) as one group.
@@ -16,8 +18,12 @@ import { useNightRun } from "@/lib/store";
  * yaw + roll lean so it feels like steering, not strafing.
  */
 
-const ROAD_HALF = 2.3; // asphalt half-width (3.5) minus truck margin
-const LATERAL_SPEED = 3.2; // m/s at full cruise
+const LATERAL_SPEED = 5.2; // m/s at full cruise — a lane change in well under a second
+/** Bends push the truck toward the outside of the curve (scaled by
+ * speed²), so the driver steers through them — gently. */
+const DRIFT = 0.55;
+/** How much the cab turns to look into a bend. */
+const LOOK_INTO_BEND = 38;
 
 export default function Truck() {
   const group = useRef<THREE.Group>(null);
@@ -34,14 +40,17 @@ export default function Truck() {
     const speedK = Math.min(drive.speed / 13, 1);
     const target = steerable ? input.steer * LATERAL_SPEED * speedK : 0;
     vx.current += (target - vx.current) * Math.min(1, delta * 5);
+    const bend = curveUniform.value;
+    const drift = -bend * drive.speed * drive.speed * DRIFT;
 
     g.position.x = THREE.MathUtils.clamp(
-      g.position.x + vx.current * delta,
-      -ROAD_HALF,
-      ROAD_HALF
+      g.position.x + (vx.current + drift) * delta,
+      TRUCK_X_MIN,
+      TRUCK_X_MAX
     );
-    // Lean: slight yaw into the turn, slight roll away from it
-    g.rotation.y += (-vx.current * 0.06 - g.rotation.y) * Math.min(1, delta * 4);
+    // Lean: slight yaw into the steer and into the bend ahead, slight roll away
+    const yaw = -vx.current * 0.05 - bend * LOOK_INTO_BEND;
+    g.rotation.y += (yaw - g.rotation.y) * Math.min(1, delta * 4);
     g.rotation.z += (vx.current * 0.02 - g.rotation.z) * Math.min(1, delta * 4);
   });
 

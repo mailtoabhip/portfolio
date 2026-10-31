@@ -42,8 +42,6 @@ interface NightRunState {
   destination: Destination | null;
   /** Which tablet screen is showing (only meaningful while reading). */
   tabletApp: TabletApp;
-  /** Destinations delivered via the road game (stamped on the waybill). */
-  delivered: Destination[];
   /** 0–2: quality tier for instancing counts / post-fx. 0 = lowest. */
   quality: 0 | 1 | 2;
   audioOn: boolean;
@@ -69,8 +67,6 @@ interface NightRunState {
   selectDestination: (destination: Destination) => void;
   /** Step back one level: entry -> list/home -> tablet home -> road. */
   closeSheet: () => void;
-  /** Road game: stopped at a drop point → stamp it + open its entry. */
-  deliver: (destination: Destination) => void;
   setQuality: (quality: 0 | 1 | 2) => void;
   toggleAudio: () => void;
   /** Tap the phone -> its contact-card screen. No phase change, no
@@ -85,7 +81,6 @@ export const useNightRun = create<NightRunState>((set, get) => ({
   timeOfDay: "night",
   destination: null,
   tabletApp: "home",
-  delivered: [],
   quality: 2,
   audioOn: false,
   phoneOpen: false,
@@ -135,17 +130,6 @@ export const useNightRun = create<NightRunState>((set, get) => ({
     }
   },
 
-  deliver: (destination) => {
-    if (get().phase !== "cruising") return;
-    set((s) => ({
-      phase: "reading",
-      tabletApp: "case-studies",
-      destination,
-      delivered: s.delivered.includes(destination)
-        ? s.delivered
-        : [...s.delivered, destination],
-    }));
-  },
 
   setQuality: (quality) => set({ quality }),
   toggleAudio: () => set((s) => ({ audioOn: !s.audioOn })),

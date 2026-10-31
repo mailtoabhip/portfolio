@@ -54,7 +54,6 @@ export default function TabletOS() {
   const phase = useNightRun((s) => s.phase);
   const tabletApp = useNightRun((s) => s.tabletApp);
   const destination = useNightRun((s) => s.destination);
-  const delivered = useNightRun((s) => s.delivered);
   const closeSheet = useNightRun((s) => s.closeSheet);
   const selectDestination = useNightRun((s) => s.selectDestination);
   const setPhase = useNightRun((s) => s.setPhase);
@@ -113,9 +112,6 @@ export default function TabletOS() {
             {/* Tablet status bar, drawn on the bezel */}
             <div className="flex items-center justify-between gap-4 px-2 pb-3 pt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-400">
               <span>The Night Run · Tablet</span>
-              <span className="hidden sm:inline">
-                Deliveries <span className="text-[#8fe9ff]">{delivered.length}/{SHEETS.length}</span>
-              </span>
               <button
                 onClick={toggleAudio}
                 className="flex items-center gap-2 rounded-full px-3 py-1 text-[#8fe9ff] transition-colors hover:bg-white/5"
@@ -170,11 +166,6 @@ export default function TabletOS() {
                             {s.sub}
                           </span>
                         </span>
-                        {delivered.includes(s.slug) && (
-                          <span className="font-mono text-[10px] tracking-[0.2em] uppercase px-2 py-1 border-2 border-[#4a7c59] text-[#4a7c59] rounded rotate-[-4deg] shrink-0">
-                            ✓ Delivered
-                          </span>
-                        )}
                         <span className="font-mono text-[#a89f8a] group-hover:text-[#1d1a15] transition-colors">
                           →
                         </span>
