@@ -16,6 +16,18 @@ import { isTouchDevice, setTouchThrottle } from "@/lib/controls";
  * not a boolean, so a second accidental finger never drops it early.
  */
 
+/** Replays a tap on the WebGL canvas (pointerdown → pointerup → click),
+ * which is what react-three-fiber needs to fire a mesh's onClick. */
+function forwardTap(x: number, y: number) {
+  const canvas = document.querySelector("canvas");
+  if (!canvas) return;
+  const base = { clientX: x, clientY: y, bubbles: true, cancelable: true, view: window };
+  const ptr = { ...base, pointerId: 999, pointerType: "touch", isPrimary: true, button: 0 };
+  canvas.dispatchEvent(new PointerEvent("pointerdown", { ...ptr, buttons: 1 }));
+  canvas.dispatchEvent(new PointerEvent("pointerup", { ...ptr, buttons: 0 }));
+  canvas.dispatchEvent(new MouseEvent("click", { ...base, button: 0 }));
+}
+
 interface Glow {
   id: number;
   x: number;
@@ -27,6 +39,7 @@ export default function TouchDriveLayer() {
   const [glows, setGlows] = useState<Glow[]>([]);
   const activeTouches = useRef(0);
   const nextGlowId = useRef(0);
+  const tapStart = useRef<{ x: number; y: number; t: number } | null>(null);
   // Touch detection differs between server and client render: mount
   // after hydration to avoid a hydration mismatch on phones.
   const [mounted, setMounted] = useState(false);
@@ -63,11 +76,19 @@ export default function TouchDriveLayer() {
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (phase !== "cruising") return;
+    tapStart.current = { x: e.clientX, y: e.clientY, t: performance.now() };
     engage(e.clientX, e.clientY);
   };
-  const onPointerUp = () => {
+  const onPointerUp = (e?: React.PointerEvent) => {
     if (phase !== "cruising") return;
     disengage();
+    // A quick tap (not a hold-to-drive) is passed through to the 3D
+    // scene underneath, so the in-cab tablet and phone stay tappable.
+    const st = tapStart.current;
+    tapStart.current = null;
+    if (e && st && performance.now() - st.t < 300 && Math.hypot(e.clientX - st.x, e.clientY - st.y) < 14) {
+      forwardTap(e.clientX, e.clientY);
+    }
   };
 
   return (
@@ -76,8 +97,8 @@ export default function TouchDriveLayer() {
       style={{ touchAction: "none" }}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
-      onPointerLeave={onPointerUp}
+      onPointerCancel={() => onPointerUp()}
+      onPointerLeave={() => onPointerUp()}
     >
       {glows.map((g) => (
         <span
