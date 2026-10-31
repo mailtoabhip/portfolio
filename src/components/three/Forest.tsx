@@ -6,33 +6,47 @@ import * as THREE from "three";
 import { useNightRun } from "@/lib/store";
 import { drive } from "@/lib/driveState";
 import { input } from "@/lib/controls";
-import { timeOfDayState, bandT, TRUNK_COLOR, CANOPY_COLORS } from "@/lib/timeOfDayState";
+import { timeOfDayState, bandT, TRUNK_COLOR, CANOPY_COLORS, BUSH_COLOR } from "@/lib/timeOfDayState";
 import { applyFresnelRim } from "@/lib/clayMaterials";
+import { advanceCurve } from "@/lib/curveWorld";
+import { VERGE_L_LEFT, VERGE_R_RIGHT } from "@/lib/highway";
 
 /**
  * The moving world. The truck never moves — the world slides toward
  * the camera (+Z) and recycles (§9 "highway illusion", now a forest):
  *
- * - Center-line dashes repeat every DASH_GAP, so the whole dash group
- *   just wraps its own Z position (no per-instance work).
+ * - Lane markings now live in the road textures (Road.tsx scrolls them).
+ * - Verge shrubs recycle the same way as the trees.
+ * - Distance travelled also drives the curved-world turns
+ *   (lib/curveWorld.ts).
  * - Trees are two instanced meshes (trunks + canopies) sharing one
  *   position table; each tree that passes the camera teleports to the
  *   far end with a fresh random lateral seat.
  */
 
-const DASH_GAP = 8;
-const DASH_COUNT = 32;
-const TREE_COUNT = 140; // both sides combined
-const DEPTH = 230; // how far the forest extends
-const CRUISE_SPEED = 13; // m/s ≈ 47 km/h — a heavy truck at night
+const TREE_COUNT = 160; // both sides combined
+const BUSH_COUNT = 90;
+const DEPTH = 260; // how far the forest extends
+const CRUISE_SPEED = 21; // m/s ≈ 75 km/h cruise; flat out ≈ 130 km/h
 
 type Tree = { x: number; z: number; s: number; rot: number };
 
 function seatTree(z: number): Tree {
-  // Random side of the road, clear of the asphalt (road half-width ~3.5 + margin)
-  const side = Math.random() < 0.5 ? -1 : 1;
-  const x = -0.5 + side * (6 + Math.random() * 26);
-  return { x, z, s: 0.7 + Math.random() * 1.1, rot: Math.random() * Math.PI * 2 };
+  // Either side of the highway, beyond the verges (lib/highway.ts).
+  const left = Math.random() < 0.5;
+  const x = left
+    ? VERGE_L_LEFT - 1 - Math.random() * 30
+    : VERGE_R_RIGHT + 1 + Math.random() * 30;
+  return { x, z, s: 0.8 + Math.random() * 1.2, rot: Math.random() * Math.PI * 2 };
+}
+
+/** Rounded shrubs along the outer edge of each verge. */
+function seatBush(z: number): Tree {
+  const left = Math.random() < 0.5;
+  const x = left
+    ? VERGE_L_LEFT + 0.6 + Math.random() * 3.2
+    : VERGE_R_RIGHT - 0.6 - Math.random() * 3.2;
+  return { x, z, s: 0.4 + Math.random() * 0.55, rot: Math.random() * Math.PI * 2 };
 }
 
 /** Pine canopy tiers: [y-offset (×scale), radius, height] */
@@ -42,9 +56,19 @@ const TIERS: [number, number, number][] = [
   [4.55, 0.72, 1.7],
 ];
 
+const _bushDummy = new THREE.Object3D();
+function placeBush(mesh: THREE.InstancedMesh, i: number, b: Tree) {
+  _bushDummy.position.set(b.x, b.s * 0.45, b.z);
+  _bushDummy.scale.set(b.s * 1.25, b.s * 0.85, b.s * 1.15);
+  _bushDummy.rotation.set(0, b.rot, 0);
+  _bushDummy.updateMatrix();
+  mesh.setMatrixAt(i, _bushDummy.matrix);
+}
+
 export default function Forest() {
   const quality = useNightRun((s) => s.quality);
-  const dashGroup = useRef<THREE.Group>(null);
+  const bushes = useRef<THREE.InstancedMesh>(null);
+  const bushMat = useRef<THREE.MeshStandardMaterial>(null);
   const trunks = useRef<THREE.InstancedMesh>(null);
   const tier0 = useRef<THREE.InstancedMesh>(null);
   const tier1 = useRef<THREE.InstancedMesh>(null);
@@ -64,6 +88,13 @@ export default function Forest() {
   );
   const canopyDay = useMemo(
     () => CANOPY_COLORS.map((c) => new THREE.Color(c.day)),
+    []
+  );
+
+  const bushNight = useMemo(() => new THREE.Color(BUSH_COLOR.night), []);
+  const bushDay = useMemo(() => new THREE.Color(BUSH_COLOR.day), []);
+  const bushList = useMemo<Tree[]>(
+    () => Array.from({ length: BUSH_COUNT }, (_, i) => seatBush(-(i / BUSH_COUNT) * DEPTH - 4)),
     []
   );
 
@@ -112,6 +143,10 @@ export default function Forest() {
     }
     tMesh.instanceMatrix.needsUpdate = true;
     for (const m of tierMeshes) m!.instanceMatrix.needsUpdate = true;
+    if (bushes.current) {
+      bushList.forEach((b, i) => placeBush(bushes.current!, i, b));
+      bushes.current.instanceMatrix.needsUpdate = true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -121,20 +156,20 @@ export default function Forest() {
 
     // The truck only moves when the driver drives (W). While a sheet
     // is open (reading/returning) it keeps a gentle ambient roll.
-    const TOP = CRUISE_SPEED * 1.7 * speed; // ~22 m/s flat out
+    const TOP = CRUISE_SPEED * 1.75 * speed; // ~37 m/s (≈130 km/h) flat out
     if (phase === "cruising") {
       if (input.brake > 0) {
         // Real brakes: linear decel — stops from top speed in ~30m
-        speedRef.current = Math.max(0, speedRef.current - 8 * delta);
+        speedRef.current = Math.max(0, speedRef.current - 14 * delta);
       } else if (input.throttle > 0) {
-        speedRef.current += (TOP - speedRef.current) * Math.min(1, delta * 0.9);
+        speedRef.current += (TOP - speedRef.current) * Math.min(1, delta * 0.75);
       } else {
         // Coasting: gentle engine-drag decel
         speedRef.current = Math.max(0, speedRef.current - 2.5 * delta);
       }
       speedRef.current = Math.min(speedRef.current, TOP || speedRef.current);
     } else {
-      const target = phase === "reading" || phase === "returning" ? 5 * speed : 0;
+      const target = phase === "reading" || phase === "returning" ? 9 * speed : 0;
       speedRef.current += (target - speedRef.current) * Math.min(1, delta * 0.9);
     }
     drive.speed = speedRef.current;
@@ -146,6 +181,7 @@ export default function Forest() {
     if (tier0Mat.current) tier0Mat.current.color.lerpColors(canopyNight[0], canopyDay[0], groundT);
     if (tier1Mat.current) tier1Mat.current.color.lerpColors(canopyNight[1], canopyDay[1], groundT);
     if (tier2Mat.current) tier2Mat.current.color.lerpColors(canopyNight[2], canopyDay[2], groundT);
+    if (bushMat.current) bushMat.current.color.lerpColors(bushNight, bushDay, groundT);
 
     // Rim intensity: only worth the fresnel term at night, and only
     // at tier 2 (spec: "at tier 1, drop the rim-light term").
@@ -156,12 +192,19 @@ export default function Forest() {
     }
 
     const dz = speedRef.current * delta;
+    drive.dist += dz;
+    advanceCurve(dz);
     if (dz === 0) return;
 
-    // 1) Dashes: wrap the group inside one gap length
-    if (dashGroup.current) {
-      dashGroup.current.position.z =
-        (dashGroup.current.position.z + dz) % DASH_GAP;
+    // 1) Verge bushes: slide + recycle
+    if (bushes.current) {
+      for (let i = 0; i < BUSH_COUNT; i++) {
+        const b = bushList[i];
+        b.z += dz;
+        if (b.z > 6) Object.assign(b, seatBush(b.z - DEPTH));
+        placeBush(bushes.current, i, b);
+      }
+      bushes.current.instanceMatrix.needsUpdate = true;
     }
 
     // 2) Trees: slide + recycle
@@ -171,7 +214,7 @@ export default function Forest() {
     for (let i = 0; i < TREE_COUNT; i++) {
       const tree = trees[i];
       tree.z += dz;
-      if (tree.z > 4) {
+      if (tree.z > 8) {
         Object.assign(tree, seatTree(tree.z - DEPTH));
       }
       // trunk
@@ -193,19 +236,16 @@ export default function Forest() {
 
   return (
     <group>
-      {/* Center-line dashes */}
-      <group ref={dashGroup}>
-        {Array.from({ length: DASH_COUNT }, (_, i) => (
-          <mesh
-            key={i}
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={[-0.5, 0.03, -4 - i * DASH_GAP]}
-          >
-            <planeGeometry args={[0.18, 3]} />
-            <meshStandardMaterial color="#4a4b42" roughness={0.9} />
-          </mesh>
-        ))}
-      </group>
+      {/* Verge shrubs — soft low-poly blobs */}
+      <instancedMesh
+        ref={bushes}
+        args={[undefined, undefined, BUSH_COUNT]}
+        castShadow={quality > 0}
+        frustumCulled={false}
+      >
+        <icosahedronGeometry args={[1, 1]} />
+        <meshStandardMaterial ref={bushMat} color={BUSH_COLOR.night} roughness={1} flatShading />
+      </instancedMesh>
 
       {/* Trunks — frustumCulled off (BUG FIX 2): the recycling logic
           above rewrites instance matrices every frame, but Three only

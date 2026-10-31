@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ENTRIES, type Block } from "@/content/entries";
-import { useNightRun, type Destination } from "@/lib/store";
+import type { Destination } from "@/lib/store";
 
 /**
  * THE reusable waybill-entry template (§6.1). Renders any Entry —
@@ -65,7 +65,6 @@ function BlockView({ block }: { block: Block }) {
 
 export default function EntryView({ slug }: { slug: Destination }) {
   const entry = ENTRIES[slug];
-  const delivered = useNightRun((s) => s.delivered.includes(slug));
   const [unlocked, setUnlocked] = useState(false);
   const [attempt, setAttempt] = useState("");
   const [wrong, setWrong] = useState(false);
@@ -78,11 +77,6 @@ export default function EntryView({ slug }: { slug: Destination }) {
         <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-[#8a8272]">
           The Night Run · {entry.kicker}
         </p>
-        {delivered && (
-          <span className="font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 border-2 border-[#4a7c59] text-[#4a7c59] rounded rotate-[-4deg] shrink-0">
-            ✓ Delivered
-          </span>
-        )}
       </div>
       <h1 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
         {gated ? "🔒 Sealed cargo" : entry.title}

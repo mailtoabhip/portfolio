@@ -36,30 +36,42 @@ export function bandT(t: number, a: number, b: number): number {
 }
 
 // ---- Shared day/night values (single source of truth) ----
-// Night values match the colors already in Road.tsx/Forest.tsx/
-// Experience.tsx exactly, so day mode is additive, not a re-tune.
-export const SKY = { night: "#101c38", day: "#bcdcee" };
-export const FOG_NEAR = { night: 8, day: 40 };
-export const FOG_FAR = { night: 60, day: 220 };
-export const AMBIENT = { night: 0.11, day: 0.7 };
+// Day matches the bright cartoon-highway reference; night is the
+// same scene under a navy sky, lit by headlights and glowing paint.
+/** Horizon colour (also the fog colour) and the zenith colour. */
+export const SKY = { night: "#14233f", day: "#cfe6f4" };
+export const SKY_TOP = { night: "#040814", day: "#3f93e3" };
+/** Hazy horizon hills, two layers (near is greener, far is bluer). */
+export const HILLS = {
+  nearDay: "#7fae8c",
+  farDay: "#9cc0cf",
+  nearNight: "#0b1a22",
+  farNight: "#0f1d33",
+};
+export const FOG_NEAR = { night: 8, day: 70 };
+export const FOG_FAR = { night: 90, day: 320 };
+export const AMBIENT = { night: 0.11, day: 0.8 };
 export const AMBIENT_COLOR = { night: "#93a8d1", day: "#fff3e2" };
 export const SUN_LIGHT_COLOR = "#fff1d6";
-export const SUN_LIGHT_INTENSITY = 1.15;
+export const SUN_LIGHT_INTENSITY = 1.9;
+/** Renderer exposure at full day (night is 1.0). */
+export const DAY_EXPOSURE = 1.3;
+/** Day-only sky/ground bounce so shaded faces (tree sides, cab
+ * interior) read as lit clay instead of silhouettes. */
+export const HEMI = { sky: "#eef6ff", ground: "#c9b08a", day: 0.9 };
+/** Sun light comes from behind-right of the driver in daylight so
+ * everything in view is front-lit; the visible disc stays ahead. */
+export const SUN_LIGHT_POS_DAY: [number, number, number] = [22, 48, 30];
 
-export const ROAD_COLOR = { night: "#101114", day: "#55545a" };
-/** The forest-floor ground plane either side of the road (distinct
- * from the asphalt strip itself, per ROAD_COLOR above). Kept muted so
- * it stays the quietest surface in frame — road and trees should
- * still draw the eye. */
-export const GROUND_COLOR = { night: "#0a0f0a", day: "#8a7256" };
-export const TRUNK_COLOR = { night: "#241a10", day: "#5a4738" };
+export const TRUNK_COLOR = { night: "#241a10", day: "#8a6a4f" };
+export const BUSH_COLOR = { night: "#10261a", day: "#5f9a43" };
 /** [bottom, mid, top] — darker toward the top at night (headlight-lit
  * from below-ahead), lighter toward the top in daylight (sun from
  * above). The gradient direction inverting between modes is correct,
  * not a bug — it's the same "light source implies the gradient" rule
  * in both cases. */
 export const CANOPY_COLORS = [
-  { night: "#14301c", day: "#2c4d28" },
-  { night: "#112a18", day: "#436b3c" },
-  { night: "#0d2213", day: "#5c8c52" },
+  { night: "#14301c", day: "#4f8a45" },
+  { night: "#112a18", day: "#6aa85a" },
+  { night: "#0d2213", day: "#8cc678" },
 ];

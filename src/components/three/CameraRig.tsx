@@ -35,7 +35,7 @@ export default function CameraRig() {
 
     // --- road rumble (speed-scaled, capped) ---
     const t = state.clock.elapsedTime;
-    const k = Math.min(drive.speed / 13, 1) * SHAKE_AMP;
+    const k = Math.min(drive.speed / 22, 1) * SHAKE_AMP;
     g.position.set(
       SEAT.x + (Math.sin(t * 17.3) * 0.5 + Math.sin(t * 29.7) * 0.3) * k,
       SEAT.y + (Math.sin(t * 23.1) * 0.6 + Math.sin(t * 41.3) * 0.25) * k,

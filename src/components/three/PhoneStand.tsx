@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { useNightRun } from "@/lib/store";
-import { SHEETS } from "@/lib/destinations";
 import { drive } from "@/lib/driveState";
 import { CLAY_ACCENT_AMBER, makeScreenMaterial } from "@/lib/clayMaterials";
 import ContactShadow from "@/components/three/ContactShadow";
@@ -17,7 +16,7 @@ import ContactShadow from "@/components/three/ContactShadow";
  * store flag independent of the tablet's phase machine.
  */
 
-function drawReadout(dist: number, delivered: number): HTMLCanvasElement {
+function drawReadout(speedMs: number): HTMLCanvasElement {
   const c = document.createElement("canvas");
   c.width = 160;
   c.height = 220;
@@ -31,17 +30,13 @@ function drawReadout(dist: number, delivered: number): HTMLCanvasElement {
   ctx.textAlign = "center";
   ctx.font = "600 11px 'Courier New', monospace";
   ctx.globalAlpha = 0.75;
-  ctx.fillText("NEXT DROP", 80, 60);
-  ctx.font = "700 26px 'Courier New', monospace";
+  ctx.fillText("SPEED", 80, 70);
+  ctx.font = "700 40px 'Courier New', monospace";
   ctx.globalAlpha = 1;
-  ctx.fillText(dist >= 0 ? `${dist}m` : "—", 80, 96);
+  ctx.fillText(`${Math.round(speedMs * 3.6)}`, 80, 118);
   ctx.font = "600 11px 'Courier New', monospace";
-  ctx.fillStyle = "#8fe9ff";
   ctx.globalAlpha = 0.75;
-  ctx.fillText("DELIVERED", 80, 148);
-  ctx.font = "700 22px 'Courier New', monospace";
-  ctx.globalAlpha = 1;
-  ctx.fillText(`${delivered}/${SHEETS.length}`, 80, 180);
+  ctx.fillText("KM/H", 80, 140);
   ctx.font = "600 10px 'Courier New', monospace";
   ctx.fillStyle = "#8fe9ff";
   ctx.globalAlpha = 0.85;
@@ -52,7 +47,6 @@ function drawReadout(dist: number, delivered: number): HTMLCanvasElement {
 export default function PhoneStand() {
   const quality = useNightRun((s) => s.quality);
   const openPhoneScreen = useNightRun((s) => s.openPhoneScreen);
-  const delivered = useNightRun((s) => s.delivered.length);
   const [hovered, setHovered] = useState(false);
   const textureRef = useRef<THREE.CanvasTexture | null>(null);
 
@@ -65,7 +59,7 @@ export default function PhoneStand() {
 
   const texture = useMemo(() => {
     if (lowTier) return null;
-    const tex = new THREE.CanvasTexture(drawReadout(drive.nextStopDist, delivered));
+    const tex = new THREE.CanvasTexture(drawReadout(drive.speed));
     tex.colorSpace = THREE.SRGBColorSpace;
     textureRef.current = tex;
     return tex;
@@ -86,11 +80,11 @@ export default function PhoneStand() {
     const id = setInterval(() => {
       const tex = textureRef.current;
       if (!tex) return;
-      tex.image = drawReadout(drive.nextStopDist, delivered);
+      tex.image = drawReadout(drive.speed);
       tex.needsUpdate = true;
-    }, 400);
+    }, 250);
     return () => clearInterval(id);
-  }, [lowTier, delivered]);
+  }, [lowTier]);
 
   return (
     // Right of the steering wheel (wheel sits at x=0).
