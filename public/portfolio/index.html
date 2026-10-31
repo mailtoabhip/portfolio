@@ -302,6 +302,155 @@ figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-tra
 .gc-dot{width:8px;height:8px;border-radius:50%;background:#7EE6A1;box-shadow:0 0 0 0 rgba(126,230,161,.6);animation:gcp 2s infinite}
 @keyframes gcp{0%{box-shadow:0 0 0 0 rgba(126,230,161,.6)}70%{box-shadow:0 0 0 8px rgba(126,230,161,0)}100%{box-shadow:0 0 0 0 rgba(126,230,161,0)}}
 @media (prefers-reduced-motion:reduce){.gc-dot{animation:none}}
+
+/* ABOUT-DECK */
+.ab-page{max-width:none}
+#v-about:not([hidden])~*{}
+.ab-deck{--ab-bg:var(--blue);--ab-fg:#fff;--ab-acc:#CCFF00;position:relative;container-type:size;outline:none;overflow:hidden;
+  height:calc(100dvh - 104px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:440px;
+  background:var(--ab-bg);color:var(--ab-fg);transition:background .5s ease,color .5s ease;border:1px solid var(--line)}
+.ab-deck[data-bg="blue"]{--ab-bg:#2B3AFF;--ab-fg:#fff;--ab-acc:#CCFF00}
+.ab-deck[data-bg="paper"]{--ab-bg:#EDE9E0;--ab-fg:#1A1A1A;--ab-acc:#2B3AFF}
+.ab-deck[data-bg="dark"]{--ab-bg:#141414;--ab-fg:#EDE9E0;--ab-acc:#CCFF00}
+.ab-deck[data-bg="yellow"]{--ab-bg:#CCFF00;--ab-fg:#111;--ab-acc:#2B3AFF}
+.ab-deck[data-bg="magenta"]{--ab-bg:#FF2D78;--ab-fg:#fff;--ab-acc:#CCFF00}
+.ab-slide{position:absolute;inset:0;padding:clamp(56px,9cqh,84px) clamp(64px,10cqw,120px) clamp(56px,9cqh,80px) clamp(20px,6cqw,80px);
+  display:flex;align-items:center;visibility:hidden;opacity:0;transform:translateX(4%);transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s .55s}
+.ab-slide.on{visibility:visible;opacity:1;transform:none;transition:opacity .45s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.ab-slide.back{transform:translateX(-4%)}
+.ab-slide [data-a]{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.ab-slide.on [data-a]{opacity:1;transform:none}
+.ab-slide.on [data-a]:nth-child(2){transition-delay:.06s}.ab-slide.on [data-a]:nth-child(3){transition-delay:.12s}
+.ab-slide.on [data-a]:nth-child(4){transition-delay:.18s}.ab-slide.on [data-a]:nth-child(5){transition-delay:.24s}
+.ab-slide.on [data-a]:nth-child(6){transition-delay:.3s}.ab-slide.on [data-a]:nth-child(7){transition-delay:.36s}
+.ab-slide.on [data-a]:nth-child(8){transition-delay:.42s}.ab-slide.on [data-a]:nth-child(9){transition-delay:.48s}
+.ab-eyebrow{display:block;font-family:var(--mono);font-size:clamp(10px,1.6cqmin,13px);letter-spacing:.2em;text-transform:uppercase;opacity:.8;margin-bottom:clamp(10px,2cqh,18px)}
+.ab-xxl,.ab-xl,.ab-l{font-family:var(--display);text-transform:uppercase;font-weight:400;letter-spacing:.01em;line-height:.95;margin:0;text-wrap:balance}
+.ab-xxl{font-size:clamp(40px,11.5cqmin,140px)}
+.ab-xl{font-size:clamp(38px,10cqmin,120px)}
+.ab-l{font-size:clamp(26px,6.4cqmin,72px);max-width:22ch;margin-bottom:clamp(14px,3cqh,30px);line-height:1.12}
+.ab-lead{font-size:clamp(15px,2.6cqmin,24px);line-height:1.45;max-width:46ch;margin-top:clamp(12px,2.6cqh,24px)}
+.ab-hint{margin-top:clamp(16px,4cqh,36px);font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ab-acc)}
+.ab-col{width:100%;position:relative}
+mark{background:var(--ab-acc);color:var(--ab-bg);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+mark.y{background:#CCFF00;color:#111}
+.hl-y{color:var(--ab-acc)}
+em{font-style:normal;color:var(--ab-acc)}
+/* hero */
+.ab-hero{display:flex;align-items:center;gap:clamp(20px,5cqw,64px);width:100%}
+.ab-photo{position:relative;flex:0 0 auto;width:clamp(120px,34cqmin,360px);aspect-ratio:4/5;border:3px solid var(--ab-fg);box-shadow:12px 12px 0 #CCFF00}
+.ab-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+.ab-stamp{position:absolute;left:-10px;bottom:16px;background:#CCFF00;color:#111;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:6px 10px;transform:rotate(-4deg)}
+.ab-hero-t{min-width:0}
+/* statement / belief */
+.ab-statement,.ab-belief{position:relative;width:100%}
+.ghost{color:transparent;-webkit-text-stroke:2px var(--ab-acc)}
+.ab-art{display:block;pointer-events:none}
+.ab-float{position:absolute;right:0;top:50%;width:clamp(110px,30cqmin,320px);transform:translateY(-50%);animation:abfloat 5s ease-in-out infinite;z-index:0;opacity:.95}
+.ab-float.r{right:2%}
+.ab-statement>*:not(.ab-art),.ab-belief>*:not(.ab-art),.ab-col>*:not(.ab-art){position:relative;z-index:1}
+@keyframes abfloat{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.ab-ico{width:clamp(44px,10cqmin,96px);height:auto;margin-bottom:6px}
+/* cards */
+.ab-cards4,.ab-grid4,.ab-steps,.ab-stats{display:grid;gap:clamp(8px,1.6cqmin,16px)}
+.ab-cards4,.ab-grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ab-pcard,.ab-grid4>div,.ab-steps>div{border:2px solid currentColor;padding:clamp(12px,2.4cqmin,22px);display:flex;flex-direction:column;gap:6px;min-width:0}
+.ab-pcard b,.ab-grid4 b,.ab-steps b,.ab-hobbies b{font-family:var(--display);text-transform:uppercase;font-weight:400;font-size:clamp(16px,3cqmin,28px);line-height:1}
+.ab-pcard span,.ab-grid4 span,.ab-steps span,.ab-hobbies span{font-size:clamp(13px,2cqmin,16px);line-height:1.4;opacity:.85}
+.ab-pcard{background:color-mix(in srgb,currentColor 6%,transparent)}
+.ab-pcard:first-child{background:#CCFF00;color:#111;border-color:#CCFF00}
+.ab-grid4 i,.ab-steps i{font-style:normal;font-family:var(--mono);font-size:clamp(11px,1.8cqmin,14px);color:var(--ab-acc);letter-spacing:.08em}
+.ab-deck[data-bg="magenta"] .ab-grid4 i{color:#CCFF00}
+.ab-grid4 a{color:inherit}
+.ab-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+/* stats */
+.ab-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.ab-stats>div{border-top:4px solid currentColor;padding:clamp(12px,2.4cqmin,20px) clamp(8px,1.6cqmin,16px) 0 0}
+.ab-stats b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(40px,min(11cqmin,6.2cqw),140px);line-height:.9;letter-spacing:-.01em}
+.ab-stats span{display:block;margin-top:8px;font-size:clamp(13px,2.2cqmin,18px);max-width:18ch}
+/* journey */
+.ab-road{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative}
+.ab-road::before{content:"";position:absolute;left:0;right:0;top:9px;height:3px;background:currentColor;opacity:.25}
+.ab-road li{position:relative;padding:34px 12px 0 0;display:flex;flex-direction:column;gap:4px}
+.ab-road li::before{content:"";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--ab-bg);border:3px solid currentColor}
+.ab-road li.now::before{background:#CCFF00;border-color:#111;box-shadow:0 0 0 6px color-mix(in srgb,#CCFF00 45%,transparent)}
+.ab-road time{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--blue)}
+.ab-road b{font-weight:600;font-size:clamp(14px,2.2cqmin,18px);line-height:1.2}
+.ab-road span{font-size:clamp(12px,1.9cqmin,15px);opacity:.75}
+/* logos / creds */
+.ab-logos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.ab-logos span{background:var(--ab-bg);font-family:var(--display);text-transform:uppercase;font-size:clamp(16px,3.4cqmin,32px);padding:clamp(14px,3.4cqh,30px) 12px;text-align:center;transition:background .2s,color .2s}
+.ab-logos span:hover{background:var(--blue);color:#fff}
+.ab-creds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:clamp(12px,3cqh,24px)}
+.ab-creds div{display:flex;gap:12px;align-items:baseline;border-left:4px solid var(--blue);padding-left:12px}
+.ab-creds b{font-family:var(--display);font-weight:400;font-size:clamp(20px,3.6cqmin,34px);color:var(--blue)}
+.ab-creds span{font-size:14px}
+/* quotes */
+.ab-quotes{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:clamp(10px,2cqmin,18px);align-items:stretch}
+.ab-quotes figure{margin:0;border:0;background:#111;color:#EDE9E0;padding:clamp(14px,3cqmin,28px);display:flex;flex-direction:column;justify-content:space-between;gap:14px;box-shadow:8px 8px 0 #2B3AFF}
+.ab-quotes figure:first-child blockquote{font-size:clamp(18px,3.6cqmin,32px)}
+.ab-quotes blockquote{margin:0;font-size:clamp(15px,2.5cqmin,21px);line-height:1.3}
+.ab-quotes figcaption{border:0;padding:0;color:#CCFF00;font-size:10.5px}
+/* hobbies */
+.ab-hobbies{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,1.6cqmin,14px)}
+.ab-hobbies>div{background:#fff;color:#111;padding:clamp(12px,2.6cqmin,22px);display:flex;flex-direction:column;gap:4px;transition:transform .25s}
+.ab-hobbies>div:nth-child(odd){transform:rotate(-2deg)}.ab-hobbies>div:nth-child(even){transform:rotate(2deg)}
+.ab-slide.on .ab-hobbies>div:hover{transform:rotate(0) translateY(-4px)}
+/* end */
+.ab-end{width:100%}
+.ab-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(20px,5cqh,44px)}
+.ab-btn{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:inherit;border:2px solid currentColor;padding:14px 22px;transition:background .2s,color .2s}
+.ab-btn:hover{background:#EDE9E0;color:#141414}
+.ab-btn.y{background:#CCFF00;border-color:#CCFF00;color:#111}
+.ab-btn.y:hover{background:#fff;border-color:#fff}
+/* controls */
+.ab-bars{position:absolute;left:clamp(20px,6cqw,80px);right:clamp(20px,6cqw,80px);top:clamp(16px,3cqh,26px);display:flex;gap:6px;z-index:5}
+.ab-bars i{flex:1;height:4px;background:color-mix(in srgb,currentColor 25%,transparent);overflow:hidden}
+.ab-bars b{display:block;height:100%;width:0;background:currentColor;transition:width .45s ease}
+.ab-bars i.done b{width:100%}
+.ab-next,.ab-prev{position:absolute;z-index:6;top:50%;transform:translateY(-50%);border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-size:clamp(22px,4cqmin,32px);line-height:1;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,transform .2s,opacity .2s}
+.ab-next{right:clamp(10px,2cqw,28px);width:clamp(52px,9cqmin,84px);height:clamp(52px,9cqmin,84px);background:var(--ab-acc);border-color:var(--ab-acc);color:var(--ab-bg)}
+.ab-next:hover{transform:translateY(-50%) translateX(3px)}
+.ab-next::after{content:"";position:absolute;inset:-8px;border:2px solid var(--ab-acc);opacity:0;animation:abpulse 2s ease-out infinite}
+.ab-deck.seen .ab-next::after{animation:none}
+@keyframes abpulse{0%{opacity:.8;transform:scale(.9)}100%{opacity:0;transform:scale(1.25)}}
+.ab-prev{left:clamp(6px,1.4cqw,20px);width:clamp(40px,6cqmin,52px);height:clamp(40px,6cqmin,52px);opacity:.7}
+.ab-prev:hover{opacity:1}
+.ab-prev[disabled],.ab-next[disabled]{opacity:0;pointer-events:none}
+.ab-count{position:absolute;left:clamp(20px,6cqw,80px);bottom:clamp(14px,3cqh,24px);font-family:var(--mono);font-size:12px;letter-spacing:.16em;opacity:.75;z-index:5}
+/* narrow / short screens */
+@container (max-width:760px){
+  .ab-hero{flex-direction:column;align-items:flex-start;gap:18px}
+  .ab-photo{width:clamp(110px,30cqw,180px)}
+  .ab-cards4,.ab-grid4,.ab-stats{grid-template-columns:1fr 1fr}
+  .ab-stats{row-gap:16px}
+  .ab-steps{grid-template-columns:1fr}
+  .ab-road{grid-template-columns:1fr;gap:10px}
+  .ab-road::before{left:9px;right:auto;top:0;bottom:0;width:3px;height:auto}
+  .ab-road li{padding:0 0 0 34px}
+  .ab-logos{grid-template-columns:1fr 1fr}
+  .ab-creds{grid-template-columns:1fr}
+  .ab-quotes{grid-template-columns:1fr}
+  .ab-quotes figure:nth-child(3){display:none}
+  .ab-hobbies{grid-template-columns:1fr 1fr}
+  .ab-float{opacity:.35;width:40cqw}
+  .ab-slide{align-items:flex-start;padding:52px 18px 84px;overflow-y:auto}
+  .ab-stats b{font-size:clamp(38px,15cqw,90px)}
+  .ab-logos span{font-size:15px;padding:12px 8px}
+  .ab-next,.ab-prev{top:auto;bottom:14px;transform:none}
+  .ab-next{right:14px;width:56px;height:56px}
+  .ab-next:hover{transform:translateX(3px)}
+  .ab-prev{left:auto;right:80px;width:44px;height:44px;bottom:20px}
+  .ab-count{left:18px;bottom:30px}
+  .ab-bars{left:18px;right:18px}
+}
+@container (max-height:560px){
+  .ab-grid4 span,.ab-pcard span{display:none}
+  .ab-lead{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){.ab-slide,.ab-slide [data-a]{transition:none!important;transform:none!important}.ab-float,.ab-next::after{animation:none}}
+/* /ABOUT-DECK */
+
 /* GEN-CSS */
 .cs-lede{font-size:18px;line-height:1.55;max-width:64ch}
 .grid2,.grid3,.rel{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
@@ -584,107 +733,132 @@ body.story-open{overflow:hidden}
   </main>
 
   <!-- ================= ABOUT ================= -->
-  <main id="v-about" class="page" hidden>
-    <a class="btn out sm back" href="#">← Home</a>
-    <div class="ph">
-      <span class="eyebrow">About me</span>
-      <h1 class="disp">I design impactful, simple &amp; awesome digital products.</h1>
-      <p class="lead">I'm a product designer in Bengaluru with 5+ years in UX and UI. I build digital experiences that feel effortless, and for me good design starts with understanding people and solving real problems.</p>
+  <main id="v-about" class="page ab-page" hidden>
+    <div class="ab-deck" id="ab-deck" tabindex="0" aria-roledescription="carousel" aria-label="About me">
+      <div class="ab-bars" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+      <section class="ab-slide" data-bg="blue" aria-label="Intro">
+  <div class="ab-hero">
+    <div class="ab-photo" data-a><img src="img/abhijeet.jpg" alt="Abhijeet Purandare"><span class="ab-stamp">Bengaluru · IN</span></div>
+    <div class="ab-hero-t">
+      <span class="ab-eyebrow" data-a>About me · 01</span>
+      <h2 class="ab-xl" data-a>Hi, I'm<br>Abhijeet</h2>
+      <p class="ab-lead" data-a>Product designer. 5+ years making complex B2B and fintech work feel simple.</p>
+      <p class="ab-hint" data-a>Tap the arrow to flip through →</p>
     </div>
-    <div class="about-grid">
-      <div class="card aloe"><span class="eyebrow">Now</span><p style="font-size:24px;margin-top:10px;line-height:1.2">Product Designer at Delhivery</p><p class="caption" style="margin-top:8px">DelFin, JARVIS, AXLE and fleet management tools on the Tarmac Design System.</p></div>
-      <div class="card stat"><b>5+ yrs</b><span class="caption">in product design</span></div>
-      <div class="card stat"><b>10+</b><span class="caption">complex UX projects led</span></div>
-
-      <div class="card wide"><span class="eyebrow">How it started</span>
-        <p class="story">It began in college with logo design, graphic art and a bit of coding. Then I found UX, and learned the difference between designing to look good and designing so something is easy to use. I've been designing for usability ever since.</p>
-      </div>
-      <div class="card pist"><span class="eyebrow">What I believe</span>
-        <p class="big">Design should be invisible.</p>
-        <p class="caption" style="margin-top:8px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px">Interactions should feel natural, with no extra clicks and no guesswork. That holds for enterprise tools and consumer apps alike, and it only works through close collaboration.</p>
-      </div>
-
-      <div class="card wide"><span class="eyebrow">Working with me</span>
-        <ul class="ai">
-          <li><i>01</i><span>I enjoy hard problems and open discussion, and I treat UX as a way to move the business and the product forward.</span></li>
-          <li><i>02</i><span>I like fast feedback loops: quick reviews, usability tests and A/B tests over long debates.</span></li>
-          <li><i>03</i><span>When the team needs it, I take on mentoring, project management and scrum master duties.</span></li>
-          <li><i>04</i><span>I can explain design decisions clearly to anyone, from engineers to founders to first-time users.</span></li>
-        </ul>
-      </div>
-      <div class="card"><span class="eyebrow">Credentials</span>
-        <ul class="tl">
-          <li><b>HFI-CUA</b><span>Certified Usability Analyst</span><time>2024</time></li>
-          <li><b>B.Tech</b><span>Mechanical Engineering, VIIT Pune</span><time>2022</time></li>
-        </ul>
-      </div>
-
-      <div class="card wide"><span class="eyebrow">Experience</span>
-        <ul class="tl">
-          <li><b>Delhivery</b><span>Product Designer</span><time>2026 – now</time></li>
-          <li><b>Parallel Design Studio</b><span>Product Designer · insurance platform</span><time>2025 – 26</time></li>
-          <li><b>Extentia, a Merkle company</b><span>UX Designer · Star Employee 2022 &amp; 2023</span><time>2022 – 25</time></li>
-          <li><b>Ogee Studio, Santa Clara (remote)</b><span>UX Design Intern · Salesforce &amp; SAP</span><time>2021 – 22</time></li>
-          <li><b>Design Consultants Architects</b><span>UX/UI Intern · SaaS learning platform</span><time>2021</time></li>
-        </ul>
-      </div>
-      <div class="card"><span class="eyebrow">I have worked with</span>
-        <ul class="tl">
-          <li><b>Delhivery</b><span>Logistics</span></li>
-          <li><b>ParallelHQ</b><span>Design studio</span></li>
-          <li><b>Extentia Merkle</b><span>Digital agency</span></li>
-          <li><b>TVS Motor</b><span>Automotive</span></li>
-          <li><b>TORM</b><span>Shipping</span></li>
-          <li><b>Fractal Ink</b><span>Design studio</span></li>
-          <li><b>Netnimbus Technologies</b><span>IT services</span></li>
-        </ul>
-      </div>
-
-      <div class="card wide"><span class="eyebrow">How I work with AI</span>
-        <ul class="ai">
-          <li><i>01</i><span>Built about 75% of the AXLE bidding flow with Claude and the Figma MCP, on design-system components, so UX was reviewed in days instead of weeks.</span></li>
-          <li><i>02</i><span>Built a Figma plugin that writes on-brand illustration prompts using only design-system colours, contrast-checked to WCAG 3:1.</span></li>
-          <li><i>03</i><span>Designed an AI assistant that edits support routing rules in plain language, with a person approving every change.</span></li>
-          <li><i>04</i><span>Designed and built three live products end to end with AI: <a href="https://www.wearmudra.shop/" target="_blank" rel="noopener">Mudra</a>, <a href="https://foodmedi.co/" target="_blank" rel="noopener">FoodMedi.Co</a> and <a href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener">FoodMunafa</a>.</span></li>
-        </ul>
-      </div>
-      <div class="card"><span class="eyebrow">Beyond work</span>
-        <ul class="tl">
-          <li><b>Photography</b><span>and video editing</span></li>
-          <li><b>Writing</b><span>short-film scripts</span></li>
-          <li><b>Fitness</b><span>rope skipping and running</span></li>
-          <li><b>Cooking</b><span>experimenting with recipes</span></li>
-          <li><b>Travel</b><span>planning the next trip</span></li>
-        </ul>
-      </div>
-
-      <div class="card wide"><span class="eyebrow">Explorations</span>
-        <p class="caption" style="margin-top:6px;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px">Branding, T-shirt design and more, alongside product work.</p>
-        <ul class="tl">
-          <li><b>Catering service</b><span>Brand identity, Thane</span></li>
-          <li><b>Nutritionist</b><span>Personal branding logo</span></li>
-          <li><b>VIIT Pune</b><span>Technical event branding</span></li>
-          <li><b>Proton Projects</b><span>IT services company, Pune</span></li>
-        </ul>
-      </div>
-      <div class="card"><span class="eyebrow">My thoughts</span>
-        <ul class="tl stack">
-          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_kodak-nokia-two-giants-that-dominated-activity-7301836156025946113-Tz-7" target="_blank" rel="noopener"><b>When great products fail ↗</b></a><span>Kodak, Nokia and why innovation isn't enough</span></li>
-          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_look-down-at-your-keyboard-ever-wondered-activity-7302908248699846656-mK1T" target="_blank" rel="noopener"><b>The QWERTY trap ↗</b></a><span>Why inefficient designs stick around</span></li>
-          <li><a href="https://www.linkedin.com/posts/abhijeetpurandare_ever-opened-an-app-for-the-first-time-and-activity-7301285564689838081-p09e" target="_blank" rel="noopener"><b>Design that feels like home ↗</b></a><span>Experiences users connect with instantly</span></li>
-        </ul>
-      </div>
-
-      <div class="card full"><span class="eyebrow">What colleagues say</span>
-        <div class="quotes">
-          <figure class="q"><blockquote>“Abhijeet is a detail-oriented designer who carefully considers every use case to create well-rounded solutions.”</blockquote><figcaption>Avid Kadam · Senior UX Lead, Fractal Ink Design Studio</figcaption></figure>
-          <figure class="q"><blockquote>“Abhijeet is a proactive and energetic designer who brings enthusiasm to every project.”</blockquote><figcaption>Rohan Nikam · UX Lead, Extentia Merkle</figcaption></figure>
-          <figure class="q"><blockquote>“I had the opportunity to work with Abhijeet on a project and was truly impressed by his UX design skills.”</blockquote><figcaption>Vikas Jadhav · Tech Lead, Extentia Merkle</figcaption></figure>
-          <figure class="q"><blockquote>“As a UX Lead, I have worked with Abhijeet on client pitches and observed his contributions to various projects.”</blockquote><figcaption>Aditee Gaikwad · UX Lead, Extentia Merkle</figcaption></figure>
-          <figure class="q"><blockquote>“I've had the pleasure of working with Abhijeet Purandare and am truly impressed by his expertise as a UX designer.”</blockquote><figcaption>Shantanu Khoraskar · Founder, Netnimbus Technologies</figcaption></figure>
-          <figure class="q"><blockquote>“I had the pleasure of working with Abhijeet on a B2C website project.”</blockquote><figcaption>Pranav Pendharkar · Assistant Manager, Design, TORM</figcaption></figure>
-        </div>
-      </div>
+  </div></section><section class="ab-slide" data-bg="paper" aria-label="What I do">
+  <div class="ab-statement">
+    <img class="ab-art ab-float" src="img/about/mission.webp" alt="" onerror="this.remove()">
+    <span class="ab-eyebrow" data-a>What I do</span>
+    <h2 class="ab-l" data-a>I design <mark>impactful</mark>, <mark class="y">simple</mark> &amp; awesome digital products.</h2>
+    <p class="ab-lead" data-a>Good design starts with understanding people and solving real problems, then making the solution feel effortless.</p>
+  </div></section><section class="ab-slide" data-bg="dark" aria-label="Right now">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>Right now</span>
+    <h2 class="ab-l" data-a>Product Designer at <span class="hl-y">Delhivery</span></h2>
+    <div class="ab-cards4">
+      <div class="ab-pcard" data-a><b>DelFin</b><span>Fintech app for fleet owners: FASTag, GPS, GST, wallet</span></div>
+      <div class="ab-pcard" data-a><b>JARVIS</b><span>CX ticketing platform with an AI rule assistant</span></div>
+      <div class="ab-pcard" data-a><b>AXLE</b><span>Freight bidding, built with Claude + Figma MCP</span></div>
+      <div class="ab-pcard" data-a><b>FMS</b><span>Fleet management portals</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="yellow" aria-label="By the numbers">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>By the numbers</span>
+    <div class="ab-stats">
+      <div data-a><b>5+</b><span>years designing products</span></div>
+      <div data-a><b>10+</b><span>complex UX projects led</span></div>
+      <div data-a><b>480K+</b><span>customers a year on my TVS enquiry flow</span></div>
+      <div data-a><b>2×</b><span>Star Employee, among 50–100 designers</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="paper" aria-label="How it started">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>How it started</span>
+    <h2 class="ab-l" data-a>From logos to <mark>usability</mark></h2>
+    <div class="ab-steps">
+      <div data-a><img class="ab-art ab-ico" src="img/about/start-logo.webp" alt="" onerror="this.remove()"><i>01</i><b>Logos &amp; graphic art</b><span>College days: brand marks and posters</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/start-code.webp" alt="" onerror="this.remove()"><i>02</i><b>A bit of code</b><span>Learning how things actually get built</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/start-ux.webp" alt="" onerror="this.remove()"><i>03</i><b>Then UX</b><span>Designing so it's easy to use, not just good-looking</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="dark" aria-label="What I believe">
+  <div class="ab-belief">
+    <img class="ab-art ab-float r" src="img/about/invisible.webp" alt="" onerror="this.remove()">
+    <span class="ab-eyebrow" data-a>What I believe</span>
+    <h2 class="ab-xxl" data-a>Design should be <span class="ghost">invisible.</span></h2>
+    <p class="ab-lead" data-a>No extra clicks, no guesswork. Interactions should just feel natural, in enterprise tools and consumer apps alike.</p>
+  </div></section><section class="ab-slide" data-bg="blue" aria-label="Working with me">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>Working with me</span>
+    <div class="ab-grid4">
+      <div data-a><i>01</i><b>Hard problems, open talk</b><span>UX as a lever to move the business and product forward.</span></div>
+      <div data-a><i>02</i><b>Fast feedback loops</b><span>Quick reviews, usability tests and A/B tests over long debates.</span></div>
+      <div data-a><i>03</i><b>Whatever the team needs</b><span>Mentoring, project management, even scrum master duties.</span></div>
+      <div data-a><i>04</i><b>Clear explanations</b><span>Design decisions anyone gets, from engineers to founders.</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="paper" aria-label="Journey">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>The journey</span>
+    <h2 class="ab-l" data-a>Five stops so far</h2>
+    <ol class="ab-road">
+      <li data-a><time>2021</time><b>Design Consultants Architects</b><span>UX/UI intern · SaaS learning platform</span></li>
+      <li data-a><time>2021–22</time><b>Ogee Studio, Santa Clara</b><span>Remote intern · Salesforce &amp; SAP</span></li>
+      <li data-a><time>2022–25</time><b>Extentia, a Merkle company</b><span>UX Designer · Star Employee ×2</span></li>
+      <li data-a><time>2025–26</time><b>Parallel Design Studio</b><span>Product Designer · insurance platform</span></li>
+      <li data-a class="now"><time>2026 →</time><b>Delhivery</b><span>Product Designer</span></li>
+    </ol>
+  </div></section><section class="ab-slide" data-bg="magenta" aria-label="AI">
+  <div class="ab-col">
+    <img class="ab-art ab-float" src="img/about/ai.webp" alt="" onerror="this.remove()">
+    <span class="ab-eyebrow" data-a>AI in my workflow · since 2023</span>
+    <h2 class="ab-l" data-a>I design <em>with</em> AI, and design AI</h2>
+    <div class="ab-grid4">
+      <div data-a><i>~75%</i><b>of AXLE's flow</b><span>built with Claude + Figma MCP; UX review in days, not weeks.</span></div>
+      <div data-a><i>Plugin</i><b>On-brand illustrations</b><span>Figma plugin, WCAG-checked across 31,768 colour tests.</span></div>
+      <div data-a><i>Trust</i><b>Human in the loop</b><span>An AI that edits routing rules, with a person approving every change.</span></div>
+      <div data-a><i>3 live</i><b>Built end to end</b><span><a href="https://www.wearmudra.shop/" target="_blank" rel="noopener">Mudra</a>, <a href="https://foodmedi.co/" target="_blank" rel="noopener">FoodMedi.Co</a>, <a href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener">FoodMunafa</a></span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="paper" aria-label="Worked with">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>Worked with</span>
+    <div class="ab-logos">
+      <span data-a>Delhivery</span><span data-a>TVS Motor</span><span data-a>ParallelHQ</span><span data-a>Extentia Merkle</span>
+      <span data-a>TORM</span><span data-a>Fractal Ink</span><span data-a>Netnimbus</span><span data-a>PA Dept. of Health</span>
+    </div>
+    <div class="ab-creds" data-a>
+      <div><b>HFI-CUA</b><span>Certified Usability Analyst · 2024</span></div>
+      <div><b>B.Tech</b><span>Mechanical Engineering, VIIT Pune · 2022</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="yellow" aria-label="Colleagues">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>What colleagues say</span>
+    <div class="ab-quotes">
+      <figure data-a><blockquote>“A detail-oriented designer who carefully considers every use case to create well-rounded solutions.”</blockquote><figcaption>Avid Kadam · Senior UX Lead, Fractal Ink</figcaption></figure>
+      <figure data-a><blockquote>“A proactive and energetic designer who brings enthusiasm to every project.”</blockquote><figcaption>Rohan Nikam · UX Lead, Extentia Merkle</figcaption></figure>
+      <figure data-a><blockquote>“Truly impressed by his UX design skills.”</blockquote><figcaption>Vikas Jadhav · Tech Lead, Extentia Merkle</figcaption></figure>
+    </div>
+  </div></section><section class="ab-slide" data-bg="blue" aria-label="Beyond work">
+  <div class="ab-col">
+    <span class="ab-eyebrow" data-a>Beyond work</span>
+    <h2 class="ab-l" data-a>Off the clock</h2>
+    <div class="ab-hobbies">
+      <div data-a><img class="ab-art ab-ico" src="img/about/hobby-camera.webp" alt="" onerror="this.remove()"><b>Photography</b><span>&amp; video editing</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/hobby-script.webp" alt="" onerror="this.remove()"><b>Writing</b><span>short-film scripts</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/hobby-rope.webp" alt="" onerror="this.remove()"><b>Fitness</b><span>rope skipping &amp; running</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/hobby-pan.webp" alt="" onerror="this.remove()"><b>Cooking</b><span>new recipes</span></div>
+      <div data-a><img class="ab-art ab-ico" src="img/about/hobby-bag.webp" alt="" onerror="this.remove()"><b>Travel</b><span>the next trip</span></div>
+    </div>
+  </div></section><section class="ab-slide" data-bg="dark" aria-label="Contact">
+  <div class="ab-end">
+    <span class="ab-eyebrow" data-a>That's me</span>
+    <h2 class="ab-xl" data-a>Let's make something <span class="hl-y">simple.</span></h2>
+    <div class="ab-ctas" data-a>
+      <a class="ab-btn y" href="#contact">Contact me</a>
+      <a class="ab-btn" href="#projects">See projects</a>
+      <a class="ab-btn" href="#resume">Resume</a>
+    </div>
+  </div></section>
+      <button class="ab-prev" type="button" aria-label="Previous slide">←</button>
+      <button class="ab-next" type="button" aria-label="Next slide">→</button>
+      <span class="ab-count" aria-live="polite">01 / 13</span>
     </div>
   </main>
 
@@ -1479,8 +1653,39 @@ body.story-open{overflow:hidden}
     nav.hidden=(h==='home');
     window.scrollTo(0,0);
     if(window.__tiles) window.__tiles.active=(h==='home');
+    if(h==='about'&&window.__aboutDeck) window.__aboutDeck.reset();
   }
   window.addEventListener('hashchange',route);
+
+  /* ---------- about deck ---------- */
+  (function(){
+    var deck=document.getElementById('ab-deck'); if(!deck) return;
+    var slides=[].slice.call(deck.querySelectorAll('.ab-slide'));
+    var bars=[].slice.call(deck.querySelectorAll('.ab-bars i'));
+    var prev=deck.querySelector('.ab-prev'), next=deck.querySelector('.ab-next'), count=deck.querySelector('.ab-count');
+    var i=0, n=slides.length;
+    function pad(x){return (x<10?'0':'')+x;}
+    function show(k,dir){
+      k=Math.max(0,Math.min(n-1,k));
+      slides.forEach(function(s,j){s.classList.toggle('on',j===k);s.classList.toggle('back',dir<0&&j===i&&j!==k);s.setAttribute('aria-hidden',j===k?'false':'true');});
+      i=k; deck.setAttribute('data-bg',slides[k].getAttribute('data-bg'));
+      bars.forEach(function(b,j){b.classList.toggle('done',j<=k);});
+      prev.disabled=(k===0); next.disabled=(k===n-1);
+      count.textContent=pad(k+1)+' / '+pad(n);
+    }
+    next.addEventListener('click',function(){deck.classList.add('seen');show(i+1,1);});
+    prev.addEventListener('click',function(){show(i-1,-1);});
+    deck.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();deck.classList.add('seen');show(i+1,1);}
+      if(e.key==='ArrowLeft'){e.preventDefault();show(i-1,-1);}
+    });
+    var x0=null;
+    deck.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
+    deck.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50){deck.classList.add('seen');show(i+(dx<0?1:-1),dx<0?1:-1);}});
+    window.__aboutDeck={reset:function(){show(0,1);setTimeout(function(){try{deck.focus({preventScroll:true});}catch(_){}} ,50);}};
+    show(0,1);
+  })();
+
 
   /* ---------- copy email ---------- */
   var cb=document.getElementById('copy'),em=document.getElementById('email');
