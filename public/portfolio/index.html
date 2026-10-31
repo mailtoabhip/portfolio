@@ -348,6 +348,7 @@ em{font-style:normal;color:var(--ab-acc)}
 .ab-art{display:block;pointer-events:none}
 .ab-float{position:absolute;right:0;top:50%;width:clamp(110px,30cqmin,320px);transform:translateY(-50%);animation:abfloat 5s ease-in-out infinite;z-index:0;opacity:.95}
 .ab-float.r{right:2%}
+.ab-float.top{top:-4%;transform:none;width:clamp(110px,24cqmin,260px)}
 .ab-statement>*:not(.ab-art),.ab-belief>*:not(.ab-art),.ab-col>*:not(.ab-art){position:relative;z-index:1}
 @keyframes abfloat{0%,100%{translate:0 0}50%{translate:0 -10px}}
 .ab-ico{width:clamp(44px,10cqmin,96px);height:auto;margin-bottom:6px}
@@ -433,7 +434,10 @@ em{font-style:normal;color:var(--ab-acc)}
   .ab-quotes{grid-template-columns:1fr}
   .ab-quotes figure:nth-child(3){display:none}
   .ab-hobbies{grid-template-columns:1fr 1fr}
-  .ab-float{opacity:.35;width:40cqw}
+  .ab-float{display:none}
+  .ab-steps>div{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;padding:10px 12px}
+  .ab-steps .ab-ico{grid-row:1/4;width:52px;margin:0}
+  .ab-steps i,.ab-steps b,.ab-steps span{grid-column:2}
   .ab-slide{align-items:flex-start;padding:52px 18px 84px;overflow-y:auto}
   .ab-stats b{font-size:clamp(38px,15cqw,90px)}
   .ab-logos span{font-size:15px;padding:12px 8px}
@@ -807,7 +811,7 @@ body.story-open{overflow:hidden}
     </ol>
   </div></section><section class="ab-slide" data-bg="magenta" aria-label="AI">
   <div class="ab-col">
-    <img class="ab-art ab-float" src="img/about/ai.webp" alt="" onerror="this.remove()">
+    <img class="ab-art ab-float top" src="img/about/ai.webp" alt="" onerror="this.remove()">
     <span class="ab-eyebrow" data-a>AI in my workflow · since 2023</span>
     <h2 class="ab-l" data-a>I design <em>with</em> AI, and design AI</h2>
     <div class="ab-grid4">
