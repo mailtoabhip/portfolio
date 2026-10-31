@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { PerspectiveCamera } from "@react-three/drei";
 import { drive } from "@/lib/driveState";
+import { sim } from "@/lib/game";
 
 /**
  * Driver's-seat camera rig (§9):
@@ -35,7 +36,10 @@ export default function CameraRig() {
 
     // --- road rumble (speed-scaled, capped) ---
     const t = state.clock.elapsedTime;
-    const k = Math.min(drive.speed / 22, 1) * SHAKE_AMP;
+    const k =
+      Math.min(Math.abs(drive.speed) / 22, 1) * SHAKE_AMP +
+      sim.bump * 0.09 +
+      (sim.scraping ? 0.02 : 0);
     g.position.set(
       SEAT.x + (Math.sin(t * 17.3) * 0.5 + Math.sin(t * 29.7) * 0.3) * k,
       SEAT.y + (Math.sin(t * 23.1) * 0.6 + Math.sin(t * 41.3) * 0.25) * k,

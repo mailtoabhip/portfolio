@@ -5,10 +5,9 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useNightRun } from "@/lib/store";
 import { drive } from "@/lib/driveState";
-import { input } from "@/lib/controls";
 import { timeOfDayState, bandT, TRUNK_COLOR, CANOPY_COLORS, BUSH_COLOR } from "@/lib/timeOfDayState";
 import { applyFresnelRim } from "@/lib/clayMaterials";
-import { advanceCurve } from "@/lib/curveWorld";
+import { sim } from "@/lib/game";
 import { VERGE_L_LEFT, VERGE_R_RIGHT } from "@/lib/highway";
 
 /**
@@ -17,8 +16,8 @@ import { VERGE_L_LEFT, VERGE_R_RIGHT } from "@/lib/highway";
  *
  * - Lane markings now live in the road textures (Road.tsx scrolls them).
  * - Verge shrubs recycle the same way as the trees.
- * - Distance travelled also drives the curved-world turns
- *   (lib/curveWorld.ts).
+ * - Speed/distance come from GameSim (drive.dz); reversing recycles
+ *   trees the other way. Trees and shrubs step aside for lay-bys.
  * - Trees are two instanced meshes (trunks + canopies) sharing one
  *   position table; each tree that passes the camera teleports to the
  *   far end with a fresh random lateral seat.
@@ -27,7 +26,6 @@ import { VERGE_L_LEFT, VERGE_R_RIGHT } from "@/lib/highway";
 const TREE_COUNT = 160; // both sides combined
 const BUSH_COUNT = 90;
 const DEPTH = 260; // how far the forest extends
-const CRUISE_SPEED = 21; // m/s ≈ 75 km/h cruise; flat out ≈ 130 km/h
 
 type Tree = { x: number; z: number; s: number; rot: number };
 
@@ -57,9 +55,15 @@ const TIERS: [number, number, number][] = [
 ];
 
 const _bushDummy = new THREE.Object3D();
-function placeBush(mesh: THREE.InstancedMesh, i: number, b: Tree) {
+function nearSite(s: number, r: number) {
+  for (const site of sim.sites) if (Math.abs(site.s - s) < r) return true;
+  return false;
+}
+
+function placeBush(mesh: THREE.InstancedMesh, i: number, b: Tree, hidden = false) {
+  const k = hidden ? 0.0001 : 1;
   _bushDummy.position.set(b.x, b.s * 0.45, b.z);
-  _bushDummy.scale.set(b.s * 1.25, b.s * 0.85, b.s * 1.15);
+  _bushDummy.scale.set(b.s * 1.25 * k, b.s * 0.85 * k, b.s * 1.15 * k);
   _bushDummy.rotation.set(0, b.rot, 0);
   _bushDummy.updateMatrix();
   mesh.setMatrixAt(i, _bushDummy.matrix);
@@ -77,7 +81,6 @@ export default function Forest() {
   const tier0Mat = useRef<THREE.MeshStandardMaterial>(null);
   const tier1Mat = useRef<THREE.MeshStandardMaterial>(null);
   const tier2Mat = useRef<THREE.MeshStandardMaterial>(null);
-  const speedRef = useRef(0);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const trunkNight = useMemo(() => new THREE.Color(TRUNK_COLOR.night), []);
@@ -150,30 +153,8 @@ export default function Forest() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useFrame((_, rawDelta) => {
-    const delta = Math.min(rawDelta, 0.1); // guard against tab-switch jumps
-    const { phase, speed } = useNightRun.getState();
-
-    // The truck only moves when the driver drives (W). While a sheet
-    // is open (reading/returning) it keeps a gentle ambient roll.
-    const TOP = CRUISE_SPEED * 1.75 * speed; // ~37 m/s (≈130 km/h) flat out
-    if (phase === "cruising") {
-      if (input.brake > 0) {
-        // Real brakes: linear decel — stops from top speed in ~30m
-        speedRef.current = Math.max(0, speedRef.current - 14 * delta);
-      } else if (input.throttle > 0) {
-        speedRef.current += (TOP - speedRef.current) * Math.min(1, delta * 0.75);
-      } else {
-        // Coasting: gentle engine-drag decel
-        speedRef.current = Math.max(0, speedRef.current - 2.5 * delta);
-      }
-      speedRef.current = Math.min(speedRef.current, TOP || speedRef.current);
-    } else {
-      const target = phase === "reading" || phase === "returning" ? 9 * speed : 0;
-      speedRef.current += (target - speedRef.current) * Math.min(1, delta * 0.9);
-    }
-    drive.speed = speedRef.current;
-
+  useFrame(() => {
+    // Speed, distance and turns are owned by GameSim (runs first).
     // Day/night material cross-fade — reads the shared `t` directly,
     // independent of whether the world is currently moving.
     const groundT = bandT(timeOfDayState.t, 0.35, 0.7);
@@ -191,10 +172,8 @@ export default function Forest() {
       if (u) u.uRimIntensity.value = rimTarget;
     }
 
-    const dz = speedRef.current * delta;
-    drive.dist += dz;
-    advanceCurve(dz);
-    if (dz === 0) return;
+    const dz = drive.dz;
+    const near = nearSite;
 
     // 1) Verge bushes: slide + recycle
     if (bushes.current) {
@@ -202,7 +181,9 @@ export default function Forest() {
         const b = bushList[i];
         b.z += dz;
         if (b.z > 6) Object.assign(b, seatBush(b.z - DEPTH));
-        placeBush(bushes.current, i, b);
+        else if (b.z < -DEPTH - 8) Object.assign(b, seatBush(b.z + DEPTH));
+        // Lay-bys pave over the verge: no shrubs there.
+        placeBush(bushes.current, i, b, b.x < 0 && near(drive.dist - b.z, 55));
       }
       bushes.current.instanceMatrix.needsUpdate = true;
     }
@@ -216,10 +197,14 @@ export default function Forest() {
       tree.z += dz;
       if (tree.z > 8) {
         Object.assign(tree, seatTree(tree.z - DEPTH));
+      } else if (tree.z < -DEPTH - 10) {
+        Object.assign(tree, seatTree(tree.z + DEPTH));
       }
+      // Clear the forest around pickup/drop buildings.
+      const sc = tree.x < 0 && tree.x > -40 && near(drive.dist - tree.z, 42) ? 0.0001 : tree.s;
       // trunk
       dummy.position.set(tree.x, tree.s * 1.1, tree.z);
-      dummy.scale.set(tree.s, tree.s, tree.s);
+      dummy.scale.set(sc, sc, sc);
       dummy.rotation.set(0, tree.rot, 0);
       dummy.updateMatrix();
       tMesh.setMatrixAt(i, dummy.matrix);

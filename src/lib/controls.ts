@@ -11,6 +11,10 @@ export const input = {
   throttle: 0, // 0..1
   brake: 0, // 0..1
   steer: 0, // -1 (left) .. 1 (right)
+  /** 1 while the driver actually wants to back up (keyboard S held,
+   * or the touch reverse button) — a plain touch release brakes but
+   * never reverses. */
+  reverse: 0,
 };
 
 const keys = { w: false, s: false, a: false, d: false };
@@ -18,6 +22,7 @@ const keys = { w: false, s: false, a: false, d: false };
 function apply() {
   input.throttle = keys.w ? 1 : 0;
   input.brake = keys.s ? 1 : 0;
+  input.reverse = keys.s ? 1 : 0;
   input.steer = (keys.d ? 1 : 0) - (keys.a ? 1 : 0);
 }
 
@@ -56,6 +61,14 @@ export const isTouchDevice =
 export function setTouchThrottle(active: boolean) {
   input.throttle = active ? 1 : 0;
   input.brake = active ? 0 : 1;
+  if (active) input.reverse = 0;
+}
+
+/** Touch reverse button: brake to a stop, then back up while held. */
+export function setTouchReverse(active: boolean) {
+  input.reverse = active ? 1 : 0;
+  input.brake = active ? 1 : input.throttle ? 0 : 1;
+  if (active) input.throttle = 0;
 }
 
 /** Mount once (in the experience shell) to activate driving keys. */
