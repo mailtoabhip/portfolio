@@ -12,10 +12,32 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE = "https://abhijeetpurandare.com";
+const TITLE = "Abhijeet Purandare · Product Designer";
+const DESCRIPTION =
+  "Product designer with 5+ years in B2B, fintech and AI-led products, currently at Delhivery. Case studies, resume and an interactive driving game.";
+
 export const metadata: Metadata = {
-  title: "Abhijeet Purandare — The Night Run",
-  description:
-    "B2B Product Designer at Delhivery. I design the systems that move real things — reliably, at scale, mostly while the world's asleep.",
+  metadataBase: new URL(SITE),
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "Abhijeet Purandare",
+  authors: [{ name: "Abhijeet Purandare", url: SITE }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: SITE,
+    siteName: "Abhijeet Purandare",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Abhijeet Purandare, Product Designer at Delhivery" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/og.png"],
+  },
 };
 
 // Locks out pinch-zoom (fights both the tap-hold gesture and tilt
