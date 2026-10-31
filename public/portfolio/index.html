@@ -525,8 +525,8 @@ html.intro-on,html.intro-on body{overflow:hidden}
 #intro.out{transform:translateY(-100%)}
 .in-logo{--u:clamp(34px,9vmin,84px);position:relative;width:calc(var(--u)*5);height:calc(var(--u)*4);transition:transform .7s cubic-bezier(.76,0,.24,1),opacity .5s}
 #intro.out .in-logo{transform:translateY(40vh) scale(.6);opacity:0}
-.in-logo.flying .in-p i{transition:background .6s ease,box-shadow .6s ease;background:#2B3AFF;box-shadow:0 0 0 .5px #2B3AFF}
-.in-logo.flying .in-acc i{background:#FF2D78;box-shadow:0 0 0 .5px #FF2D78}
+.in-logo.flying .in-p i{transition:background .6s ease,box-shadow .6s ease;background:#1A1A1A;box-shadow:0 0 0 .5px #1A1A1A}
+.in-logo.flying .in-acc i{background:#2B3AFF;box-shadow:0 0 0 .5px #2B3AFF}
 .in-p{position:absolute;inset:0;animation:inDrop .52s cubic-bezier(.55,0,.75,.2) both;animation-delay:calc(var(--k)*.2s + .15s)}
 .in-p i{position:absolute;width:var(--u);height:var(--u);left:calc(var(--c)*var(--u));top:calc(var(--r)*var(--u));background:#EDE9E0;
   box-shadow:0 0 0 .5px #EDE9E0}
@@ -546,11 +546,14 @@ html.intro-on,html.intro-on body{overflow:hidden}
 
 
 /* PROFILE LOGO */
-.pf-logo{--w:clamp(96px,11vw,148px);--u:calc(var(--w)/5);position:relative;width:var(--w);height:calc(var(--u)*4);flex:none}
-.pf-logo i{position:absolute;width:var(--u);height:var(--u);left:calc(var(--c)*var(--u));top:calc(var(--r)*var(--u));background:#2B3AFF;box-shadow:0 0 0 .5px #2B3AFF}
-.pf-logo i.acc{background:#FF2D78;box-shadow:0 0 0 .5px #FF2D78}
+.pf-logo{--w:clamp(60px,6vw,84px);cursor:pointer;--u:calc(var(--w)/5);position:relative;width:var(--w);height:calc(var(--u)*4);flex:none}
+.pf-logo i{position:absolute;width:var(--u);height:var(--u);left:calc(var(--c)*var(--u));top:calc(var(--r)*var(--u));background:#1A1A1A;box-shadow:0 0 0 .5px #1A1A1A;transition:background .2s}
+.pf-logo i.acc{background:#2B3AFF;box-shadow:0 0 0 .5px #2B3AFF}
+.pf-logo:hover i:not(.acc){background:#2B3AFF;box-shadow:0 0 0 .5px #2B3AFF}
+.pf-logo:hover i.acc{background:#FF2D78;box-shadow:0 0 0 .5px #FF2D78}
+.pf-logo:focus-visible{outline:2px solid #2B3AFF;outline-offset:4px}
 html.intro-on .pf-logo{visibility:hidden}
-@media (max-width:900px){.pf-logo{--w:84px}}
+@media (max-width:900px){.pf-logo{--w:56px}}
 /* TILE → PAGE transition */
 #tx{position:fixed;inset:0;z-index:1100;background:#2B3AFF;opacity:0;transition:opacity .35s ease,transform .65s cubic-bezier(.76,0,.24,1)}
 #tx.in{opacity:1}
@@ -1897,36 +1900,57 @@ body.story-open{overflow:hidden}
     });
   })();
 
-  /* ---------- intro ---------- */
+  /* ---------- intro (also replayed by clicking the profile logo) ---------- */
   (function(){
-    var el=document.getElementById('intro'); if(!el) return;
-    var logo=el.querySelector('.in-logo'), done=false;
+    var first=document.getElementById('intro'); if(!first) return;
+    var TEMPLATE=first.outerHTML.replace(' class="quick"','').replace('class="quick"','');
     var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var quick=el.classList.contains('quick');
-    var nP=el.querySelectorAll('.in-p').length, land=reduce||quick?0:(150+ (nP-1)*200 + 520);
-    function finish(){ if(done) return; done=true;
-      var tgt=document.querySelector('.pf-logo'), tr=tgt&&tgt.getBoundingClientRect();
-      if(!reduce && tr && tr.width>0){
-        // Lift the blue layer, and land the mark in the profile tile as the logo.
-        var lr=logo.getBoundingClientRect();
-        document.body.appendChild(logo);
-        logo.classList.add('flying');
-        logo.style.cssText+=';position:fixed;left:'+lr.left+'px;top:'+lr.top+'px;margin:0;z-index:1001;transform-origin:0 0;transition:transform .8s cubic-bezier(.76,0,.24,1)';
-        requestAnimationFrame(function(){
+    var playing=false;
+    function run(el){
+      playing=true;
+      var logo=el.querySelector('.in-logo'), done=false;
+      var quick=el.classList.contains('quick');
+      var nP=el.querySelectorAll('.in-p').length, land=reduce||quick?0:(150+(nP-1)*200+520);
+      function cleanup(){ document.documentElement.classList.remove('intro-on'); el.remove(); if(logo.parentNode) logo.remove(); playing=false; }
+      function finish(){ if(done) return; done=true; window.removeEventListener('keydown',onKey);
+        var tgt=document.querySelector('.pf-logo'), tr=tgt&&tgt.getBoundingClientRect();
+        if(!reduce && tr && tr.width>0){
+          // Lift the blue layer, and land the mark in the profile tile as the logo.
+          var lr=logo.getBoundingClientRect();
+          document.body.appendChild(logo);
+          logo.classList.add('flying');
+          logo.style.cssText+=';position:fixed;left:'+lr.left+'px;top:'+lr.top+'px;margin:0;z-index:1001;transform-origin:0 0;transition:transform .8s cubic-bezier(.76,0,.24,1)';
+          requestAnimationFrame(function(){
+            el.classList.add('out');
+            logo.style.transform='translate('+(tr.left-lr.left)+'px,'+(tr.top-lr.top)+'px) scale('+(tr.width/lr.width)+')';
+          });
+          setTimeout(cleanup,840);
+        } else {
           el.classList.add('out');
-          logo.style.transform='translate('+(tr.left-lr.left)+'px,'+(tr.top-lr.top)+'px) scale('+(tr.width/lr.width)+')';
-        });
-        setTimeout(function(){ document.documentElement.classList.remove('intro-on'); el.remove(); logo.remove(); },840);
-      } else {
-        el.classList.add('out');
-        setTimeout(function(){ document.documentElement.classList.remove('intro-on'); el.remove(); },720);
+          setTimeout(cleanup,720);
+        }
       }
+      var t1=quick?0:setTimeout(function(){ logo.classList.add('landed'); },land);
+      var t2=setTimeout(finish,quick?450:land+(reduce?400:650));
+      function skip(){ clearTimeout(t1); clearTimeout(t2); finish(); }
+      function onKey(){ if(!done) skip(); }
+      el.addEventListener('click',skip);
+      setTimeout(function(){ window.addEventListener('keydown',onKey); },0);
     }
-    var t1=quick?0:setTimeout(function(){ logo.classList.add('landed'); },land);
-    var t2=setTimeout(finish,quick?450:land+(reduce?400:650));
-    function skip(){ clearTimeout(t1); clearTimeout(t2); finish(); }
-    el.addEventListener('click',skip);
-    window.addEventListener('keydown',function k(){ window.removeEventListener('keydown',k); if(!done) skip(); });
+    run(first);
+    var pf=document.querySelector('.pf-logo');
+    if(pf){
+      pf.setAttribute('tabindex','0'); pf.setAttribute('role','button'); pf.setAttribute('aria-label','Replay intro');
+      function replay(){
+        if(playing) return;
+        var w=document.createElement('div'); w.innerHTML=TEMPLATE; var el=w.firstChild;
+        document.body.insertBefore(el,document.body.firstChild);
+        document.documentElement.classList.add('intro-on');
+        run(el);
+      }
+      pf.addEventListener('click',replay);
+      pf.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); replay(); } });
+    }
   })();
 
 
