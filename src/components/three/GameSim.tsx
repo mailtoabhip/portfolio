@@ -555,7 +555,8 @@ function updateTraffic(dt: number) {
       c.s -= c.v * dt;
       continue;
     }
-    // Leader: car, truck, or a closed barrier.
+    // Leader: car or truck ahead (keep ~2.5 m), or a closed barrier
+    // (roll right up to it: service only starts within 1.4 m).
     let gap = Infinity;
     let leaderV = c.vmax;
     for (const o of sim.cars) {
@@ -576,16 +577,15 @@ function updateTraffic(dt: number) {
       }
     }
     const li = nearestLane(c.x);
+    let barrierGap = Infinity;
     let atBarrier: { p: Plaza; li: number; g: number } | null = null;
     for (const p of sim.plazas) {
       if (c.s > p.s || p.s - c.s > 220) continue;
       const b = p.barriers[li];
       const g = p.s - 0.6 - (c.s + spec.L / 2);
+      if (g < -0.5) continue; // already under the arm
       if (b.open < 0.95 || b.holder !== c.id) {
-        if (g < gap) {
-          gap = g;
-          leaderV = 0;
-        }
+        barrierGap = Math.min(barrierGap, g);
         if (g < 1.4) atBarrier = { p, li, g };
       }
     }
@@ -615,9 +615,14 @@ function updateTraffic(dt: number) {
       }
     }
 
-    // Speed control (simple follow model).
-    const target = gap === Infinity ? c.vmax : Math.max(0, Math.min(c.vmax, leaderV + (gap - 5) * 0.7));
-    if (gap < 0.8) c.v = Math.min(c.v, Math.max(0, leaderV));
+    // Speed control: the fastest speed that can still stop in time
+    // (v² = u² + 2as) behind the leader, and right at a closed barrier.
+    const BRAKE = 6;
+    let target = c.vmax;
+    if (gap !== Infinity) target = Math.min(target, Math.sqrt(Math.max(0, leaderV) ** 2 + 2 * BRAKE * Math.max(0, gap - 2.5)));
+    if (barrierGap !== Infinity) target = Math.min(target, Math.sqrt(2 * BRAKE * Math.max(0, barrierGap - 0.2)));
+    if (gap < 0.5) c.v = Math.min(c.v, Math.max(0, leaderV));
+    if (barrierGap < 0.1) c.v = 0;
     if (target > c.v) c.v += Math.min(3.2 * dt, target - c.v);
     else c.v -= Math.min(10 * dt, c.v - target);
     if (c.v > 0.5) c.queued = false;
