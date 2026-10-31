@@ -53,9 +53,9 @@ function Ring({ value, label }: { value: number; label: string }) {
 
 export default function GameHud() {
   const phase = useNightRun((s) => s.phase);
-  const openTablet = useNightRun((s) => s.openTablet);
   const g = useGame();
   const [banner, setBanner] = useState(false);
+  const [intro, setIntro] = useState(false);
   // Client-only: touch detection and the saved best score differ from
   // the server render, so mount after hydration.
   const [mounted, setMounted] = useState(false);
@@ -158,18 +158,69 @@ export default function GameHud() {
         </div>
       )}
 
-      {/* ---- Idle: start button ---- */}
-      {g.job === "idle" && (
-        <div className="fixed bottom-[168px] left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-[84px]">
-          <button
-            onClick={() => sendCommand("start")}
-            className="rounded-full bg-[#ffb21f] px-6 py-3 text-base font-bold text-black shadow-[0_12px_30px_-8px_rgba(255,178,31,0.7)] transition-transform hover:scale-105 active:scale-95"
+      {/* ---- Idle: a small play button → short intro popup ---- */}
+      {g.job === "idle" && !intro && (
+        <button
+          onClick={() => setIntro(true)}
+          aria-label="Play the delivery game"
+          title="Play the delivery game"
+          className={`${pill} fixed z-40 flex h-12 w-12 items-center justify-center text-lg transition-transform hover:scale-105 active:scale-95`}
+          style={{
+            right: "max(20px, calc(env(safe-area-inset-right) + 12px))",
+            bottom: "max(96px, calc(env(safe-area-inset-bottom) + 88px))",
+          }}
+        >
+          <span aria-hidden className="ml-0.5">▶</span>
+        </button>
+      )}
+      {g.job === "idle" && intro && (
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black/35 backdrop-blur-[2px]"
+          onClick={() => setIntro(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dr-title"
+            onClick={(e) => e.stopPropagation()}
+            className="w-[min(92vw,400px)] rounded-3xl bg-white p-6 text-[#14181f] shadow-2xl"
           >
-            📦 Start pickup
-          </button>
-          <span className={`${pill} px-3 py-1 text-[11px]`}>
-            Pick up, clear 2 tolls, deliver in {TIME_LIMIT}s{g.best > 0 ? ` · best streak ${g.best}` : ""}
-          </span>
+            <p className="text-3xl">📦</p>
+            <h2 id="dr-title" className="mt-2 text-2xl font-bold">Delivery Rush</h2>
+            <p className="mt-1 text-sm text-black/60">A real day on the highway, in about a minute.</p>
+            <ol className="mt-4 space-y-2 text-sm">
+              <li>
+                <b>1. Pick up:</b>{" "} pull into the lay-by on the left and stop inside the yellow box.
+              </li>
+              <li>
+                <b>2. Race:</b>{" "} you have {TIME_LIMIT} seconds. Weave through traffic and clear 2 tolls. Take the empty FASTag lane and slow to 30 km/h.
+              </li>
+              <li>
+                <b>3. Deliver:</b>{" "} park in the drop point&apos;s box. Make it in time and the next pickup appears.
+              </li>
+            </ol>
+            <p className="mt-3 rounded-xl bg-[#f3efe6] px-3 py-2 text-xs text-black/70">
+              {isTouchDevice ? "Hold to drive · tilt to steer · R to reverse" : "W drive · S brake / reverse · A D steer"}
+              {g.best > 0 ? ` · Best streak: ${g.best}` : ""}
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => setIntro(false)}
+                className="flex-1 rounded-full bg-black/5 px-4 py-3 text-sm font-semibold hover:bg-black/10"
+              >
+                Go back
+              </button>
+              <button
+                onClick={() => {
+                  setIntro(false);
+                  sendCommand("start");
+                }}
+                className="flex-1 rounded-full bg-[#ffb21f] px-4 py-3 text-sm font-bold hover:brightness-105"
+              >
+                ▶ Play
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -204,22 +255,8 @@ export default function GameHud() {
         </div>
       )}
 
-      {/* ---- Portfolio: always one tap away (same as tapping the tablet) ---- */}
-      {g.job !== "late" && (
-        <button
-          onClick={openTablet}
-          className={`${pill} fixed z-40 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[rgba(10,14,20,0.8)]`}
-          style={{
-            right: "max(20px, calc(env(safe-area-inset-right) + 12px))",
-            bottom: "max(96px, calc(env(safe-area-inset-bottom) + 88px))",
-          }}
-        >
-          <span aria-hidden>🗂️</span> Portfolio
-        </button>
-      )}
-
       {/* ---- Touch: hold-to-reverse ---- */}
-      {isTouchDevice && g.job !== "late" && (
+      {isTouchDevice && g.job !== "late" && g.job !== "idle" && (
         <button
           className="fixed z-40 h-16 w-16 rounded-full bg-[rgba(10,14,20,0.62)] text-sm font-bold text-white ring-1 ring-white/15 backdrop-blur-md active:bg-white/25"
           style={{
