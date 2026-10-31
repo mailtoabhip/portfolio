@@ -39,12 +39,39 @@ function drawIdleScreen(): HTMLCanvasElement {
   return c;
 }
 
+const SIGN_A = { bg: "#2B3AFF", fg: "#FFFFFF" }; // Mudra blue
+const SIGN_B = { bg: "#E6FF1A", fg: "#111111" }; // fluorescent yellow
+
+function drawSign({ bg, fg }: { bg: string; fg: string }): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 600;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = fg;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const fit = (text: string, max: number, size: number) => {
+    let s = size;
+    do {
+      ctx.font = `${s}px "Saira Stencil One", Impact, "Arial Narrow", sans-serif`;
+      s -= 4;
+    } while (ctx.measureText(text).width > max && s > 20);
+  };
+  fit("VIEW PORTFOLIO", 900, 170);
+  ctx.fillText("VIEW PORTFOLIO", 512, 250);
+  fit("HERE", 900, 170);
+  ctx.fillText("HERE", 512, 410);
+  return c;
+}
+
 export default function Tablet() {
   const quality = useNightRun((s) => s.quality);
   const phase = useNightRun((s) => s.phase);
   const openTablet = useNightRun((s) => s.openTablet);
   const [hovered, setHovered] = useState(false);
-  const [previewReady, setPreviewReady] = useState(false);
+  const [signReady, setSignReady] = useState(false);
   const lift = useRef<THREE.Group>(null);
 
   const interactive = phase === "cruising";
@@ -60,63 +87,68 @@ export default function Tablet() {
     []
   );
 
-  // Screen shows a live-looking preview of the portfolio homepage
-  // (public/portfolio/preview.jpg) with a small "tap to open" pill.
-  // The old idle canvas stays as the first frame until the image loads.
-  const texture = useMemo(() => {
+  // Screen: a flashing "VIEW PORTFOLIO HERE" sign in the portfolio's
+  // Mudra style (Saira Stencil One), alternating every 2 s between
+  // blue/white and fluorescent-yellow/black. Both frames are drawn
+  // once into canvases; the timer just swaps which one is shown.
+  const frames = useMemo(() => {
     if (lowTier) return null;
-    const tex = new THREE.CanvasTexture(drawIdleScreen());
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 4;
-    return tex;
+    const make = () => {
+      const t = new THREE.CanvasTexture(drawIdleScreen());
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = 4;
+      return t;
+    };
+    return [make(), make()] as const;
   }, [lowTier]);
 
   useEffect(() => {
-    if (!texture) return;
+    if (!frames) return;
     let cancelled = false;
-    const img = new Image();
-    img.decoding = "async";
-    img.onload = () => {
+    const paint = () => {
       if (cancelled) return;
-      const c = document.createElement("canvas");
-      c.width = 1024;
-      c.height = 600;
-      const ctx = c.getContext("2d")!;
-      ctx.drawImage(img, 0, 0, c.width, c.height);
-      // "Tap to open" pill, bottom-right
-      const label = "TAP TO OPEN  \u2197";
-      ctx.font = "700 22px 'Courier New', monospace";
-      const w = ctx.measureText(label).width + 36;
-      const x = c.width - w - 22;
-      const y = c.height - 58;
-      ctx.fillStyle = "#2B3AFF";
-      ctx.fillRect(x, y, w, 40);
-      ctx.fillStyle = "#ffffff";
-      ctx.textBaseline = "middle";
-      ctx.fillText(label, x + 18, y + 21);
-      // New size: drop the GPU copy so three re-allocates it.
-      texture.dispose();
-      texture.image = c;
-      texture.needsUpdate = true;
-      setPreviewReady(true);
+      frames.forEach((tex, i) => {
+        tex.dispose(); // new canvas size → let three re-allocate
+        tex.image = drawSign(i === 0 ? SIGN_A : SIGN_B);
+        tex.needsUpdate = true;
+      });
+      setSignReady(true);
     };
-    img.src = `${window.location.pathname.replace(/\/$/, "")}/portfolio/preview.jpg`;
+    const base = window.location.pathname.replace(/\/$/, "");
+    const face = new FontFace("Saira Stencil One", `url(${base}/fonts/saira-stencil-one.woff2)`);
+    face
+      .load()
+      .then((f) => {
+        document.fonts.add(f);
+        paint();
+      })
+      .catch(paint); // fall back to a system face rather than no sign
     return () => {
       cancelled = true;
-      img.onload = null;
     };
-  }, [texture]);
+  }, [frames]);
 
   const screenMat = useMemo(() => {
-    if (lowTier || !texture) {
+    if (lowTier || !frames) {
       return new THREE.MeshBasicMaterial({ color: "#12222c" });
     }
-    // Neutral glow once the page preview is in, so the cream/blue
-    // portfolio colours read true instead of being tinted cyan.
-    const mat = makeScreenMaterial(texture, previewReady ? "#ffffff" : "#5da8c4");
-    mat.emissiveIntensity = previewReady ? 0.92 : 0.85;
+    const mat = makeScreenMaterial(frames[0], signReady ? "#ffffff" : "#5da8c4");
+    mat.emissiveIntensity = signReady ? 0.95 : 0.85;
+    mat.roughness = 1; // matte: no cab-light glare across the lettering
     return mat;
-  }, [lowTier, texture, previewReady]);
+  }, [lowTier, frames, signReady]);
+
+  useEffect(() => {
+    if (!frames || !signReady) return;
+    let i = 0;
+    const id = window.setInterval(() => {
+      i = 1 - i;
+      screenMat.map = frames[i];
+      if ("emissiveMap" in screenMat) (screenMat as THREE.MeshStandardMaterial).emissiveMap = frames[i];
+      screenMat.needsUpdate = true;
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, [frames, signReady, screenMat]);
 
   useFrame((_, rawDelta) => {
     const g = lift.current;
