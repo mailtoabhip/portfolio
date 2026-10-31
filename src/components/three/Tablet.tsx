@@ -40,7 +40,7 @@ function drawIdleScreen(): HTMLCanvasElement {
 }
 
 const SIGN_A = { bg: "#2B3AFF", fg: "#FFFFFF" }; // Mudra blue
-const SIGN_B = { bg: "#E6FF1A", fg: "#111111" }; // fluorescent yellow
+const SIGN_B = { bg: "#CCFF00", fg: "#111111" }; // fluorescent (Mudra price tag)
 
 function drawSign({ bg, fg }: { bg: string; fg: string }): HTMLCanvasElement {
   const c = document.createElement("canvas");
@@ -88,9 +88,9 @@ export default function Tablet() {
   );
 
   // Screen: a flashing "VIEW PORTFOLIO HERE" sign in the portfolio's
-  // Mudra style (Saira Stencil One), alternating every 2 s between
+  // Mudra style (Saira Stencil One), alternating every 1 s between
   // blue/white and fluorescent-yellow/black. Both frames are drawn
-  // once into canvases; the timer just swaps which one is shown.
+  // once into canvases; the 1 s timer just swaps which one is shown.
   const frames = useMemo(() => {
     if (lowTier) return null;
     const make = () => {
@@ -132,9 +132,13 @@ export default function Tablet() {
     if (lowTier || !frames) {
       return new THREE.MeshBasicMaterial({ color: "#12222c" });
     }
-    const mat = makeScreenMaterial(frames[0], signReady ? "#ffffff" : "#5da8c4");
-    mat.emissiveIntensity = signReady ? 0.95 : 0.85;
-    mat.roughness = 1; // matte: no cab-light glare across the lettering
+    if (signReady) {
+      // Unlit and un-tone-mapped, so the blue and the fluorescent
+      // show at their exact brand values, day or night.
+      return new THREE.MeshBasicMaterial({ map: frames[0], toneMapped: false });
+    }
+    const mat = makeScreenMaterial(frames[0], "#5da8c4");
+    mat.emissiveIntensity = 0.85;
     return mat;
   }, [lowTier, frames, signReady]);
 
@@ -143,10 +147,9 @@ export default function Tablet() {
     let i = 0;
     const id = window.setInterval(() => {
       i = 1 - i;
-      screenMat.map = frames[i];
-      if ("emissiveMap" in screenMat) (screenMat as THREE.MeshStandardMaterial).emissiveMap = frames[i];
+      (screenMat as THREE.MeshBasicMaterial).map = frames[i];
       screenMat.needsUpdate = true;
-    }, 2000);
+    }, 1000);
     return () => window.clearInterval(id);
   }, [frames, signReady, screenMat]);
 
@@ -171,8 +174,9 @@ export default function Tablet() {
     // slab (which tops out at y=0.95) — between the instrument
     // cluster (x=0) and the center console (x=-0.85).
     <group position={[-0.4, 1.16, -1.15]}>
-      {/* Cradle arm rising off the dash, straight up to the screen */}
-      <mesh geometry={armGeo} position={[0, -0.105, 0]}>
+      {/* Cradle arm rising off the dash, tucked behind the screen so it
+          never pokes through the (tilted) display */}
+      <mesh geometry={armGeo} position={[0, -0.115, -0.04]}>
         <meshStandardMaterial color={CLAY_ACCENT_CYAN} roughness={0.5} metalness={0.05} />
       </mesh>
 
