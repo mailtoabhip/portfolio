@@ -107,6 +107,20 @@ body:has(#v-home:not([hidden])){padding-block-end:16px}
 .plist a:hover .caption{color:var(--blue)}
 .plist h3{font-family:var(--display);text-transform:uppercase;font-size:22px;letter-spacing:.03em;line-height:1.05}
 .plist .caption{margin-top:auto}
+.pgroup{padding-top:clamp(40px,6vw,72px);scroll-margin-top:56px}
+.pg-head{display:flex;align-items:flex-end;gap:16px;padding-bottom:18px;border-bottom:2px solid var(--fg);margin-bottom:-1px}
+.pg-no{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--blue);padding-bottom:6px}
+.pg-t{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pg-t h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(26px,3.6vw,40px);line-height:1;letter-spacing:.02em}
+.pg-t p{font-size:14px}
+.pg-count{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);padding-bottom:6px;white-space:nowrap}
+.pgroup .feat{margin-top:1px}
+.plist.p3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.plist .card.soon{display:flex;flex-direction:column;gap:8px;border:0}
+.plist .card.soon h3,.plist .card.soon p{opacity:.6}
+.plist .card.soon .caption{margin-top:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+@media (max-width:860px){.plist.p3{grid-template-columns:1fr}}
+@media (max-width:520px){.pg-head{flex-wrap:wrap}.pg-count{margin-left:0;width:100%;order:3;padding:0}}
 @media (max-width:800px){.feat{grid-template-columns:1fr}.plist{grid-template-columns:1fr}}
 
 /* about */
@@ -873,23 +887,32 @@ body.story-open{overflow:hidden}
       <span class="eyebrow">Projects</span>
       <h1 class="disp">Selected work</h1>
     </div>
-    <a class="card feat" href="#delfin">
-      <div class="txt">
-        <div class="tags"><span class="tag m">Case study</span><span class="tag">Delhivery · 2026</span></div>
-        <h2 class="disp">DelFin: fleet services, fully self-serve</h2>
-        <p class="muted">Truck owners used to buy FASTags over phone calls with paper KYC. Now 80% of orders go from purchase to an active tag inside the app.</p>
-        <span class="btn" style="align-self:flex-start;margin-top:auto">Read case study →</span>
-      </div>
-      <div class="img"><img src="img/onboarding.jpg" alt="DelFin onboarding screens"></div>
-    </a>
-    <div class="plist">
-      <a class="card" href="#tvs"><span class="eyebrow">TVS Motor · Extentia · Series of 3</span><h3>TVS Accelerator: dealership sales</h3><p class="muted">Enquiries 90% faster, quotes 85% faster, and digital logging up from 40% to 80%.</p><span class="caption">Read case study →</span></a>
-      <a class="card" href="#kiosk"><span class="eyebrow">Pennsylvania Dept. of Health · Extentia</span><h3>Birth certificate kiosks</h3><p class="muted">Requests in about 5 minutes instead of up to 25, and abandonment down from 34% to 15%.</p><span class="caption">Read case study →</span></a>
-      <a class="card" href="#audit"><span class="eyebrow">TVS Motor · UX audit</span><h3>TVS iQube &amp; 3W websites</h3><p class="muted">Heuristic audits of two sites, turned into a prioritised roadmap with the client.</p><span class="caption">Read audit →</span></a>
-      <a class="card" href="https://dlv-ap.github.io/app-research/" target="_blank" rel="noopener"><span class="eyebrow">Field research · Delhivery</span><h3>Rider app journey studies</h3><p class="muted">Touchpoints, challenges and opportunities for the LM-FE and Hyperlocal rider apps.</p><span class="caption">View research ↗</span></a>
-      <a class="card" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · SaaS</span><h3>FoodMunafa</h3><p class="muted">POS and QR ordering for Indian restaurants, with UPI payments and a live kitchen dashboard.</p><span class="caption">Visit site ↗</span></a>
-      <a class="card" href="https://www.wearmudra.shop/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · E-commerce</span><h3>Mudra</h3><p class="muted">A live store for graphic tees, with catalogue, product pages, cart and order tracking.</p><span class="caption">Visit site ↗</span></a>
-    </div>
+    <nav class="jump" aria-label="Project groups"><span class="eyebrow">Jump to</span><button type="button" data-goto="pg-delhivery">Delhivery</button><button type="button" data-goto="pg-tvs">TVS Motor</button><button type="button" data-goto="pg-other">Other work</button><button type="button" data-goto="pg-indie">Independent</button></nav>
+    <section class="pgroup" id="pg-delhivery">
+      <header class="pg-head"><span class="pg-no">01</span><div class="pg-t"><h2 class="disp">Delhivery</h2><p class="muted">Product Designer · 2026 – present</p></div><span class="pg-count">4 projects</span></header>
+      <div class="plist"><div class="card soon"><span class="eyebrow">Delhivery · CX platform</span><h3>JARVIS</h3><p class="muted">A CX ticketing platform with an AI assistant that helps teams write routing rules.</p><span class="caption">Case study coming soon</span></div><a class="card" href="#delfin"><span class="eyebrow">Delhivery · Fintech app · Live</span><h3>DelFin</h3><p class="muted">Truck owners used to buy FASTags over phone calls with paper KYC. Now 80% of orders go from purchase to an active tag in the app.</p><span class="caption">Read case study →</span></a><div class="card soon"><span class="eyebrow">Delhivery · Freight</span><h3>Axle</h3><p class="muted">A freight bidding product, designed and prototyped with Claude and Figma MCP.</p><span class="caption">Case study coming soon</span></div><div class="card soon"><span class="eyebrow">Delhivery · Fleet</span><h3>FMS</h3><p class="muted">Fleet management portals for tracking vehicles, drivers and trips.</p><span class="caption">Case study coming soon</span></div></div>
+    </section>
+    <section class="pgroup" id="pg-tvs">
+      <header class="pg-head"><span class="pg-no">02</span><div class="pg-t"><h2 class="disp">TVS Motor</h2><p class="muted">UX Designer at Extentia · 2022–25</p></div><span class="pg-count">4 projects</span></header>
+      <a class="card feat" href="#tvs">
+        <div class="txt">
+          <div class="tags"><span class="tag m">Main case study</span><span class="tag">Research · Series of 3</span></div>
+          <h2 class="disp">TVS Accelerator: dealership sales</h2>
+          <p class="muted">Dealership staff were avoiding their sales app and going back to paper. We found out why, then redesigned the parts that mattered most.</p>
+          <span class="btn" style="align-self:flex-start;margin-top:auto">Read case study →</span>
+        </div>
+        <div class="img"><img src="img/tvs-banner.jpg" alt="TVS Accelerator screens"></div>
+      </a>
+      <div class="plist p3"><a class="card" href="#tvs-research"><span class="eyebrow">01 · Research</span><h3>Why people avoided the tool</h3><p class="muted">Dealer visits, what we found, and how we prioritised with the business.</p><span class="caption">Read →</span></a><a class="card" href="#tvs-enquiry"><span class="eyebrow">02 · Quick Enquiry</span><h3>Enquiry time cut by 90%</h3><p class="muted">A long form split into a 10-second first step, without losing data.</p><span class="caption">5–10 min → 10 sec →</span></a><a class="card" href="#tvs-quotes"><span class="eyebrow">03 · Quotations</span><h3>Replacing the paper quote book</h3><p class="muted">Templates managers control, sent on WhatsApp in under 30 seconds.</p><span class="caption">85% faster →</span></a></div>
+    </section>
+    <section class="pgroup" id="pg-other">
+      <header class="pg-head"><span class="pg-no">03</span><div class="pg-t"><h2 class="disp">Other work</h2><p class="muted">Client work and field research</p></div><span class="pg-count">3 projects</span></header>
+      <div class="plist p3"><a class="card" href="#kiosk"><span class="eyebrow">Pennsylvania Dept. of Health · Extentia</span><h3>Birth certificate kiosks</h3><p class="muted">Requests in about 5 minutes instead of up to 25, and abandonment down from 34% to 15%.</p><span class="caption">Read case study →</span></a><a class="card" href="#audit"><span class="eyebrow">TVS Motor · UX audit</span><h3>TVS iQube &amp; 3W websites</h3><p class="muted">Heuristic audits of two sites, turned into a prioritised roadmap with the client.</p><span class="caption">Read audit →</span></a><a class="card" href="https://dlv-ap.github.io/app-research/" target="_blank" rel="noopener"><span class="eyebrow">Field research · Delhivery</span><h3>Rider app journey studies</h3><p class="muted">Touchpoints, challenges and opportunities for the LM-FE and Hyperlocal rider apps.</p><span class="caption">View research ↗</span></a></div>
+    </section>
+    <section class="pgroup" id="pg-indie">
+      <header class="pg-head"><span class="pg-no">04</span><div class="pg-t"><h2 class="disp">Independent work</h2><p class="muted">Products I designed and built with AI</p></div><span class="pg-count">3 projects</span></header>
+      <div class="plist p3"><a class="card" href="https://www.wearmudra.shop/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · E-commerce</span><h3>Mudra</h3><p class="muted">A live store for graphic tees, with catalogue, product pages, cart and order tracking.</p><span class="caption">Visit site ↗</span></a><a class="card" href="https://www.foodmunafa.co.in/" target="_blank" rel="noopener"><span class="eyebrow">Built with AI · SaaS</span><h3>FoodMunafa</h3><p class="muted">POS and QR ordering for Indian restaurants, with UPI payments and a live kitchen dashboard.</p><span class="caption">Visit site ↗</span></a><div class="card soon"><span class="eyebrow">Built with AI</span><h3>FoodMedico</h3><p class="muted">Details coming soon.</p><span class="caption">Case study coming soon</span></div></div>
+    </section>
   </main>
 
   <!-- ================= ABOUT ================= -->
