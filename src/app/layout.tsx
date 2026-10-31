@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import FaviconCycler from "@/components/FaviconCycler";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,10 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "Abhijeet Purandare, Product Designer at Delhivery" }],
   },
+  icons: {
+    icon: [{ url: "/favicon.gif", type: "image/gif" }],
+    apple: "/apple-icon.png",
+  },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
@@ -60,7 +65,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <FaviconCycler />
+        {children}
+      </body>
     </html>
   );
 }
