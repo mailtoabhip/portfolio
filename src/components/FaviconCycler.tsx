@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 
 /**
- * Animated favicon: magenta → blue → white, every 0.5 s.
+ * Animated favicon: Mudra blue ↔ fluorescent yellow, every 0.5 s.
  * Firefox animates /favicon.gif on its own; Chrome, Edge and Safari
  * only show a GIF's first frame, so this swaps between the three PNG
  * frames instead. Stops for people who prefer reduced motion.
  */
-const FRAMES = ["/fav-0.png", "/fav-1.png", "/fav-2.png"];
+const FRAMES = ["/fav-0.png", "/fav-1.png"];
 
 export default function FaviconCycler() {
   useEffect(() => {
