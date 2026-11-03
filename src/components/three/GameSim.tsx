@@ -457,8 +457,9 @@ export default function GameSim() {
       f.grace = Math.max(0, f.grace - dt);
       const sp = Math.max(0, drive.speed);
       if (!f.armed && sp > 5) f.armed = true;
-      // Score = metres driven forward this run.
-      f.score += Math.max(0, drive.dz);
+      // Score = metres driven, weighted by speed: full credit at top speed,
+      // half at half speed (so the rate falls with speed²).
+      f.score += Math.max(0, drive.dz) * Math.min(1, sp / TOP_SPEED);
       if (crashed && f.armed) endFree("You crashed into a vehicle");
       else if (sim.scraping && f.armed && f.grace <= 0) endFree("You hit the roadside");
       else if (f.armed && f.grace <= 0 && sp < 0.5) endFree("You came to a stop");
