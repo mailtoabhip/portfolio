@@ -112,8 +112,6 @@ export type JobState =
   | "freeRun"
   | "freeOver";
 
-/** Free Run: points per second at top speed (scales with speed²). */
-export const FREE_RATE = 100;
 /** Seconds after start / resume before a stop or scrape can end the run. */
 export const FREE_GRACE = 1.5;
 
@@ -162,8 +160,8 @@ interface GameHud {
   /** Bumped whenever plazas/sites are added or removed (re-mounts props). */
   worldVersion: number;
   // ---- Free Run ----
-  freeScore: number;
-  freeRate: number; // points per second right now
+  freeScore: number; // metres driven this run
+  freeRate: number; // current speed, km/h
   freeArmed: boolean;
   freeReason: string;
   freeNewBest: boolean;
@@ -171,7 +169,7 @@ interface GameHud {
 }
 
 export type FreeRun = { score: number; at: number };
-const FREE_KEY = "nightrun.freeRuns";
+const FREE_KEY = "nightrun.freeRunMetres"; // runs scored in metres
 
 function readRuns(): FreeRun[] {
   try {
@@ -183,6 +181,11 @@ function readRuns(): FreeRun[] {
 }
 
 /** Save a finished run; returns true if it's a new best. */
+/** "830 m" under a kilometre, then "1.24 km". */
+export function fmtMetres(m: number) {
+  return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(2)} km`;
+}
+
 export function recordFreeRun(score: number): boolean {
   const prev = useGame.getState().freeRuns;
   const prevBest = prev[0]?.score ?? 0;

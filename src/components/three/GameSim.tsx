@@ -16,7 +16,6 @@ import {
   bumpWorld,
   beep,
   recordFreeRun,
-  FREE_RATE,
   FREE_GRACE,
   TIME_LIMIT,
   PICKUP_AHEAD,
@@ -211,7 +210,7 @@ function startFree() {
   sim.job = "freeRun";
   sim.free = { score: 0, t: 0, armed: false, grace: FREE_GRACE };
   useGame.setState({ freeScore: 0, freeRate: 0, freeArmed: false, freeReason: "", freeNewBest: false });
-  toast("Free Run · go fast, don't stop, don't crash", "info", 2600);
+  toast("Free Run · go far, don't stop, don't crash", "info", 2600);
 }
 
 function endFree(reason: string) {
@@ -458,7 +457,8 @@ export default function GameSim() {
       f.grace = Math.max(0, f.grace - dt);
       const sp = Math.max(0, drive.speed);
       if (!f.armed && sp > 5) f.armed = true;
-      if (f.armed) f.score += FREE_RATE * (sp / TOP_SPEED) ** 2 * dt;
+      // Score = metres driven forward this run.
+      f.score += Math.max(0, drive.dz);
       if (crashed && f.armed) endFree("You crashed into a vehicle");
       else if (sim.scraping && f.armed && f.grace <= 0) endFree("You hit the roadside");
       else if (f.armed && f.grace <= 0 && sp < 0.5) endFree("You came to a stop");
@@ -568,7 +568,7 @@ export default function GameSim() {
         ...(sim.job === "freeRun"
           ? {
               freeScore: Math.round(sim.free.score),
-              freeRate: Math.round(FREE_RATE * (Math.max(0, drive.speed) / TOP_SPEED) ** 2),
+              freeRate: Math.round(Math.max(0, drive.speed) * 3.6),
               freeArmed: sim.free.armed,
             }
           : {}),
