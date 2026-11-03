@@ -101,7 +101,21 @@ export interface Site {
   s: number; // bay centre
 }
 
-export type JobState = "idle" | "toPickup" | "loading" | "delivering" | "unloading" | "late";
+export type JobState =
+  | "idle"
+  | "toPickup"
+  | "loading"
+  | "delivering"
+  | "unloading"
+  | "late"
+  // Free Run: endless score attack.
+  | "freeRun"
+  | "freeOver";
+
+/** Free Run: points per second at top speed (scales with speed²). */
+export const FREE_RATE = 100;
+/** Seconds after start / resume before a stop or scrape can end the run. */
+export const FREE_GRACE = 1.5;
 
 export const sim = {
   job: "idle" as JobState,
@@ -118,6 +132,7 @@ export const sim = {
   scraping: false,
   inBay: false,
   nearBay: false,
+  free: { score: 0, t: 0, armed: false, grace: 0 },
 };
 
 export function activeSite(): Site | null {
@@ -146,6 +161,39 @@ interface GameHud {
   delivered: number; // increments on each on-time delivery (drives the banner)
   /** Bumped whenever plazas/sites are added or removed (re-mounts props). */
   worldVersion: number;
+  // ---- Free Run ----
+  freeScore: number;
+  freeRate: number; // points per second right now
+  freeArmed: boolean;
+  freeReason: string;
+  freeNewBest: boolean;
+  freeRuns: FreeRun[]; // top scores, best first
+}
+
+export type FreeRun = { score: number; at: number };
+const FREE_KEY = "nightrun.freeRuns";
+
+function readRuns(): FreeRun[] {
+  try {
+    const r = JSON.parse(window.localStorage.getItem(FREE_KEY) || "[]");
+    return Array.isArray(r) ? r.filter((x) => typeof x?.score === "number").slice(0, 10) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Save a finished run; returns true if it's a new best. */
+export function recordFreeRun(score: number): boolean {
+  const prev = useGame.getState().freeRuns;
+  const prevBest = prev[0]?.score ?? 0;
+  const runs = [...prev, { score, at: Date.now() }].sort((a, b) => b.score - a.score).slice(0, 10);
+  useGame.setState({ freeRuns: runs });
+  try {
+    window.localStorage.setItem(FREE_KEY, JSON.stringify(runs));
+  } catch {
+    /* storage unavailable — keep it in memory */
+  }
+  return score > prevBest && score > 0;
 }
 
 let toastId = 1;
@@ -172,6 +220,12 @@ export const useGame = create<GameHud>(() => ({
   toasts: [],
   delivered: 0,
   worldVersion: 0,
+  freeScore: 0,
+  freeRate: 0,
+  freeArmed: false,
+  freeReason: "",
+  freeNewBest: false,
+  freeRuns: typeof window === "undefined" ? [] : readRuns(),
 }));
 
 export function bumpWorld() {
@@ -223,7 +277,8 @@ export function saveBest(streak: number) {
 }
 
 /** Commands from the HUD; the simulation (GameSim) reads `pending`. */
-export const commands = { pending: null as null | "start" | "stop" | "retry" | "quit" };
-export function sendCommand(c: "start" | "stop" | "retry" | "quit") {
+export type Command = "start" | "stop" | "retry" | "quit" | "free";
+export const commands = { pending: null as null | Command };
+export function sendCommand(c: Command) {
   commands.pending = c;
 }

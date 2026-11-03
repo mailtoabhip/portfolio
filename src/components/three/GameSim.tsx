@@ -15,6 +15,9 @@ import {
   activeSite,
   bumpWorld,
   beep,
+  recordFreeRun,
+  FREE_RATE,
+  FREE_GRACE,
   TIME_LIMIT,
   PICKUP_AHEAD,
   TOLL1_AFTER_PICKUP,
@@ -143,6 +146,12 @@ function laneFree(laneX: number, sFrom: number, sTo: number, except?: Car) {
   return true;
 }
 
+/** Never let traffic wall off all three lanes: some other lane must stay open near `s`. */
+function keepsAGap(li: number, s: number, except?: Car) {
+  for (let k = 0; k < LANES.length; k++) if (k !== li && laneFree(LANES[k], s - 35, s + 35, except)) return true;
+  return false;
+}
+
 function inTollZone(s: number, margin = 0) {
   for (const p of sim.plazas) if (s > p.s - ISLAND_START - margin && s < p.s + ISLAND_END + margin) return p;
   return null;
@@ -196,6 +205,24 @@ function finishDelivery() {
   markWorldChanged();
 }
 
+function startFree() {
+  // Fresh start: clear traffic around the truck (e.g. the car you just hit).
+  sim.cars = sim.cars.filter((c) => c.dir !== 1 || c.s < drive.dist - 20 || c.s > drive.dist + 60);
+  sim.job = "freeRun";
+  sim.free = { score: 0, t: 0, armed: false, grace: FREE_GRACE };
+  useGame.setState({ freeScore: 0, freeRate: 0, freeArmed: false, freeReason: "", freeNewBest: false });
+  toast("Free Run · go fast, don't stop, don't crash", "info", 2600);
+}
+
+function endFree(reason: string) {
+  if (sim.job !== "freeRun") return;
+  sim.job = "freeOver";
+  const score = Math.round(sim.free.score);
+  const newBest = recordFreeRun(score);
+  useGame.setState({ job: "freeOver", freeScore: score, freeRate: 0, freeReason: reason, freeNewBest: newBest });
+  beep(196, 0.35, "sawtooth");
+}
+
 export default function GameSim() {
   const hudAcc = useRef(0);
   const bumpToastAt = useRef(0);
@@ -210,7 +237,13 @@ export default function GameSim() {
     // ---------- HUD commands ----------
     const cmd = commands.pending;
     commands.pending = null;
-    if (cmd === "start" && (sim.job === "idle" || sim.job === "late")) {
+    if (cmd === "free" && (sim.job === "idle" || sim.job === "late" || sim.job === "freeOver")) {
+      clearRun();
+      sim.streak = 0;
+      startFree();
+    } else if (cmd === "retry" && sim.job === "freeOver") {
+      startFree();
+    } else if (cmd === "start" && (sim.job === "idle" || sim.job === "late" || sim.job === "freeOver")) {
       if (sim.job === "late") clearRun();
       sim.streak = sim.job === "late" ? 0 : sim.streak;
       startPickup();
@@ -231,8 +264,12 @@ export default function GameSim() {
 
     // ---------- Truck longitudinal ----------
     let v = drive.speed;
-    const jobActive = sim.job !== "idle" && sim.job !== "late";
-    if (cruising) {
+    const jobActive = sim.job !== "idle" && sim.job !== "late" && sim.job !== "freeOver";
+    // Free Run pauses (truck holds its speed, nothing moves) while the tablet is open.
+    const frozen = !cruising && sim.job === "freeRun";
+    if (frozen) {
+      sim.free.grace = FREE_GRACE;
+    } else if (cruising) {
       if (input.throttle > 0) {
         if (v < -0.05) v = Math.min(0, v + 14 * dt);
         else v += (TOP_SPEED * ambientMul - v) * Math.min(1, dt * 0.75);
@@ -262,7 +299,8 @@ export default function GameSim() {
       if (v > 0) lat += -bend * v * v * DRIFT;
     }
     x += lat * dt;
-    let dist = drive.dist + v * dt;
+    let dist = drive.dist + (frozen ? 0 : v * dt);
+    let crashed = false;
 
     // Lateral limits: open road, lay-by tapers.
     let xMin = ROAD_GROUP_MIN;
@@ -356,6 +394,7 @@ export default function GameSim() {
       const longPen = ahead ? dist + TRUCK_FRONT - (c.s - spec.L / 2) : c.s + spec.L / 2 - (dist - TRUCK_REAR);
       if (longPen <= 0) continue;
       const locked = !!inTollZone(c.s) || c.queued;
+      if (Math.abs(v) > 1 || Math.abs(c.v - v) > 1) crashed = true;
       if (latPen < longPen && latPen < 0.9) {
         // Side swipe: shove sideways.
         const dir = dx >= 0 ? 1 : -1;
@@ -413,6 +452,17 @@ export default function GameSim() {
       }
     }
     sim.bump = Math.max(0, sim.bump - dt);
+    if (sim.job === "freeRun" && cruising) {
+      const f = sim.free;
+      f.t += dt;
+      f.grace = Math.max(0, f.grace - dt);
+      const sp = Math.max(0, drive.speed);
+      if (!f.armed && sp > 5) f.armed = true;
+      if (f.armed) f.score += FREE_RATE * (sp / TOP_SPEED) ** 2 * dt;
+      if (crashed && f.armed) endFree("You crashed into a vehicle");
+      else if (sim.scraping && f.armed && f.grace <= 0) endFree("You hit the roadside");
+      else if (f.armed && f.grace <= 0 && sp < 0.5) endFree("You came to a stop");
+    }
     advanceCurve(drive.dz > 0 ? drive.dz : 0);
 
     function hit(t: number, msg: string) {
@@ -515,6 +565,13 @@ export default function GameSim() {
         inBay,
         nearBay,
         streak: sim.streak,
+        ...(sim.job === "freeRun"
+          ? {
+              freeScore: Math.round(sim.free.score),
+              freeRate: Math.round(FREE_RATE * (Math.max(0, drive.speed) / TOP_SPEED) ** 2),
+              freeArmed: sim.free.armed,
+            }
+          : {}),
       });
     }
   });
@@ -530,13 +587,17 @@ function updateTraffic(dt: number) {
   // Spawn
   {
     const same = sim.cars.filter((c) => c.dir === 1 && !c.queued && c.s > dist - 20).length;
-    if (same < 6 && Math.random() < dt * 1.5) {
+    // Free Run: traffic thickens slowly (one more car every ~15 s, up to 16).
+    const ft = sim.job === "freeRun" ? sim.free.t : -1;
+    const cap = ft >= 0 ? Math.min(16, 6 + Math.floor(ft / 15)) : 6;
+    const rate = ft >= 0 ? Math.min(4, 1.5 + ft / 45) : 1.5;
+    if (same < cap && Math.random() < dt * rate) {
       const s = dist + rand(250, 330);
       if (!inTollZone(s, 60)) {
         let lanes = [0, 1, 2];
         for (const p of sim.plazas) if (p.s > s && p.s - s < 400) lanes = lanes.filter((l) => l !== p.fastLane);
         const li = pick(lanes);
-        if (laneFree(LANES[li], s - 25, s + 25)) sim.cars.push(makeCar(trafficType(), s, LANES[li], 1));
+        if (laneFree(LANES[li], s - 25, s + 25) && keepsAGap(li, s)) sim.cars.push(makeCar(trafficType(), s, LANES[li], 1));
       }
     }
     const opp = sim.cars.filter((c) => c.dir === -1).length;
@@ -608,7 +669,7 @@ function updateTraffic(dt: number) {
     if (c.knock <= 0 && !c.queued && gap < 22 && leaderV < c.v - 2 && !inTollZone(c.s, 200) && Math.random() < dt * 2) {
       const opts = [li - 1, li + 1].filter((l) => l >= 0 && l < 3);
       for (const l of opts.sort(() => Math.random() - 0.5)) {
-        if (laneFree(LANES[l], c.s - 14, c.s + 26, c)) {
+        if (laneFree(LANES[l], c.s - 14, c.s + 26, c) && keepsAGap(l, c.s, c)) {
           c.laneX = LANES[l];
           break;
         }
