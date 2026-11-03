@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNightRun } from "@/lib/store";
-import { useGame, sendCommand, TIME_LIMIT } from "@/lib/game";
+import { useGame, sendCommand, TIME_LIMIT, type FreeRun } from "@/lib/game";
 import { isTouchDevice, setTouchReverse } from "@/lib/controls";
 
 /**
@@ -21,6 +21,30 @@ function fmtTime(t: number) {
 
 function fmtDist(m: number) {
   return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : `${m} m`;
+}
+
+function fmtWhen(at: number) {
+  const d = new Date(at);
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+function ScoreList({ runs, highlight }: { runs: FreeRun[]; highlight?: number }) {
+  if (!runs.length) return null;
+  const hi = highlight === undefined ? -1 : runs.findIndex((r) => r.score === highlight);
+  return (
+    <ol className="mt-3 divide-y divide-black/5 rounded-xl bg-[#f3efe6] px-3 text-sm">
+      {runs.slice(0, 5).map((r, i) => {
+        const me = i === hi;
+        return (
+          <li key={`${r.at}-${i}`} className={`flex items-center gap-3 py-1.5 ${me ? "font-bold" : ""}`}>
+            <span className="w-5 font-mono text-xs text-black/40">{i + 1}</span>
+            <span className="flex-1 tabular-nums">{r.score.toLocaleString()}</span>
+            <span className="text-xs text-black/45">{me ? "this run" : fmtWhen(r.at)}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
 }
 
 function Ring({ value, label }: { value: number; label: string }) {
@@ -78,13 +102,55 @@ export default function GameHud() {
   if (!mounted || phase !== "cruising") return null;
 
   const racing = g.job === "delivering" || g.job === "unloading";
+  const free = g.job === "freeRun" || g.job === "freeOver";
+  const freeBest = g.freeRuns[0]?.score ?? 0;
+  // Desktop: the play button sits right under the sun/moon toggle.
+  const playPos = isTouchDevice
+    ? {
+        right: "max(20px, calc(env(safe-area-inset-right) + 12px))",
+        bottom: "max(96px, calc(env(safe-area-inset-bottom) + 88px))",
+      }
+    : {
+        right: "max(32px, calc(env(safe-area-inset-right) + 12px))",
+        top: "calc(max(32px, calc(env(safe-area-inset-top) + 12px)) + 60px)",
+      };
   const toPickup = g.job === "toPickup" || g.job === "loading";
   const urgent = racing && g.timeLeft <= 10;
 
   return (
     <>
       {/* ---- Top: job card ---- */}
-      {g.job !== "idle" && g.job !== "late" && (
+      {/* ---- Free Run: live score ---- */}
+      {g.job === "freeRun" && (
+        <div
+          className="fixed left-1/2 z-40 -translate-x-1/2 select-none pointer-events-none"
+          style={{ top: "max(16px, calc(env(safe-area-inset-top) + 8px))" }}
+        >
+          <div className={`${pill} flex items-center gap-4 whitespace-nowrap px-5 py-2.5`}>
+            <div className="leading-tight">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-white/60">Score</p>
+              <p className="font-mono text-3xl font-bold tabular-nums">{g.freeScore.toLocaleString()}</p>
+            </div>
+            <div className="leading-tight">
+              <p
+                className={`font-mono text-sm font-semibold tabular-nums ${
+                  g.freeRate >= 70 ? "text-[#CCFF00]" : g.freeRate >= 30 ? "text-white" : "text-[#ffb21f]"
+                }`}
+              >
+                +{g.freeRate}/s
+              </p>
+              <p className="text-[11px] text-white/55">Best {freeBest.toLocaleString()}</p>
+            </div>
+          </div>
+          {!g.freeArmed && (
+            <p className={`${pill} mx-auto mt-2 w-max px-3 py-1 text-xs font-medium`}>
+              {isTouchDevice ? "Hold to drive" : "Hold W to drive"} · faster = more points
+            </p>
+          )}
+        </div>
+      )}
+
+      {!free && g.job !== "idle" && g.job !== "late" && (
         <div
           className="fixed left-1/2 top-0 z-40 -translate-x-1/2 select-none"
           style={{ top: "max(16px, calc(env(safe-area-inset-top) + 8px))" }}
@@ -162,13 +228,14 @@ export default function GameHud() {
       {g.job === "idle" && !intro && (
         <button
           onClick={() => setIntro(true)}
-          aria-label="Play the delivery game"
-          title="Play the delivery game"
-          className={`${pill} fixed z-40 flex h-12 w-12 items-center justify-center text-lg transition-transform hover:scale-105 active:scale-95`}
-          style={{
-            right: "max(20px, calc(env(safe-area-inset-right) + 12px))",
-            bottom: "max(96px, calc(env(safe-area-inset-bottom) + 88px))",
-          }}
+          aria-label="Play a game"
+          title="Play a game"
+          className={
+            isTouchDevice
+              ? `${pill} fixed z-40 flex h-12 w-12 items-center justify-center text-lg transition-transform hover:scale-105 active:scale-95`
+              : "fixed z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 bg-black/50 text-lg text-white transition-colors hover:border-neutral-500"
+          }
+          style={playPos}
         >
           <span aria-hidden className="ml-0.5">▶</span>
         </button>
@@ -183,43 +250,65 @@ export default function GameHud() {
             aria-modal="true"
             aria-labelledby="dr-title"
             onClick={(e) => e.stopPropagation()}
-            className="w-[min(92vw,400px)] rounded-3xl bg-white p-6 text-[#14181f] shadow-2xl"
+            className="max-h-[92dvh] w-[min(92vw,420px)] overflow-y-auto rounded-3xl bg-white p-5 text-[#14181f] shadow-2xl sm:p-6"
           >
-            <p className="text-3xl">📦</p>
-            <h2 id="dr-title" className="mt-2 text-2xl font-bold">Delivery Rush</h2>
-            <p className="mt-1 text-sm text-black/60">A real day on the highway, in about a minute.</p>
-            <ol className="mt-4 space-y-2 text-sm">
-              <li>
-                <b>1. Pick up:</b>{" "} pull into the lay-by on the left and stop inside the yellow box.
-              </li>
-              <li>
-                <b>2. Race:</b>{" "} you have {TIME_LIMIT} seconds. Weave through traffic and clear 2 tolls. Take the empty FASTag lane and slow to 30 km/h.
-              </li>
-              <li>
-                <b>3. Deliver:</b>{" "} park in the drop point&apos;s box. Make it in time and the next pickup appears.
-              </li>
-            </ol>
-            <p className="mt-3 rounded-xl bg-[#f3efe6] px-3 py-2 text-xs text-black/70">
-              {isTouchDevice ? "Hold to drive · tilt to steer · R to reverse" : "W drive · S brake / reverse · A D steer"}
-              {g.best > 0 ? ` · Best streak: ${g.best}` : ""}
+            <h2 id="dr-title" className="text-2xl font-bold">Pick a game</h2>
+            <p className="mt-1 text-sm text-black/60">
+              {isTouchDevice ? "Hold to drive · tilt to steer" : "W drive · S brake / reverse · A D steer"}
             </p>
-            <div className="mt-5 flex gap-3">
+
+            <div className="mt-4 rounded-2xl border border-black/10 p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">🏁</span>
+                <div className="flex-1">
+                  <h3 className="font-bold">Free Run</h3>
+                  <p className="mt-0.5 text-sm text-black/65">
+                    Drive as far and as fast as you can. The faster you go, the faster you score. Stop, crash or hit the
+                    roadside and the run ends. Traffic gets heavier the longer you last.
+                  </p>
+                  {freeBest > 0 && <p className="mt-1 text-xs font-semibold text-black/50">Your best: {freeBest.toLocaleString()}</p>}
+                </div>
+              </div>
               <button
-                onClick={() => setIntro(false)}
-                className="flex-1 rounded-full bg-black/5 px-4 py-3 text-sm font-semibold hover:bg-black/10"
+                onClick={() => {
+                  setIntro(false);
+                  sendCommand("free");
+                }}
+                className="mt-3 w-full rounded-full bg-[#2B3AFF] px-4 py-2.5 text-sm font-bold text-white hover:brightness-110"
               >
-                Go back
+                ▶ Play Free Run
               </button>
+            </div>
+
+            <div className="mt-3 rounded-2xl border border-black/10 p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">📦</span>
+                <div className="flex-1">
+                  <h3 className="font-bold">Delivery Rush</h3>
+                  <p className="mt-0.5 text-sm text-black/65">
+                    Pick up a parcel from the lay-by on the left, clear 2 FASTag tolls (slow to 30 km/h) and park at the
+                    drop point within {TIME_LIMIT} seconds.
+                  </p>
+                  {g.best > 0 && <p className="mt-1 text-xs font-semibold text-black/50">Best streak: {g.best}</p>}
+                </div>
+              </div>
               <button
                 onClick={() => {
                   setIntro(false);
                   sendCommand("start");
                 }}
-                className="flex-1 rounded-full bg-[#ffb21f] px-4 py-3 text-sm font-bold hover:brightness-105"
+                className="mt-3 w-full rounded-full bg-[#ffb21f] px-4 py-2.5 text-sm font-bold hover:brightness-105"
               >
-                ▶ Play
+                ▶ Play Delivery Rush
               </button>
             </div>
+
+            <button
+              onClick={() => setIntro(false)}
+              className="mt-3 w-full rounded-full bg-black/5 px-4 py-2.5 text-sm font-semibold hover:bg-black/10"
+            >
+              Go back
+            </button>
           </div>
         </div>
       )}
@@ -255,8 +344,40 @@ export default function GameHud() {
         </div>
       )}
 
+      {/* ---- Free Run: game over ---- */}
+      {g.job === "freeOver" && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/35 backdrop-blur-[2px]">
+          <div className="max-h-[92dvh] w-[min(92vw,380px)] overflow-y-auto rounded-3xl bg-white p-6 text-center text-[#14181f] shadow-2xl">
+            <p className="text-4xl">{g.freeNewBest ? "🏆" : "💥"}</p>
+            <p className="mt-2 text-sm text-black/60">{g.freeReason}</p>
+            <p className="mt-1 font-mono text-5xl font-bold tabular-nums">{g.freeScore.toLocaleString()}</p>
+            <p className="mt-1 text-sm font-semibold">
+              {g.freeNewBest ? "New best score!" : `Best: ${freeBest.toLocaleString()}`}
+            </p>
+            <div className="text-left">
+              <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.25em] text-black/45">Your top runs</p>
+              <ScoreList runs={g.freeRuns} highlight={g.freeScore} />
+            </div>
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => sendCommand("quit")}
+                className="flex-1 rounded-full bg-black/5 px-4 py-3 text-sm font-semibold hover:bg-black/10"
+              >
+                Back to driving
+              </button>
+              <button
+                onClick={() => sendCommand("retry")}
+                className="flex-1 rounded-full bg-[#2B3AFF] px-4 py-3 text-sm font-bold text-white hover:brightness-110"
+              >
+                Run again
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ---- Touch: hold-to-reverse ---- */}
-      {isTouchDevice && g.job !== "late" && g.job !== "idle" && (
+      {isTouchDevice && !free && g.job !== "late" && g.job !== "idle" && (
         <button
           className="fixed z-40 h-16 w-16 rounded-full bg-[rgba(10,14,20,0.62)] text-sm font-bold text-white ring-1 ring-white/15 backdrop-blur-md active:bg-white/25"
           style={{
