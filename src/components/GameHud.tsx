@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNightRun } from "@/lib/store";
-import { useGame, sendCommand, TIME_LIMIT, type FreeRun } from "@/lib/game";
+import { useGame, sendCommand, fmtMetres, TIME_LIMIT, type FreeRun } from "@/lib/game";
 import { isTouchDevice, setTouchReverse } from "@/lib/controls";
 
 /**
@@ -38,7 +38,7 @@ function ScoreList({ runs, highlight }: { runs: FreeRun[]; highlight?: number })
         return (
           <li key={`${r.at}-${i}`} className={`flex items-center gap-3 py-1.5 ${me ? "font-bold" : ""}`}>
             <span className="w-5 font-mono text-xs text-black/40">{i + 1}</span>
-            <span className="flex-1 tabular-nums">{r.score.toLocaleString()}</span>
+            <span className="flex-1 tabular-nums">{fmtMetres(r.score)}</span>
             <span className="text-xs text-black/45">{me ? "this run" : fmtWhen(r.at)}</span>
           </li>
         );
@@ -128,23 +128,23 @@ export default function GameHud() {
         >
           <div className={`${pill} flex items-center gap-4 whitespace-nowrap px-5 py-2.5`}>
             <div className="leading-tight">
-              <p className="text-[10px] uppercase tracking-[0.25em] text-white/60">Score</p>
-              <p className="font-mono text-3xl font-bold tabular-nums">{g.freeScore.toLocaleString()}</p>
+              <p className="text-[10px] uppercase tracking-[0.25em] text-white/60">Distance</p>
+              <p className="font-mono text-3xl font-bold tabular-nums">{fmtMetres(g.freeScore)}</p>
             </div>
             <div className="leading-tight">
               <p
                 className={`font-mono text-sm font-semibold tabular-nums ${
-                  g.freeRate >= 70 ? "text-[#CCFF00]" : g.freeRate >= 30 ? "text-white" : "text-[#ffb21f]"
+                  g.freeRate >= 100 ? "text-[#CCFF00]" : g.freeRate >= 50 ? "text-white" : "text-[#ffb21f]"
                 }`}
               >
-                +{g.freeRate}/s
+                {g.freeRate} km/h
               </p>
-              <p className="text-[11px] text-white/55">Best {freeBest.toLocaleString()}</p>
+              <p className="text-[11px] text-white/55">Best {fmtMetres(freeBest)}</p>
             </div>
           </div>
           {!g.freeArmed && (
             <p className={`${pill} mx-auto mt-2 w-max px-3 py-1 text-xs font-medium`}>
-              {isTouchDevice ? "Hold to drive" : "Hold W to drive"} · faster = more points
+              {isTouchDevice ? "Hold to drive" : "Hold W to drive"} · go as far as you can
             </p>
           )}
         </div>
@@ -263,10 +263,10 @@ export default function GameHud() {
                 <div className="flex-1">
                   <h3 className="font-bold">Free Run</h3>
                   <p className="mt-0.5 text-sm text-black/65">
-                    Drive as far and as fast as you can. The faster you go, the faster you score. Stop, crash or hit the
-                    roadside and the run ends. Traffic gets heavier the longer you last.
+                    See how far you can drive. Stop, crash or hit the roadside and the run ends. Traffic gets heavier
+                    the further you go.
                   </p>
-                  {freeBest > 0 && <p className="mt-1 text-xs font-semibold text-black/50">Your best: {freeBest.toLocaleString()}</p>}
+                  {freeBest > 0 && <p className="mt-1 text-xs font-semibold text-black/50">Your best: {fmtMetres(freeBest)}</p>}
                 </div>
               </div>
               <button
@@ -350,9 +350,9 @@ export default function GameHud() {
           <div className="max-h-[92dvh] w-[min(92vw,380px)] overflow-y-auto rounded-3xl bg-white p-6 text-center text-[#14181f] shadow-2xl">
             <p className="text-4xl">{g.freeNewBest ? "🏆" : "💥"}</p>
             <p className="mt-2 text-sm text-black/60">{g.freeReason}</p>
-            <p className="mt-1 font-mono text-5xl font-bold tabular-nums">{g.freeScore.toLocaleString()}</p>
+            <p className="mt-1 font-mono text-5xl font-bold tabular-nums">{fmtMetres(g.freeScore)}</p>
             <p className="mt-1 text-sm font-semibold">
-              {g.freeNewBest ? "New best score!" : `Best: ${freeBest.toLocaleString()}`}
+              {g.freeNewBest ? "New best distance!" : `Best: ${fmtMetres(freeBest)}`}
             </p>
             <div className="text-left">
               <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.25em] text-black/45">Your top runs</p>
