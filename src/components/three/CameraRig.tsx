@@ -19,8 +19,10 @@ import { isTouchDevice } from "@/lib/controls";
 const MAX_YAW = THREE.MathUtils.degToRad(15);
 const MAX_PITCH = THREE.MathUtils.degToRad(8);
 const SHAKE_AMP = 0.012; // metres at full cruise — subtle
-const SEAT = new THREE.Vector3(0, 1.4, 0);
+const SEAT = new THREE.Vector3(0, 1.68, 0); // high truck seat: eye well above the dash
 const BASE_FOV = 75;
+/** Look slightly down over the dash, like a truck driver does. */
+const BASE_PITCH = -THREE.MathUtils.degToRad(11);
 /** The in-cab tablet's outer (left) edge, relative to the seat: x, depth. */
 const TABLET_EDGE_X = 0.62;
 const TABLET_DEPTH = 1.15;
@@ -60,7 +62,7 @@ export default function CameraRig() {
     const px = isTouchDevice ? 0 : state.pointer.x;
     const py = isTouchDevice ? 0 : state.pointer.y;
     const targetYaw = bias - px * MAX_YAW * (bias ? 0.5 : 1);
-    const targetPitch = py * MAX_PITCH;
+    const targetPitch = BASE_PITCH + py * MAX_PITCH;
     const d = Math.min(1, delta * 4);
     g.rotation.y += (targetYaw - g.rotation.y) * d;
     g.rotation.x += (targetPitch - g.rotation.x) * d;

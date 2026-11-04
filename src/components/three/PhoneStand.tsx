@@ -88,7 +88,7 @@ export default function PhoneStand() {
 
   return (
     // Right of the steering wheel (wheel sits at x=0).
-    <group position={[0.62, 0.92, -1.08]} rotation={[-0.3, -0.35, 0.1]}>
+    <group position={[0.62, 1.2, -1.06]} rotation={[-0.3, -0.35, 0.1]}>
       {/* Gooseneck clip-stand: a short curved arm off the dash */}
       <mesh position={[0, -0.13, -0.02]} rotation={[0.35, 0, 0]}>
         <cylinderGeometry args={[0.012, 0.014, 0.14, 8]} />
