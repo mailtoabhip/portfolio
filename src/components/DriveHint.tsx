@@ -47,6 +47,12 @@ function PhoneTiltGlyph() {
 export default function DriveHint() {
   const phase = useNightRun((s) => s.phase);
   const [used, setUsed] = useState(false);
+  // Touch detection differs between server and client: pick the hint after hydration.
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTouch(isTouchDevice), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     if (phase !== "cruising" || used) return;
@@ -80,7 +86,7 @@ export default function DriveHint() {
         padding: "8px 16px",
       }}
     >
-      {isTouchDevice ? (
+      {touch ? (
         <div className="flex items-center gap-4 font-mono text-[11px] tracking-[0.3em] uppercase text-neutral-400">
           <span className="flex items-center gap-2">
             <HandTapGlyph /> hold to drive

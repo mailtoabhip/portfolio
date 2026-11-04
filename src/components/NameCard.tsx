@@ -23,6 +23,12 @@ export default function NameCard() {
   const setPhase = useNightRun((s) => s.setPhase);
   const [visible, setVisible] = useState(true);
   const [starting, setStarting] = useState(false);
+  // Touch detection differs between server and client: show the tap hint after hydration.
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTouch(isTouchDevice), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     if (isTouchDevice) return; // waits for the tap instead
@@ -60,7 +66,7 @@ export default function NameCard() {
         <p className="font-mono text-xs tracking-[0.3em] text-neutral-500 uppercase mt-4">
           B2B Product Designer · Delhivery
         </p>
-        {isTouchDevice && (
+        {touch && (
           <p className="font-mono text-[11px] tracking-[0.3em] text-[#8fe9ff] uppercase mt-8 animate-pulse">
             Tap anywhere to start
           </p>
