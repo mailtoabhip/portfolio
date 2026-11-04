@@ -8,6 +8,9 @@ import Headlights from "@/components/three/Headlights";
 import CameraRig from "@/components/three/CameraRig";
 import { drive } from "@/lib/driveState";
 
+/** Lift the cab so the driver's eye sits at real heavy-truck height (~2.4 m). */
+const CAB_LIFT = 0.85;
+
 /**
  * The whole vehicle (cab + headlights + camera) as one group. Its
  * lateral position and yaw are simulated in GameSim (lanes, kerbs,
@@ -31,9 +34,11 @@ export default function Truck() {
 
   return (
     <group ref={group}>
-      <Cab />
+      <group position={[0, CAB_LIFT, 0]}>
+        <Cab />
+        <CameraRig />
+      </group>
       <Headlights />
-      <CameraRig />
     </group>
   );
 }
