@@ -340,6 +340,149 @@
       "layout": "phone",
       "title": "Manager pricing controls",
       "desc": "Configure discount and charge particulars"
+    },
+    {
+      "id": "e04f",
+      "file": "enq-hifi-1.jpg",
+      "x": 0.47,
+      "y": 0.794,
+      "w": 0.195,
+      "h": 0.2,
+      "layout": "phone",
+      "title": "Find the newly created enquiry",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "e05f",
+      "file": "enq-hifi-2.jpg",
+      "x": 0.385,
+      "y": 0.07,
+      "w": 0.215,
+      "h": 0.166,
+      "layout": "phone",
+      "title": "Follow-up and test ride fields",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "e06f",
+      "file": "enq-hifi-2.jpg",
+      "x": 0.385,
+      "y": 0.261,
+      "w": 0.214,
+      "h": 0.17,
+      "layout": "phone",
+      "title": "Edit the incomplete enquiry",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "e07f",
+      "file": "enq-hifi-2.jpg",
+      "x": 0.383,
+      "y": 0.452,
+      "w": 0.215,
+      "h": 0.163,
+      "layout": "phone",
+      "title": "Updated enquiry details",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "e09f",
+      "file": "enq-hifi-2.jpg",
+      "x": 0.696,
+      "y": 0.82,
+      "w": 0.275,
+      "h": 0.176,
+      "layout": "phone",
+      "title": "Complete remaining booking fields",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q01f",
+      "file": "quotes-1.jpg",
+      "x": 0.462,
+      "y": 0.111,
+      "w": 0.209,
+      "h": 0.271,
+      "layout": "phone",
+      "title": "Create enquiry and select vehicles",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q02f",
+      "file": "quotes-1.jpg",
+      "x": 0.378,
+      "y": 0.42,
+      "w": 0.215,
+      "h": 0.263,
+      "layout": "phone",
+      "title": "Reception desk customer capture",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q05f",
+      "file": "quotes-2.jpg",
+      "x": 0.748,
+      "y": 0.312,
+      "w": 0.218,
+      "h": 0.205,
+      "layout": "phone",
+      "title": "Saved quotation history",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q06f",
+      "file": "quotes-2.jpg",
+      "x": 0.777,
+      "y": 0.539,
+      "w": 0.19,
+      "h": 0.199,
+      "layout": "phone",
+      "title": "Choose variants for quotation",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q08f",
+      "file": "quotes-3.jpg",
+      "x": 0.398,
+      "y": 0.076,
+      "w": 0.234,
+      "h": 0.159,
+      "layout": "phone",
+      "title": "Manager quotation settings",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q09f",
+      "file": "quotes-3.jpg",
+      "x": 0.68,
+      "y": 0.26,
+      "w": 0.266,
+      "h": 0.161,
+      "layout": "phone",
+      "title": "Manager variant configuration",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q11f",
+      "file": "quotes-3.jpg",
+      "x": 0.777,
+      "y": 0.631,
+      "w": 0.188,
+      "h": 0.164,
+      "layout": "phone",
+      "title": "Resend saved quotation",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
+    },
+    {
+      "id": "q12f",
+      "file": "quotes-3.jpg",
+      "x": 0.753,
+      "y": 0.821,
+      "w": 0.215,
+      "h": 0.169,
+      "layout": "phone",
+      "title": "Customer quotation portal",
+      "desc": "Original TVS app screen, isolated from its multi-screen presentation board"
     }
   ],
   "cases": [
