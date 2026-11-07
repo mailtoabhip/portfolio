@@ -816,6 +816,103 @@ body.story-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.slide,.cap,.st-say{animation:none}.st-dot{animation:none}}
 /* /STORY-CSS */
 
+
+/* KIOSK 2026 — screen-first interactive story / editorial companion */
+.ks-deck{--ks-green:#CCFF00}
+.ks-deck .ab-who img{background:#EDE9E0;padding:3px;object-fit:contain}
+.ks-top-detail{color:inherit;font:11px var(--mono);letter-spacing:.1em;text-decoration:none;border:1px solid currentColor;padding:9px 12px;white-space:nowrap}
+.ks-top-detail:hover{background:var(--ab-acc);color:var(--ab-bg);border-color:var(--ab-acc)}
+.story-ov .ks-slide{padding-top:clamp(92px,15cqh,135px);padding-bottom:clamp(68px,9cqh,96px);align-items:center;overflow-y:auto}
+.ks-layout{display:grid;grid-template-columns:minmax(0,.81fr) minmax(0,1.19fr);gap:clamp(20px,3.2cqw,58px);align-items:center;width:100%;height:100%;max-width:1400px;margin:auto}
+.ks-copy{display:flex;flex-direction:column;gap:clamp(12px,2.4cqh,25px);align-items:flex-start;min-width:0}
+.ks-part{font:11px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ab-acc);display:flex;gap:16px;align-items:center}
+.ks-part i{font-style:normal;opacity:.7;color:var(--ab-fg)}
+.ks-copy h2{font:400 clamp(31px,5.2cqmin,75px)/1.04 var(--display);letter-spacing:-.015em;text-transform:uppercase;max-width:15ch}
+.ks-copy h2 em{font-style:normal;color:var(--ab-acc)}
+.ks-copy p{font:400 clamp(15px,2.2cqmin,21px)/1.48 var(--body);max-width:44ch}
+.ks-inline-link,.ks-hint{font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ab-acc)}
+.ks-inline-link{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:4px}
+.ks-media{min-width:0;min-height:0;width:100%;max-height:100%;display:flex;flex-direction:column;align-items:stretch;justify-content:center}
+.ks-shot{width:100%;max-height:100%;display:flex;flex-direction:column;min-height:0;background:#F5F2EC;border:1px solid rgba(26,26,26,.15);box-shadow:10px 12px 0 color-mix(in srgb,var(--ab-fg) 20%,transparent);overflow:hidden}
+.ks-shot>img{width:100%;height:auto;max-height:min(58cqh,570px);object-fit:contain;object-position:center;display:block}
+.ks-shot.ks-art{background:transparent;border:0;box-shadow:none;overflow:visible}
+.ks-shot.ks-art>img{max-height:min(73cqh,650px);filter:drop-shadow(0 18px 24px rgba(0,0,0,.12))}
+.ks-media-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#161616;color:#EDE9E0;font:10px var(--mono);line-height:1.4;letter-spacing:.03em}
+.ks-media-foot button{font:10px var(--mono);color:#CCFF00;border:1px solid #CCFF00;background:none;padding:8px 10px;cursor:pointer;white-space:nowrap}
+.ks-media-foot button:hover{background:#CCFF00;color:#111}
+.ks-shot.ks-art .ks-media-foot{display:none}
+.ks-special .ks-layout{grid-template-columns:minmax(0,.74fr) minmax(0,1.26fr)}
+.ks-tile-matrix{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:color-mix(in srgb,var(--ab-fg) 25%,transparent);border:1px solid currentColor}
+.ks-tile-matrix>div{padding:clamp(16px,2.1cqw,34px);background:var(--ab-bg);display:flex;flex-direction:column;gap:16px;min-height:clamp(130px,22cqh,240px)}
+.ks-tile-matrix b{font:11px var(--mono);color:var(--ab-acc)}
+.ks-tile-matrix strong{font:400 clamp(20px,3cqmin,36px)/1.05 var(--display);text-transform:uppercase}
+.ks-tile-matrix span{font-size:clamp(13px,1.9cqmin,16px);opacity:.76}
+.ks-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center}
+.ks-flow>div{border:2px solid currentColor;padding:clamp(12px,1.7cqw,22px);display:flex;flex-direction:column;gap:12px;min-height:150px}
+.ks-flow>div b{font:11px var(--mono);color:var(--ab-acc)}
+.ks-flow>div strong{font:400 clamp(17px,2.3cqmin,27px) var(--display);text-transform:uppercase}
+.ks-flow>div small{font-size:12px;line-height:1.4;opacity:.8}
+.ks-flow>span{font-size:22px;color:var(--ab-acc)}
+.ks-flow-proof{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;overflow:hidden}
+.ks-flow-proof img{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;background:#f5f2ec}
+.ks-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#131313}
+.ks-metrics>div{min-height:158px;padding:clamp(17px,2cqw,26px);background:#CCFF00;color:#121212;display:flex;flex-direction:column;justify-content:space-between;gap:15px}
+.ks-metrics>div:nth-child(2),.ks-metrics>div:nth-child(3){background:#EDE9E0}
+.ks-metrics strong{font:400 clamp(26px,4.2cqmin,52px)/1 var(--display)}
+.ks-metrics strong small{font-size:.45em}
+.ks-metrics span{font:12px var(--body)}
+.ks-disclaimer{font:10px/1.4 var(--mono);margin-top:14px;opacity:.75}
+.ks-end-actions{display:grid;gap:10px}
+.ks-end-actions a{font:clamp(12px,1.65cqmin,17px) var(--mono);text-transform:uppercase;letter-spacing:.04em;text-decoration:none;display:flex;gap:12px;justify-content:space-between;align-items:center;border:1px solid currentColor;padding:15px 18px;transition:.2s background}
+.ks-end-actions a:first-child{background:#CCFF00;color:#111;border-color:#CCFF00}
+.ks-end-actions a:hover{background:#EDE9E0;color:#111}
+.ks-end-actions a span{font-size:21px}
+.ks-viewer{background:#EDE9E0;color:#1A1A1A;border:2px solid #1A1A1A;padding:0;max-width:min(96vw,1200px);width:96vw;max-height:93vh;box-shadow:0 32px 100px rgba(0,0,0,.5);z-index:800}
+.ks-viewer::backdrop{background:rgba(10,10,10,.88)}
+.ks-viewer-head,.ks-viewer-foot{padding:12px 18px;display:flex;gap:20px;align-items:center;justify-content:space-between;font:10px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.ks-viewer-head{background:#2B3AFF;color:#fff}
+.ks-viewer-head button{border:1px solid currentColor;background:transparent;color:inherit;font:inherit;padding:10px 14px;cursor:pointer}
+.ks-viewer-foot a{color:#2B3AFF;text-decoration:none;white-space:nowrap}
+.ks-viewer-body{max-height:72vh;overflow:auto;text-align:center;background:#F8F6F1}
+.ks-viewer-body img{width:auto;max-width:100%;height:auto;display:block;margin:auto}
+.ks-detail .cs-hero{border-top:6px solid var(--blue)}
+.ks-detail .cs-hero h1{max-width:22ch}
+.ks-detail .boards{grid-template-columns:1fr}
+.ks-detail .boards img{height:auto;max-height:none;object-fit:contain;object-position:top}
+.ks-detail .shotband{background:var(--blue)}
+.ks-detail .ks-wide-board{margin:18px 0}
+.ks-detail .ks-wide-board img{max-height:none;object-fit:contain}
+@container (max-width:780px){
+  .story-ov .ks-slide{padding:84px 18px 68px;align-items:flex-start;overflow-y:auto}
+  .ks-layout,.ks-special .ks-layout{grid-template-columns:1fr;gap:12px;height:auto;min-height:100%;align-content:start}
+  .ks-copy{gap:10px}
+  .ks-copy h2{font-size:clamp(27px,7cqw,48px);max-width:18ch}
+  .ks-copy p{font-size:clamp(14px,3.4cqw,17px);line-height:1.35}
+  .ks-shot>img{max-height:clamp(190px,42cqh,420px)}
+  .ks-shot.ks-art>img{max-height:50cqh}
+  .ks-media-foot{padding:8px 10px;font-size:9px}
+  .ks-tile-matrix>div{min-height:104px;gap:7px;padding:13px}
+  .ks-tile-matrix strong{font-size:20px}
+  .ks-tile-matrix span{font-size:12px}
+  .ks-metrics>div{min-height:125px;padding:14px}
+  .ks-metrics strong{font-size:clamp(22px,5.4cqw,36px)}
+  .ks-flow{grid-template-columns:1fr;gap:6px}
+  .ks-flow>span{display:none}
+  .ks-flow>div{min-height:0;gap:6px;padding:10px}
+  .ks-flow>div strong{font-size:20px}
+  .ks-flow-proof img{max-height:85px}
+  .ks-top-detail{font-size:10px;padding:7px 8px}
+  .ks-deck .ab-who span{display:none}
+  .ks-end-actions a{padding:12px;font-size:11px}
+}
+@container (max-height:600px) and (min-width:781px){
+ .ks-copy h2{font-size:clamp(26px,5cqmin,55px)}
+ .ks-shot>img{max-height:52cqh}
+ .ks-tile-matrix>div{min-height:100px}
+}
+@media(prefers-reduced-motion:reduce){.ks-deck *{animation:none!important}}
+/* END KIOSK STORY */
+
 </style>
 
 <div id="intro" aria-hidden="true"><div class="in-logo"><div class="in-p in-acc" style="--k:0"><i style="--r:3;--c:0"></i></div><div class="in-p" style="--k:1"><i style="--r:3;--c:2"></i><i style="--r:2;--c:1"></i><i style="--r:2;--c:2"></i><i style="--r:2;--c:3"></i></div><div class="in-p" style="--k:2"><i style="--r:2;--c:0"></i><i style="--r:1;--c:0"></i><i style="--r:0;--c:0"></i><i style="--r:0;--c:1"></i></div><div class="in-p" style="--k:3"><i style="--r:2;--c:4"></i><i style="--r:1;--c:4"></i><i style="--r:0;--c:4"></i><i style="--r:0;--c:3"></i></div><div class="in-p" style="--k:4"><i style="--r:1;--c:2"></i><i style="--r:0;--c:2"></i></div></div></div>
@@ -1738,20 +1835,100 @@ body.story-open{overflow:hidden}
     </div>
   </main>
 
-  <!-- ================= KIOSK ================= -->
-  <main id="v-kiosk" class="page" hidden>
-    <a class="btn out sm back" href="#projects">← Projects</a>
+  <!-- ================= KIOSK / SCREEN-LED STORYBOARD ================= -->
+  <div id="v-kiosk" class="story-ov ks-overlay" hidden>
+    <div class="ab-deck ks-deck" data-reel="kiosk" data-dur="20000" tabindex="0" aria-roledescription="carousel" aria-label="Birth certificate kiosks interactive case study">
+      <div class="ab-bars" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+      <div class="ab-top">
+        <div class="ab-who"><img src="img/kiosk-editorial.svg" alt=""><b>Birth Certificate Kiosks</b><span>Interactive case study</span></div>
+        <a href="#kiosk-detail" class="ks-top-detail">Detailed ↗</a>
+        <button class="ab-pause" type="button" aria-label="Pause story">❙❙</button>
+        <button class="ab-close" type="button" aria-label="Close story">✕</button>
+      </div>
+      <section class="ab-slide ks-slide " data-bg="blue" aria-label="Slide 1: PART 1 · THE REALITY">
+ <div class="ks-layout ks-layout-hero">
+  <div class="ks-copy" data-a><span class="ks-part">PART 1 · THE REALITY <i>01/13</i></span><h2>A birth certificate.<br><em>Why does it feel this hard?</em></h2><p>A small document can have a huge consequence. And at a public-service kiosk, the person using it shouldn't have to decode the process first.</p><small class="ks-hint">Tap right to begin →</small></div>
+  <div class="ks-media" data-a><div class="ks-shot ks-art"><img src="img/kiosk-editorial.svg" alt="Illustration of a self-service birth certificate kiosk" loading="eager"><div class="ks-media-foot"><span>New editorial illustration · real interface screens follow</span></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="paper" aria-label="Slide 2: PART 1 · THE REALITY">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 1 · THE REALITY <i>02/13</i></span><h2>The kiosk was built to help.<br><em>People still gave up.</em></h2><p>The existing experience asked residents to interpret unclear instructions, repeat information and recover from errors with little guidance. The legacy case study reported 34% abandonment.</p></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-old.jpg" alt="Existing kiosk heuristic audit with observed issues and severity" loading="lazy"><div class="ks-media-foot"><span>Actual project material · heuristic audit</span><button type="button" data-ks-zoom="img/kiosk-old.jpg" data-caption="Actual project material · heuristic audit" aria-label="Inspect Existing kiosk heuristic audit with observed issues and severity">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="dark" aria-label="Slide 3: PART 1 · THE REALITY">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 1 · THE REALITY <i>03/13</i></span><h2>There was no single 'average' user.</h2><p>We considered older residents, people with limited dexterity, Spanish-speaking residents and the general public. The same screen had to be understandable to all four.</p></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-user.jpg" alt="Four user groups considered for the Pennsylvania kiosk" loading="lazy"><div class="ks-media-foot"><span>Actual project material · user groups</span><button type="button" data-ks-zoom="img/kiosk-user.jpg" data-caption="Actual project material · user groups" aria-label="Inspect Four user groups considered for the Pennsylvania kiosk">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide ks-special" data-bg="yellow" aria-label="Slide 4: PART 1 · THE REALITY">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 1 · THE REALITY <i>04/13</i></span><h2>More than 100 issues.<br>Four recurring patterns.</h2><p>The Nielsen heuristic audit revealed the same friction again and again: guidance, repeated entry, lack of confidence, and inconsistent controls.</p></div>
+  <div class="ks-media" data-a><div class="ks-tile-matrix"><div><b>01</b><strong>Guidance</strong><span>Missing explanations and confusing errors</span></div><div><b>02</b><strong>Efficiency</strong><span>Repeating information and steps</span></div><div><b>03</b><strong>Confidence</strong><span>No certificate preview</span></div><div><b>04</b><strong>Consistency</strong><span>Controls change across screens</span></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="blue" aria-label="Slide 5: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>05/13</i></span><h2>So we redesigned the journey,<br><em>not just the screens.</em></h2><p>Instead of asking citizens to navigate a maze, we organised the experience around three understandable moments: identify, review, and confirm.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-journey.jpg" alt="Comparison of old and redesigned kiosk journey" loading="lazy"><div class="ks-media-foot"><span>Actual project material · previous journey versus new journey</span><button type="button" data-ks-zoom="img/kiosk-journey.jpg" data-caption="Actual project material · previous journey versus new journey" aria-label="Inspect Comparison of old and redesigned kiosk journey">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="paper" aria-label="Slide 6: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>06/13</i></span><h2>01 / Begin with confidence.</h2><p>Start by choosing a language and the right request type. Make requirements visible before asking for details. The first screen should explain what happens next.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-hifi-1.jpg" alt="High-fidelity kiosk screens showing language, order type and identification" loading="lazy"><div class="ks-media-foot"><span>Original high-fidelity screen board · identification &amp; language</span><button type="button" data-ks-zoom="img/kiosk-hifi-1.jpg" data-caption="Original high-fidelity screen board · identification &amp; language" aria-label="Inspect High-fidelity kiosk screens showing language, order type and identification">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="dark" aria-label="Slide 7: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>07/13</i></span><h2>02 / Make verification feel manageable.</h2><p>Verification is already intimidating. Large readable controls, familiar language and clear feedback help users move through it without guessing. The exact screens are on the right.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-hifi-1.jpg" alt="Identification and verification screens from the kiosk UI board" loading="lazy"><div class="ks-media-foot"><span>Original high-fidelity screen board · identity verification</span><button type="button" data-ks-zoom="img/kiosk-hifi-1.jpg" data-caption="Original high-fidelity screen board · identity verification" aria-label="Inspect Identification and verification screens from the kiosk UI board">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="paper" aria-label="Slide 8: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>08/13</i></span><h2>03 / Let me see it before I submit.</h2><p>A certificate preview turns a high-stakes form into something understandable. Users can review their information before committing instead of discovering errors afterwards.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-hifi-2.jpg" alt="High-fidelity certificate preview and acknowledgement screens" loading="lazy"><div class="ks-media-foot"><span>Original high-fidelity screen board · review</span><button type="button" data-ks-zoom="img/kiosk-hifi-2.jpg" data-caption="Original high-fidelity screen board · review" aria-label="Inspect High-fidelity certificate preview and acknowledgement screens">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="blue" aria-label="Slide 9: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>09/13</i></span><h2>04 / Give the journey a real ending.</h2><p>Copies, payment and acknowledgement need the same clarity as the first step. The confirmation should answer one simple question: 'Did it work?'</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-hifi-2.jpg" alt="High-fidelity kiosk certificate and acknowledgement screens" loading="lazy"><div class="ks-media-foot"><span>Original high-fidelity screen board · confirmation</span><button type="button" data-ks-zoom="img/kiosk-hifi-2.jpg" data-caption="Original high-fidelity screen board · confirmation" aria-label="Inspect High-fidelity kiosk certificate and acknowledgement screens">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide " data-bg="dark" aria-label="Slide 10: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>10/13</i></span><h2>The product screens.<br>Not just a prettier flow.</h2><p>The important work is visible in the interface: the progression from identification through review and confirmation, and the consistency between screens.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-shot "><img src="img/kiosk-banner.jpg" alt="High-fidelity redesigned birth certificate kiosk screens" loading="lazy"><div class="ks-media-foot"><span>Actual product screens · redesigned flow</span><button type="button" data-ks-zoom="img/kiosk-banner.jpg" data-caption="Actual product screens · redesigned flow" aria-label="Inspect High-fidelity redesigned birth certificate kiosk screens">Inspect screens ↗</button></div></div></div>
+ </div></section>
+<section class="ab-slide ks-slide ks-special" data-bg="paper" aria-label="Slide 11: PART 2 · THE REDESIGN">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 2 · THE REDESIGN <i>11/13</i></span><h2>A simpler sequence, built for people.</h2><p>Identify → Review → Confirm. Supporting decisions included Spanish-language access, readable typography, fewer repeated fields and reusable interface patterns.</p><a href="#kiosk-detail" class="ks-inline-link">Read the full design rationale ↗</a></div>
+  <div class="ks-media" data-a><div class="ks-flow" aria-label="Redesigned three-step service flow"><div><b>1</b><strong>Identify</strong><small>Language · request type · verification</small></div><span aria-hidden="true">→</span><div><b>2</b><strong>Review</strong><small>Check certificate details before submitting</small></div><span aria-hidden="true">→</span><div><b>3</b><strong>Confirm</strong><small>Copies · payment · acknowledgement</small></div></div><div class="ks-flow-proof"><img src="img/kiosk-hifi-1.jpg" alt="Kiosk identification flow"/><img src="img/kiosk-hifi-2.jpg" alt="Kiosk certificate review flow"/></div></div>
+ </div></section>
+<section class="ab-slide ks-slide ks-special" data-bg="yellow" aria-label="Slide 12: PART 3 · WHAT CHANGED">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 3 · WHAT CHANGED <i>12/13</i></span><h2>Less time.<br>Fewer dead ends.</h2><p>The existing case study reports these before-and-after results. Treat them as reported project outcomes, not independent validation from the source analytics.</p></div>
+  <div class="ks-media" data-a><div class="ks-metrics"><div><strong>25 → 4–5<small> min</small></strong><span>Time to complete a request</span></div><div><strong>34% → 15%</strong><span>Abandonment</span></div><div><strong>22% → 8%</strong><span>User error rate</span></div><div><strong>3.5 → 4.7</strong><span>Satisfaction / 5</span></div></div><p class="ks-disclaimer">Figures reproduced from the existing portfolio case study; underlying study files were not independently verified here.</p></div>
+ </div></section>
+<section class="ab-slide ks-slide ks-special" data-bg="dark" aria-label="Slide 13: PART 3 · WHAT CHANGED">
+ <div class="ks-layout ">
+  <div class="ks-copy" data-a><span class="ks-part">PART 3 · WHAT CHANGED <i>13/13</i></span><h2>The real outcome?<br><em>More confidence.</em></h2><p>The best kiosk experience is one people barely notice. They know where to start, what to do next, and whether the request worked. That's what the redesign aimed to give them.</p></div>
+  <div class="ks-media" data-a><div class="ks-end-actions"><a href="#kiosk-detail">Read the detailed case study <span>↗</span></a><a href="#audit">Next: TVS iQube &amp; 3W UX Audit <span>→</span></a><a href="#tvs-quotes">← Previous: TVS Quotations</a><a href="#projects">View all projects</a></div></div>
+ </div></section>
+      <p class="ab-tip" aria-hidden="true">Tap sides to navigate · Hold to pause · Drag down to close · Inspect to zoom</p>
+    </div>
+    <dialog id="ks-viewer" class="ks-viewer" aria-label="Kiosk screen inspection"><div class="ks-viewer-head"><span>Original project asset · Full view</span><button type="button" data-ks-close>Close ✕</button></div><div class="ks-viewer-body"><img alt="Kiosk case study asset in full view"></div><div class="ks-viewer-foot"><span></span><a target="_blank" rel="noopener" href="#">Open original image ↗</a></div></dialog>
+  </div>
+
+  <!-- ================= KIOSK / DETAILED CASE STUDY ================= -->
+  <main id="v-kiosk-detail" class="page ks-detail" hidden>
+    <a class="btn out sm back" href="#kiosk">← Interactive story</a> <a class="btn out sm back" href="#projects">All projects</a>
     <section class="cs-hero">
       <div class="tags"><span class="tag m">Case study</span><span class="tag">Pennsylvania Dept. of Health · Extentia</span><span class="tag rt">3 min read</span></div>
-      <h1 class="disp">Birth certificates in minutes, at a kiosk anyone can use</h1>
-      <p class="cs-lede">A third of people who walked up to Pennsylvania's birth certificate kiosk gave up before finishing. We found out why, all 100+ reasons of it, and redesigned the journey so older, less tech-savvy and Spanish-speaking residents could finish on their own.</p>
+      <h1 class="disp">From an intimidating kiosk to a guided public service</h1>
+      <p class="cs-lede">A self-service kiosk should make a critical public service feel possible, not intimidating. Here is the deeper story: the usability audit, the people we considered, the redesigned journey, the actual screens and the results reported in the original project.</p>
     </section>
     <section class="glance" aria-label="At a glance">
       <div class="glance-head"><span class="eyebrow">At a glance · the 30-second version</span></div>
-      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Unclear instructions, repeated typing and no preview meant 34% of requests were abandoned and 22% had errors.</p></div><div><span class="eyebrow">What I did</span><p>Heuristic audit of 100+ issues, four user types, a three-step guided journey, accessibility and Spanish support, and high-fidelity screens.</p></div><div><span class="eyebrow">The outcome</span><p>Requests take about 5 minutes instead of up to 25. Abandonment fell to 15%, errors to 8%, and satisfaction rose from 3.5 to 4.7.</p></div></div>
+      <div class="glance-grid"><div><span class="eyebrow">The problem</span><p>Unclear instructions, repeated typing and no preview meant 34% of requests were abandoned and 22% had errors.</p></div><div><span class="eyebrow">What I did</span><p>Heuristic audit of 100+ issues, four user types, a three-step guided journey, accessibility and Spanish support, and high-fidelity screens.</p></div><div><span class="eyebrow">Reported result</span><p>In the original case study: roughly 4–5 minutes rather than up to 25; abandonment 34% to 15%; error rate 22% to 8%.</p></div></div>
       <ul class="glance-meta"><li><span class="eyebrow">Role</span>UX designer</li><li><span class="eyebrow">Client</span>Pennsylvania Dept. of Health, US</li><li><span class="eyebrow">Company</span>Extentia, a Merkle company</li><li><span class="eyebrow">Platform</span>Self-service kiosk</li></ul>
     </section>
-    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="kiosk--story">The story</button><button type="button" data-goto="kiosk--problem">The problem</button><button type="button" data-goto="kiosk--users">Who it's for</button><button type="button" data-goto="kiosk--redesign">The redesign</button><button type="button" data-goto="kiosk--impact">Impact</button><button type="button" data-goto="kiosk--next">Next steps</button></nav>
+    <nav class="jump" aria-label="Sections on this page"><span class="eyebrow">Jump to</span><button type="button" data-goto="kiosk--story">The story</button><button type="button" data-goto="kiosk--problem">The problem</button><button type="button" data-goto="kiosk--users">Who it's for</button><button type="button" data-goto="kiosk--redesign">The redesign</button><button type="button" data-goto="kiosk--screens">All screens</button><button type="button" data-goto="kiosk--impact">Impact</button><button type="button" data-goto="kiosk--next">Next steps</button></nav>
     <div class="shotband"><img src="img/kiosk-banner.jpg" alt="Redesigned birth certificate kiosk screens"></div>
     <div class="kpis" aria-label="Impact summary"><div class="card kpi aloe"><b>~5 min</b><p>to complete a request, down from up to 25 minutes</p></div><div class="card kpi"><b>34→15%</b><p>of requests abandoned</p></div><div class="card kpi"><b>22→8%</b><p>user error rate</p></div><div class="card kpi"><b>3.5→4.7</b><p>user satisfaction out of 5</p></div></div>
     <section class="sec" id="kiosk--story" data-nav="The story">
@@ -1782,11 +1959,21 @@ body.story-open{overflow:hidden}
         <ol class="steps"><li><b>Tell us who you are</b><span>Check required documents, verify identity, or continue a saved application.</span></li><li><b>Preview your certificate</b><span>See exactly how it will look, and fix details before submitting.</span></li><li><b>Pay and confirm</b><span>Choose copies, pay in a few taps, and get a clear confirmation.</span></li></ol><div class="grid2"><div class="card"><span class="eyebrow">Accessibility</span><h3>Readable by everyone</h3><p>Larger type, high contrast and plain language for less tech-savvy users.</p></div><div class="card"><span class="eyebrow">Language</span><h3>English and Spanish</h3><p>Full Spanish support for Pennsylvania's Spanish-speaking residents.</p></div><div class="card"><span class="eyebrow">Speed</span><h3>Less typing</h3><p>Auto-fill, retrieval of saved data, and real-time validation that catches errors early.</p></div><div class="card"><span class="eyebrow">Consistency</span><h3>One component set</h3><p>Standard components across every screen.</p></div></div><figure><a href="img/kiosk-journey.jpg" target="_blank" rel="noopener"><img src="img/kiosk-journey.jpg" alt="Previous journey vs new journey: fewer steps and fewer low points" loading="lazy"></a><figcaption>Previous journey vs new journey: fewer steps and fewer low points</figcaption></figure><div class="boards"><figure><a href="img/kiosk-hifi-1.jpg" target="_blank" rel="noopener" aria-label="Open full board: Identification: language, order type, verification"><img src="img/kiosk-hifi-1.jpg" alt="Identification: language, order type, verification" loading="lazy"></a><figcaption>Identification: language, order type, verification · open full size ↗</figcaption></figure><figure><a href="img/kiosk-hifi-2.jpg" target="_blank" rel="noopener" aria-label="Open full board: Certificate preview and acknowledgement"><img src="img/kiosk-hifi-2.jpg" alt="Certificate preview and acknowledgement" loading="lazy"></a><figcaption>Certificate preview and acknowledgement · open full size ↗</figcaption></figure></div>
       </div>
     </section>
+    <section class="sec" id="kiosk--screens" data-nav="All screens">
+      <span class="eyebrow">All the screens</span>
+      <div class="prose full">
+        <h2 class="disp">The interface is the evidence</h2>
+        <p>Both high-fidelity boards are presented in full so you can inspect the language, identification and verification flow, certificate preview, and acknowledgement. These are the original project visuals—not AI-generated replacements.</p>
+        <figure class="ks-wide-board"><a href="img/kiosk-hifi-1.jpg" target="_blank" rel="noopener"><img src="img/kiosk-hifi-1.jpg" loading="lazy" alt="Full original board: identification, language, order type and verification screens"></a><figcaption>Original high-fidelity board 01 · Identification, language, order type, verification · Open full size ↗</figcaption></figure>
+        <figure class="ks-wide-board"><a href="img/kiosk-hifi-2.jpg" target="_blank" rel="noopener"><img src="img/kiosk-hifi-2.jpg" loading="lazy" alt="Full original board: certificate preview and acknowledgement"></a><figcaption>Original high-fidelity board 02 · Certificate preview and acknowledgement · Open full size ↗</figcaption></figure>
+        <p>The screens are shown in their existing exported-board format; individual full-resolution frames would need to be exported from the original design source for closer interaction-by-interaction review.</p>
+      </div>
+    </section>
     <section class="sec" id="kiosk--impact" data-nav="Impact">
       <span class="eyebrow">Impact</span>
       <div class="prose full">
         <h2 class="disp">Before and after</h2>
-        <div class="bt"><div class="bt-row bt-head"><span>Metric</span><span>Before</span><span>After</span><span>Change</span></div><div class="bt-row"><span>Time to complete a request</span><span>Up to 25 min</span><span><b>4–5 min</b></span><span class="chg">~80% faster</span></div><div class="bt-row"><span>Requests abandoned</span><span>34%</span><span><b>15%</b></span><span class="chg">55% fewer</span></div><div class="bt-row"><span>User error rate</span><span>22%</span><span><b>8%</b></span><span class="chg">64% fewer</span></div><div class="bt-row"><span>Completed on first attempt</span><span>68%</span><span><b>90%</b></span><span class="chg">+22 pts</span></div><div class="bt-row"><span>Satisfaction (out of 5)</span><span>3.5</span><span><b>4.7</b></span><span class="chg">+34%</span></div></div><p class="src">Post-launch analytics and user testing.</p><div class="quotes"><figure class="q"><blockquote>“The clear step-by-step guidance and ability to preview my details saved me so much time.”</blockquote><figcaption>Working parent</figcaption></figure><figure class="q"><blockquote>“The text is easier to read, and I didn't feel lost at any step.”</blockquote><figcaption>Retired veteran</figcaption></figure><figure class="q"><blockquote>“The Spanish option made it much easier. Before, I had to ask for help.”</blockquote><figcaption>Spanish-speaking resident</figcaption></figure></div>
+        <div class="bt"><div class="bt-row bt-head"><span>Metric</span><span>Before</span><span>After</span><span>Change</span></div><div class="bt-row"><span>Time to complete a request</span><span>Up to 25 min</span><span><b>4–5 min</b></span><span class="chg">~80% faster</span></div><div class="bt-row"><span>Requests abandoned</span><span>34%</span><span><b>15%</b></span><span class="chg">55% fewer</span></div><div class="bt-row"><span>User error rate</span><span>22%</span><span><b>8%</b></span><span class="chg">64% fewer</span></div><div class="bt-row"><span>Completed on first attempt</span><span>68%</span><span><b>90%</b></span><span class="chg">+22 pts</span></div><div class="bt-row"><span>Satisfaction (out of 5)</span><span>3.5</span><span><b>4.7</b></span><span class="chg">+34%</span></div></div><p class="src">Results reported in the original portfolio case study as post-launch analytics and testing; underlying datasets were not independently provided for this version.</p><div class="quotes"><figure class="q"><blockquote>“The clear step-by-step guidance and ability to preview my details saved me so much time.”</blockquote><figcaption>Working parent</figcaption></figure><figure class="q"><blockquote>“The text is easier to read, and I didn't feel lost at any step.”</blockquote><figcaption>Retired veteran</figcaption></figure><figure class="q"><blockquote>“The Spanish option made it much easier. Before, I had to ask for help.”</blockquote><figcaption>Spanish-speaking resident</figcaption></figure></div>
       </div>
     </section>
     <section class="sec" id="kiosk--next" data-nav="Next steps">
@@ -1798,7 +1985,7 @@ body.story-open{overflow:hidden}
     </section>
     <div class="endcta">
       <h2 class="disp">More work</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#projects">All projects →</a><a class="btn out" href="#delfin">DelFin case study</a></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="#kiosk">↺ Replay story</a><a class="btn out" href="#tvs-quotes">← Previous: TVS Quotations</a><a class="btn out" href="#audit">Next: TVS UX Audit →</a><a class="btn out" href="#projects">All projects</a></div>
     </div>
   </main>
 
@@ -1879,10 +2066,10 @@ body.story-open{overflow:hidden}
 <script>
 (function(){
   /* ---------- routing ---------- */
-  var views=['home', 'projects', 'about', 'contact', 'resume', 'delfin', 'delfin-fastag', 'delfin-onboarding', 'delfin-money', 'tvs', 'tvs-research', 'tvs-enquiry', 'tvs-quotes', 'kiosk', 'audit'];
+  var views=['home', 'projects', 'about', 'contact', 'resume', 'delfin', 'delfin-fastag', 'delfin-onboarding', 'delfin-money', 'tvs', 'tvs-research', 'tvs-enquiry', 'tvs-quotes', 'kiosk', 'kiosk-detail', 'audit'];
   var nav=document.getElementById('topbar');
   var PW_HASH='420850d4415bc8236a91a2af6e34ee42a2259d31c22873c4b21e6e87786737bc', UNLOCK_KEY='420850d4415bc823';
-  var PRIVATE=['projects','delfin','delfin-fastag','delfin-onboarding','delfin-money','tvs','tvs-research','tvs-enquiry','tvs-quotes','kiosk','audit','delfin-story'];
+  var PRIVATE=['projects','delfin','delfin-fastag','delfin-onboarding','delfin-money','tvs','tvs-research','tvs-enquiry','tvs-quotes','kiosk','kiosk-detail','audit','delfin-story'];
   function unlocked(){ try{ return localStorage.getItem('ap-unlocked')===UNLOCK_KEY; }catch(e){ return !!window.__apUnlocked; } }
   function check(v){
     try{ return crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(function(b){
@@ -1921,11 +2108,11 @@ body.story-open{overflow:hidden}
     if(views.indexOf(h)<0 && h!=='delfin-story') h='home';
     var locked=PRIVATE.indexOf(h)>=0 && !unlocked();
     if(locked){ h='home'; showGate(); } else hideGate(justUnlocked===true);
-    var story=(h==='about'||h==='contact'||h==='resume');
+    var story=(h==='about'||h==='contact'||h==='resume'||h==='kiosk');
     var base=story?'home':h;
     if(base==='delfin-story') base='delfin';
     views.forEach(function(v){document.getElementById('v-'+v).hidden=!(v===base||v===h);});
-    nav.hidden=(base==='home');
+    nav.hidden=(base==='home'||base==='kiosk-detail');
     document.body.classList.toggle('story-open',story||locked);
     if(!story) window.scrollTo(0,0);
     if(window.__tiles) window.__tiles.active=(base==='home');
@@ -2080,7 +2267,7 @@ body.story-open{overflow:hidden}
     var DUR=+(deck.getAttribute('data-dur')||15000), i=0, n=slides.length, t=0, last=0, raf=0, running=false;
     var timed=DUR>0;
     var userPaused=false, holdPaused=false, dragging=false;
-    function paused(){return userPaused||holdPaused||dragging||document.hidden;}
+    function paused(){return userPaused||holdPaused||dragging||document.hidden||(id==='kiosk'&&document.getElementById('ks-viewer')&&document.getElementById('ks-viewer').open);}
     function paint(){
       bars.forEach(function(b,j){b.style.width=(!timed||j<i?100:j>i?0:Math.min(100,t/DUR*100))+'%';});
       deck.classList.toggle('paused',userPaused||holdPaused);
@@ -2096,7 +2283,7 @@ body.story-open{overflow:hidden}
     function loop(now){
       if(!running) return;
       var dt=Math.min(100,now-(last||now)); last=now;
-      if(timed&&!paused()){t+=dt; if(t>=DUR){show(i+1); if(!running) return;}}
+      if(timed&&!paused()&&!(id==='kiosk'&&i===n-1)){t+=dt; if(t>=DUR){show(i+1); if(!running) return;}}
       paint(); raf=requestAnimationFrame(loop);
     }
     function open(){
@@ -2108,7 +2295,7 @@ body.story-open{overflow:hidden}
     function stop(){running=false; cancelAnimationFrame(raf);}
     function close(){
       stop(); deck.classList.add('closing'); ov.style.setProperty('--ov','0');
-      setTimeout(function(){ if(location.hash.replace('#','')===id) location.hash=''; },260);
+      setTimeout(function(){ if(location.hash.replace('#','')===id) location.hash=(id==='kiosk'?'projects':''); },260);
     }
     function seen(){deck.classList.add('seen');}
     pbtn.addEventListener('click',function(e){e.stopPropagation();userPaused=!userPaused;seen();paint();});
@@ -2386,6 +2573,27 @@ body.story-open{overflow:hidden}
 <script id="game-embed">
 (function(){var inGame=false;try{inGame=window.self!==window.top;}catch(e){inGame=true;}
 if(inGame){var g=document.getElementById('gamecta');if(g)g.hidden=true;}})();
+</script>
+
+<script id="kiosk-zoom">
+(function(){
+ var deck=document.querySelector('.ks-deck');
+ var dialog=document.getElementById('ks-viewer');
+ if(!deck||!dialog)return;
+ var image=dialog.querySelector('img'),link=dialog.querySelector('a'),caption=dialog.querySelector('.ks-viewer-foot span');
+ deck.addEventListener('click',function(e){
+  var b=e.target.closest('[data-ks-zoom]');if(!b)return;
+  e.preventDefault();e.stopPropagation();
+  var src=b.getAttribute('data-ks-zoom');
+  if(!/^img\/kiosk-[a-z0-9-]+\.(?:jpg|svg)$/.test(src))return;
+  image.src=src; image.alt=b.getAttribute('aria-label')||'Kiosk project screen';
+  link.href=src; caption.textContent=b.getAttribute('data-caption')||'Original case study asset';
+  if(!dialog.open)dialog.showModal();
+ });
+ dialog.querySelector('[data-ks-close]').addEventListener('click',function(){dialog.close();});
+ dialog.addEventListener('click',function(e){if(e.target===dialog)dialog.close();});
+ window.addEventListener('hashchange',function(){if(dialog.open)dialog.close();});
+})();
 </script>
 
 </body>
