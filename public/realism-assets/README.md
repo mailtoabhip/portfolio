@@ -24,17 +24,19 @@ Units are metres. +Y is up, and the vehicle points along -Z. Wheel hierarchy use
 
 Materials use glTF metallic/roughness properties. They currently use scalar roughness/metalness rather than baked texture sets. The two generated base-color textures are supplied separately, not embedded in these GLBs. The bark texture is for pine/fir trunks; birch needs its own bark material. No normal, roughness, displacement, collision or LOD maps are included. Seamless tiling was requested from the image generator but has not been visually verified.
 
-These are detailed procedural first-pass assets, not production-ready hyperrealistic scans. The models still need visual art direction, texture baking, optimization and in-game lighting work. Geometry export and binary structure were checked; a rendered visual review could not be completed because browser preview did not initialize and Windows Computer Use stopped when it could not reliably identify the browser URL.
+These are detailed procedural first-pass assets, not production-ready hyperrealistic scans. The models still need visual art direction, texture baking, optimization and in-game lighting work. Geometry export and binary structure were checked. After fixing startup handling and the local launch flow, all six models were loaded in the browser; the truck, trailer and pine were visually inspected. Model switching completed without browser errors.
 
 Trees have modeled branches and opaque leaf geometry rather than billboard images. They are source assets for nearby trees: make reduced-detail LODs before populating a dense forest. Truck mirrors increase the width beyond the cargo body. Refer to measured bounds; do not assume the existing game collider matches.
 
 ## Preview
 
+On Windows, double-click **Start Preview.cmd**. Keep its window open while reviewing the assets. It starts a local-only server and opens the viewer in your default browser. Do not double-click index.html: browsers block its modules and model requests when opened as a file.
+
 With Node.js installed, run from this folder:
 
     node serve.cjs
 
-Then open http://127.0.0.1:3118 in a WebGL-capable browser. Select a model and orbit with the mouse. View controls offer front, rear and side views.
+Then open http://127.0.0.1:3118 in a WebGL-capable browser. Select a model and orbit with the mouse. View controls offer front, rear and side views. Startup/import/WebGL failures and model-request timeouts now display a message instead of leaving a permanent loading label.
 
 ## Rebuild
 

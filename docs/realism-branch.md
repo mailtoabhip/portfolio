@@ -18,7 +18,7 @@ Four camera motion tests passed, including 30/60/144 FPS equivalence. TypeScript
 
 All six GLBs were reimported with Three.js GLTFLoader. Header/version/length, exported triangle and mesh counts, finite vertex/normal data, and truck wheel-pivot hierarchy passed. The initial viewer lacked a required SkeletonUtils module; that dependency has now been included.
 
-Visual verification is outstanding. The Windows browser-control tool stopped because it could not determine the active URL reliably. No final visual rendering or production build is claimed.
+Viewer verification completed after the startup fix: all six models loaded and model switching worked without browser errors. Truck, trailer and pine rendering were visually inspected. Direct-file opening now explains how to use the included Windows launcher. Two regression tests cover the file-mode guard and viewer dependency completeness. A production build and in-game asset integration are still outstanding.
 
 ## Test this branch
 
