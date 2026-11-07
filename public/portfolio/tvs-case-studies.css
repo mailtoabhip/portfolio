@@ -149,3 +149,9 @@
  .tv-detail-figure .tv-detail-figure-pad .tv-panel[data-tv-layout=phone]{width:min(100%,320px)}
 }
 @media (prefers-reduced-motion:reduce){.tv-panel canvas{transition:none}}
+
+/* TVS QA refinements: do not lock narrow viewports; readable focused UI */
+.tv-detail-collab{font:11px/1.5 var(--mono)!important;color:#56514a;margin:12px 0 0}
+.tv-panel .tv-source-fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;background:#f1f2f3;color:#555;font:11px var(--mono)}
+.tv-frame-main .tv-panel[data-tv-layout="phone"]{max-height:58cqh}
+@container (max-width:780px){.tv-deck{touch-action:pan-y!important}.story-ov .tv-slide{touch-action:pan-y!important}}
