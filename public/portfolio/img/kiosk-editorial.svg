@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" role="img" aria-labelledby="kt kd">
+<title id="kt">A modern self-service civic kiosk</title><desc id="kd">Editorial three-quarter illustration of a blue public service kiosk with a glowing screen, certificate icon and receipt, in a cream and electric-blue palette.</desc>
+<defs>
+<linearGradient id="body" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#6775ff"/><stop offset=".5" stop-color="#2B3AFF"/><stop offset="1" stop-color="#171e95"/></linearGradient>
+<linearGradient id="edge" x1="0" x2="1" y1="0" y2=".2"><stop stop-color="#c4caff"/><stop offset="1" stop-color="#343fbd"/></linearGradient>
+<linearGradient id="screen" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#DCD9F5"/></linearGradient>
+<filter id="sh" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="12" dy="16" stdDeviation="12" flood-color="#131760" flood-opacity=".25"/></filter>
+</defs>
+<ellipse cx="500" cy="676" rx="300" ry="45" fill="#171e95" opacity=".18" filter="url(#sh)"/>
+<circle cx="475" cy="322" r="275" fill="#2B3AFF" opacity=".07"/>
+<ellipse cx="505" cy="317" rx="300" ry="190" fill="none" stroke="#CCFF00" stroke-width="5" transform="rotate(-17 505 317)"/>
+<circle cx="208" cy="214" r="22" fill="#FF2D78"/>
+<g filter="url(#soft)">
+<path d="M283 174 613 131 672 173 342 213Z" fill="#8895ff"/>
+<path d="M342 213 672 173 673 601 342 642Z" fill="url(#body)"/>
+<path d="M283 174 342 213 342 642 282 592Z" fill="#17219c"/>
+<path d="M282 592 342 642 673 601 611 568Z" fill="#10175d"/>
+<path d="M364 232 639 198 641 484 365 519Z" fill="#101119"/>
+<path d="M382 246 620 218 622 466 384 493Z" fill="url(#screen)"/>
+<path d="M382 246 620 218 620 270 382 299Z" fill="#E8E6F8"/>
+<rect x="414" y="275" width="36" height="36" rx="7" transform="skewY(-7)" fill="#2B3AFF"/>
+<path d="M422 280 441 278M422 286 441 284M422 292 436 290" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+<path d="M466 260 580 246" stroke="#1A1A1A" stroke-width="11" stroke-linecap="round"/>
+<path d="M467 286 548 276" stroke="#7A756B" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+<path d="M405 355 598 331" stroke="#B6B9D4" stroke-width="2"/>
+<rect x="406" y="365" width="192" height="62" rx="10" transform="skewY(-7)" fill="#EDE9E0" stroke="#B1B4D9"/>
+<path d="M432 378 556 362" stroke="#B1B4D9" stroke-width="7" stroke-linecap="round"/>
+<path d="M432 399 526 386" stroke="#B1B4D9" stroke-width="7" stroke-linecap="round"/>
+<path d="M406 445 586 421 587 447 406 469Z" fill="#CCFF00"/>
+<path d="M467 447 523 440" stroke="#1A1A1A" stroke-width="6" stroke-linecap="round"/>
+<path d="M420 551 576 531" stroke="#13176A" stroke-width="14" stroke-linecap="round"/>
+<path d="M432 564 555 549" stroke="#7a88ff" stroke-width="5" stroke-linecap="round"/>
+<path d="M393 574 393 596" stroke="#EDE9E0" stroke-width="6" stroke-linecap="round"/>
+<path d="M457 553 543 543 541 603 455 615Z" fill="#FFFAEE"/>
+<path d="M469 567 529 560M469 579 524 572M469 591 504 587" stroke="#adb1c8" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g filter="url(#soft)">
+<path d="M664 97 791 84 811 104 683 118Z" fill="#fff"/>
+<path d="M683 118 811 104 813 287 684 304Z" fill="#EDE9E0" stroke="#c4c7de" stroke-width="2"/>
+<path d="M664 97 683 118 684 304 665 281Z" fill="#C3C8EE"/>
+<path d="M722 158 773 151 776 208 723 216Z" fill="#2B3AFF"/>
+<path d="m739 183 11 10 22-26" stroke="#CCFF00" stroke-width="8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M705 238 785 228M705 253 777 243M705 268 768 260" stroke="#9A9EC7" stroke-width="5" stroke-linecap="round"/>
+</g>
+<path d="M215 559 225 528 246 552 269 535" stroke="#FF2D78" stroke-width="12" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+<circle cx="752" cy="557" r="44" fill="#CCFF00" stroke="#1A1A1A" stroke-width="4"/>
+<path d="m730 556 15 15 28-32" fill="none" stroke="#1A1A1A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
