@@ -21,7 +21,7 @@ function dispose(root: THREE.Object3D) {
   materials.forEach((m) => m.dispose());
 }
 
-export default function ExteriorTruck({ visible }: { visible: boolean }) {
+export default function ExteriorTruck({ visible, motion = drive }: { visible: boolean; motion?: { dz: number } }) {
   const [model, setModel] = useState<THREE.Group | null>(null);
   const wheels = useRef<THREE.Object3D[]>([]);
   const steering = useRef<THREE.Object3D[]>([]);
@@ -71,7 +71,7 @@ export default function ExteriorTruck({ visible }: { visible: boolean }) {
   }, []);
   useFrame((_, dt) => {
     for (const wheel of wheels.current) wheel.rotation.set(
-      (wheel.rotation.x - drive.dz / 0.48) % (Math.PI * 2), 0, 0);
+      (wheel.rotation.x - motion.dz / 0.48) % (Math.PI * 2), 0, 0);
     const target = -input.steer * 0.33;
     for (const axle of steering.current) axle.rotation.set(0,
       axle.rotation.y + (target - axle.rotation.y) * (1 - Math.exp(-10 * Math.min(dt, 0.1))), 0);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useNightRun } from "@/lib/store";
 import { useTruckView } from "@/lib/truckView";
 
@@ -36,6 +37,9 @@ export default function CameraSwitch() {
           Open portfolio
         </button>
       )}
+      <Link href="/open-world" className="flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-black/65 px-4 backdrop-blur">
+        Open world
+      </Link>
     </div>
   );
 }

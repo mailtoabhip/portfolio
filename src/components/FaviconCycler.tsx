@@ -19,6 +19,7 @@ export default function FaviconCycler() {
       img.src = src;
     });
     let link = document.querySelector<HTMLLinkElement>("link#fav-cycle");
+    const ownsLink = !link;
     if (!link) {
       link = document.createElement("link");
       link.id = "fav-cycle";
@@ -26,11 +27,10 @@ export default function FaviconCycler() {
       link.type = "image/png";
       document.head.appendChild(link);
     }
-    // The static GIF link can be re-inserted by the framework after
-    // hydration; drop it on every tick so the cycling icon always wins.
-    const dropStatic = () =>
-      document.querySelectorAll<HTMLLinkElement>('link[rel="icon"]:not(#fav-cycle)').forEach((l) => l.remove());
-    dropStatic();
+    // React owns the metadata icon nodes. Deleting them breaks route
+    // reconciliation (removeChild on a detached node). Update their URLs
+    // instead, and remove only the extra link that this effect created.
+    const originals = new Map<HTMLLinkElement, { href: string | null; type: string | null }>();
     // Frame comes from the clock, so a busy main thread (the 3D scene)
     // can delay a tick but never drift the 0.5 s rhythm.
     let shown = -1;
@@ -38,12 +38,25 @@ export default function FaviconCycler() {
       const i = Math.floor(Date.now() / 500) % FRAMES.length;
       if (i === shown) return;
       shown = i;
-      dropStatic();
-      link!.href = FRAMES[i];
+      document.querySelectorAll<HTMLLinkElement>('link[rel="icon"]').forEach((icon) => {
+        if (!originals.has(icon)) originals.set(icon, { href: icon.getAttribute("href"), type: icon.getAttribute("type") });
+        icon.href = FRAMES[i];
+        icon.type = "image/png";
+      });
     };
     tick();
     const id = window.setInterval(tick, 100);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearInterval(id);
+      for (const [icon, original] of originals) {
+        if (!icon.isConnected) continue;
+        for (const [name, value] of Object.entries(original)) {
+          if (value === null) icon.removeAttribute(name);
+          else icon.setAttribute(name, value);
+        }
+      }
+      if (ownsLink) link?.remove();
+    };
   }, []);
   return null;
 }
