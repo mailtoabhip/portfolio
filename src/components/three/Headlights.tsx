@@ -81,7 +81,7 @@ export default function Headlights() {
       {/* Left + right beams from the front of the hood */}
       <spotLight
         ref={leftRef}
-        position={[-1.6, 0.75, -3.1]}
+        position={[-1.365, 1.48, -2.72]}
         target={target}
         angle={0.55}
         penumbra={0.7}
@@ -92,7 +92,7 @@ export default function Headlights() {
       />
       <spotLight
         ref={rightRef}
-        position={[0.6, 0.75, -3.1]}
+        position={[0.365, 1.48, -2.72]}
         target={target}
         angle={0.55}
         penumbra={0.7}

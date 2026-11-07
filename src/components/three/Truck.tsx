@@ -7,6 +7,8 @@ import Cab from "@/components/three/Cab";
 import Headlights from "@/components/three/Headlights";
 import CameraRig from "@/components/three/CameraRig";
 import { drive } from "@/lib/driveState";
+import { useTruckView } from "@/lib/truckView";
+import ExteriorTruck from "@/components/three/ExteriorTruck";
 
 /** Lift the cab so the driver's eye sits at real heavy-truck height (~2.4 m). */
 const CAB_LIFT = 0.85;
@@ -18,6 +20,7 @@ const CAB_LIFT = 0.85;
  * slight roll away from the steer.
  */
 export default function Truck() {
+  const chase = useTruckView((s) => s.mode === "chase");
   const group = useRef<THREE.Group>(null);
   const lastX = useRef(0);
 
@@ -35,9 +38,10 @@ export default function Truck() {
   return (
     <group ref={group}>
       <group position={[0, CAB_LIFT, 0]}>
-        <Cab />
-        <CameraRig />
+        <group visible={!chase}><Cab /></group>
+        {!chase && <CameraRig />}
       </group>
+      <ExteriorTruck visible={chase} />
       <Headlights />
     </group>
   );

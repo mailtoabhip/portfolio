@@ -10,6 +10,7 @@ import TouchSteerFallback from "@/components/TouchSteerFallback";
 import RecalibrateTilt from "@/components/RecalibrateTilt";
 import LandscapePrompt from "@/components/LandscapePrompt";
 import AudioEngine from "@/components/AudioEngine";
+import CameraSwitch from "@/components/CameraSwitch";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
       <PhoneCard />
       <GameHud />
       <CelestialToggle />
+      <CameraSwitch />
       <RecalibrateTilt />
       <TouchSteerFallback />
       <LandscapePrompt />

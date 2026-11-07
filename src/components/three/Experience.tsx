@@ -12,6 +12,8 @@ import GameSim from "@/components/three/GameSim";
 import GameWorld from "@/components/three/GameWorld";
 import { useDrivingControls } from "@/lib/controls";
 import { useNightRun } from "@/lib/store";
+import { useTruckView } from "@/lib/truckView";
+import ChaseCamera from "@/components/three/ChaseCamera";
 
 /**
  * The 3D shell: full-screen canvas, driver's-seat camera (FOV 75).
@@ -22,6 +24,7 @@ export default function Experience() {
   useDrivingControls();
   const phase = useNightRun((s) => s.phase);
   const quality = useNightRun((s) => s.quality);
+  const chase = useTruckView((s) => s.mode === "chase");
   const blurred = phase === "reading";
 
   return (
@@ -47,6 +50,7 @@ export default function Experience() {
         <SkySystem />
         <SkyDome />
         <Truck />
+        {chase && <ChaseCamera />}
         <Suspense fallback={null}>
           <Road />
         </Suspense>
