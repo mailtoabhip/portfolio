@@ -213,3 +213,17 @@
    width:min(100%,calc(var(--tv-aspect) * 740px))!important
  }
 }
+/* Mobile QA: keep detail grids inside the viewport, and keep the gesture tip off the content. */
+@media(max-width:900px){
+ .tv-detail-section{grid-template-columns:minmax(0,1fr)}
+ .tv-detail-body,.tv-detail-section-title{min-width:0}
+ .tv-detail-body{grid-template-columns:minmax(0,1fr)}
+ .tv-detail-cardset{grid-template-columns:minmax(0,1fr)}
+ .tv-detail-cardset>div{min-width:0;overflow-wrap:anywhere}
+ .tv-detail-body .tv-detail-lead{overflow-wrap:anywhere}
+}
+@media(max-width:600px){
+ .tv-deck .ab-tip,#kiosk-deck .ab-tip,.ab-deck[data-reel=kiosk] .ab-tip{display:none}
+}
+/* An odd last card spans the row instead of leaving an empty grey cell. */
+.tv-detail-cardset>div:last-child:nth-child(odd){grid-column:1/-1}
