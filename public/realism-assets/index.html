@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delivery truck · asset preview</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#dce0df;color:#162327;font-family:Arial,sans-serif}canvas{display:block}
+header{position:absolute;top:28px;left:32px;pointer-events:none}small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#58676b}h1{font-size:28px;letter-spacing:-.04em;margin:8px 0;font-weight:500}p{font-size:13px;line-height:1.7;margin:5px 0;color:#536266}
+nav{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:#f5f5f0dd;padding:6px;border:1px solid #fff9;border-radius:14px;box-shadow:0 8px 30px #27353515;flex-wrap:wrap;justify-content:center;max-width:95%;width:max-content}
+button,select{border:0;background:transparent;color:#33474a;padding:11px 16px;border-radius:9px;cursor:pointer;font:12px Arial,sans-serif}button:hover,button[aria-pressed=true]{background:#203b3d;color:white}select{background:#e7ebe7}
+#status{position:absolute;right:30px;top:32px;font-size:12px;color:#536266}#error{position:absolute;top:45%;left:25%;color:#9a3030}
+@media(max-width:700px){header{top:16px;left:18px}h1{font-size:22px}#status{top:90px;left:18px;right:auto}button,select{padding:9px}}
+</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
+</head><body>
+<header><small>THE NIGHT RUN · ORIGINAL ASSET STUDY</small><h1 id="title">Silver cab. Midnight cargo.</h1><p id="caption">Detailed truck geometry · separate wheel pivots · physical materials</p></header>
+<div id="status">Loading model…</div><div id="error" role="alert"></div>
+<nav aria-label="Asset preview controls">
+<select id="asset" aria-label="Asset"><option value="delivery-rigid-truck.glb">Rigid delivery truck</option><option value="delivery-tractor-trailer.glb">Tractor & trailer</option><option value="forest-pine.glb">Forest pine</option><option value="forest-fir.glb">Forest fir</option><option value="forest-birch.glb">Forest birch</option><option value="roadside-rock.glb">Roadside rock</option></select>
+<button id="front" aria-pressed="true">Front ¾</button><button id="rear" aria-pressed="false">Rear ¾</button><button id="side" aria-pressed="false">Side</button><button id="spin" aria-pressed="false">Rotate</button>
+</nav>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.append(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#dce0df');scene.fog=new THREE.Fog('#dce0df',45,130);
+const pmrem=new THREE.PMREMGenerator(renderer);const room=new RoomEnvironment();const environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;room.dispose();pmrem.dispose();
+const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.1,200);const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.minDistance=3;controls.maxDistance=50;controls.maxPolarAngle=Math.PI*.49;controls.autoRotateSpeed=.6;
+scene.add(new THREE.HemisphereLight('#eaf4ff','#777b66',1.2));
+const sun=new THREE.DirectionalLight('#fff1d6',3.2);sun.position.set(-9,18,-12);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-20,right:20,top:20,bottom:-20,near:.1,far:65});sun.shadow.bias=-.00015;sun.shadow.normalBias=.025;sun.shadow.radius=3;scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(300,300),new THREE.MeshStandardMaterial({color:'#c6cbc6',roughness:.94}));ground.rotation.x=-Math.PI/2;ground.position.y=-.024;ground.receiveShadow=true;scene.add(ground);
+const loader=new GLTFLoader();let current,center=new THREE.Vector3(),radius=5,loadId=0;
+function view(mode){let v=mode==='rear'?[1.15,.55,1.5]:mode==='side'?[1.9,.4,.1]:[1.15,.6,-1.5];camera.position.copy(center).add(new THREE.Vector3(...v).multiplyScalar(radius*1.22));controls.target.copy(center);controls.update();for(const name of ['front','rear','side'])document.getElementById(name).setAttribute('aria-pressed',String(name===mode));}
+async function load(file){
+ const id=++loadId;document.getElementById('status').textContent='Loading model…';document.getElementById('error').textContent='';
+ try{const gltf=await loader.loadAsync('./'+file);if(id!==loadId)return;
+ if(current){scene.remove(current);current.traverse(o=>{o.geometry?.dispose();if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});}
+ current=gltf.scene;current.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});scene.add(current);
+ const bounds=new THREE.Box3().setFromObject(current);bounds.getCenter(center);const size=bounds.getSize(new THREE.Vector3());radius=Math.max(size.x,size.y,size.z)*.82;view('front');
+ let triangles=0,meshes=0;current.traverse(o=>{if(o.isMesh){meshes++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});
+ document.getElementById('status').textContent=Math.round(triangles).toLocaleString()+' triangles · '+meshes+' meshes';
+ const tree=file.includes('forest'),rock=file.includes('rock');document.getElementById('title').textContent=tree?'Layered canopy. Natural silhouette.':rock?'Weathered roadside stone.':'Silver cab. Midnight cargo.';
+ document.getElementById('caption').textContent=tree?'Branch and leaf geometry · bark material · original procedural mesh':rock?'Irregular surface · vertex color variation · physical material':'Detailed truck geometry · separate wheel pivots · physical materials';
+ }catch(e){document.getElementById('error').textContent='Could not load asset: '+e.message;document.getElementById('status').textContent='Load failed';console.error(e);}
+}
+for(const mode of ['front','rear','side'])document.getElementById(mode).onclick=()=>view(mode);
+document.getElementById('spin').onclick=()=>{controls.autoRotate=!controls.autoRotate;document.getElementById('spin').setAttribute('aria-pressed',String(controls.autoRotate));};
+document.getElementById('asset').onchange=e=>load(e.target.value);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);});load('delivery-rigid-truck.glb');
+</script></body></html>

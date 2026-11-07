@@ -1,0 +1,7 @@
+Tool: built-in image_gen.imagegen
+
+asphalt-basecolor.png
+Use case: photorealistic-natural. Asset type: game material base-color texture, seamless square asphalt tile. Create one high-resolution square tileable photographic scanned asphalt albedo surface, straight-down orthographic view, uniform scale over the entire frame, fine aggregate and tiny mineral grains embedded in dense dark neutral gray road bitumen, subtle natural patchy wear, a few very subtle hairline imperfections. Completely flat diffuse cross-polarized illumination, no directional shadows, no highlights, no perspective, no lane paint, no foliage, no objects, no borders, no labels. All four edges must tile seamlessly. This is a functional game texture for a realistic forest highway, not a landscape picture.
+
+pine-bark-basecolor.png
+Use case: photorealistic-natural. Asset type: seamless physically based game material albedo, tree bark. Generate a square high-resolution photographic cross-polarized scan of mature forest pine bark, thick irregular vertical gray-brown bark plates with deeply creased dark recesses, restrained tiny moss and lichen patches, natural rich microtexture, all surface fills entire image. Flat front-on orthographic surface, no tree silhouette, no perspective, no sun shadows, no specular highlights, no text, no borders. Seamless tiling across all four edges. Realistic temperate pine forest bark for detailed three-dimensional game tree trunks, not a picture of a forest.
