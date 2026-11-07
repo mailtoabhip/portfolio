@@ -4,8 +4,8 @@ Created from the supplied visual references. These are actual GLB meshes, not im
 
 ## Included
 
-- delivery-rigid-truck.glb — silver cab, dark cargo body, white sectional rear door; 70,740 triangles, 29 meshes.
-- delivery-tractor-trailer.glb — long truck and trailer inspired by the second reference; 146,672 triangles, 61 meshes.
+- delivery-rigid-truck.glb — silver cab, dark cargo body, white sectional rear door; 77,668 triangles, 29 meshes.
+- delivery-tractor-trailer.glb — long truck and trailer inspired by the second reference; 156,320 triangles, 61 meshes.
 - forest-pine.glb — 51,772 triangles, four material meshes.
 - forest-fir.glb — 51,772 triangles, four material meshes.
 - forest-birch.glb — 22,228 triangles, four material meshes.
@@ -18,7 +18,7 @@ Created from the supplied visual references. These are actual GLB meshes, not im
 
 ## Model features and limits
 
-Truck features include beveled cab panels, windshield and seals, separate mirrors, grille slats, headlights, door handles, steps, fuel tanks, chassis rails and crossmembers, tire grooves, wheel hubs and bolts, roof corrugation, side rivets, markers, rear door panels and hinges, latch, tail lamps, mud flaps and underrun bumper.
+Truck features include a tapered rounded cab, inclined curved windshield, swept roof fairing, wheel-cut skirts and curved arches, sculpted wraparound bumper, recessed grille bands, vertical lamps, windshield seals, separate mirrors, grille slats, headlights, door handles, steps, fuel tanks, chassis rails and crossmembers, tire grooves, wheel hubs and bolts, roof corrugation, side rivets, markers, rear door panels and hinges, latch, tail lamps, mud flaps and underrun bumper.
 
 Units are metres. +Y is up, and the vehicle points along -Z. Wheel hierarchy uses a steer group with a wheel_spin child: rotate the parent around Y for steering and the child around X for wheel rotation. There are no baked animation clips. The long trailer is currently static relative to the tractor: it needs a trailer pivot and articulation logic before driving.
 
