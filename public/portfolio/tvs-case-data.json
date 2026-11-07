@@ -252,6 +252,94 @@
       "layout": "board",
       "title": "TVS Accelerator original interface selection",
       "desc": "Original portfolio montage"
+    },
+    {
+      "id": "e01f",
+      "file": "enq-hifi-1.jpg",
+      "x": 0.45,
+      "y": 0.077,
+      "w": 0.235,
+      "h": 0.193,
+      "layout": "phone",
+      "title": "Opening the enquiry",
+      "desc": "Create New from the Accelerator dashboard"
+    },
+    {
+      "id": "e02f",
+      "file": "enq-hifi-1.jpg",
+      "x": 0.375,
+      "y": 0.289,
+      "w": 0.225,
+      "h": 0.205,
+      "layout": "phone",
+      "title": "Quick Enquiry form",
+      "desc": "First-step customer and vehicle information"
+    },
+    {
+      "id": "e03f",
+      "file": "enq-hifi-1.jpg",
+      "x": 0.365,
+      "y": 0.562,
+      "w": 0.225,
+      "h": 0.194,
+      "layout": "phone",
+      "title": "Enquiry recorded",
+      "desc": "The successful creation screen"
+    },
+    {
+      "id": "e08f",
+      "file": "enq-hifi-2.jpg",
+      "x": 0.79,
+      "y": 0.624,
+      "w": 0.195,
+      "h": 0.184,
+      "layout": "phone",
+      "title": "Booking requires completion",
+      "desc": "Missing fields are highlighted before proceeding"
+    },
+    {
+      "id": "q03f",
+      "file": "quotes-1.jpg",
+      "x": 0.37,
+      "y": 0.697,
+      "w": 0.205,
+      "h": 0.3,
+      "layout": "phone",
+      "title": "Customer QR",
+      "desc": "Scan to enquire at the dealership"
+    },
+    {
+      "id": "q04f",
+      "file": "quotes-2.jpg",
+      "x": 0.37,
+      "y": 0.09,
+      "w": 0.215,
+      "h": 0.207,
+      "layout": "phone",
+      "title": "WhatsApp quotation",
+      "desc": "Instant digital handoff"
+    },
+    {
+      "id": "q07f",
+      "file": "quotes-2.jpg",
+      "x": 0.745,
+      "y": 0.759,
+      "w": 0.23,
+      "h": 0.239,
+      "layout": "phone",
+      "title": "Quotation preview",
+      "desc": "See generated quote before sharing"
+    },
+    {
+      "id": "q10f",
+      "file": "quotes-3.jpg",
+      "x": 0.68,
+      "y": 0.438,
+      "w": 0.3,
+      "h": 0.178,
+      "layout": "phone",
+      "title": "Manager pricing controls",
+      "desc": "Configure discount and charge particulars"
     }
   ],
   "cases": [
@@ -351,10 +439,6 @@
         "e05"
       ],
       "stats": [
-        [
-          "100%",
-          "No: do not claim an unverified research sample"
-        ],
         [
           "3",
           "Priority bets identified"
